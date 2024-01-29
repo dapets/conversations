@@ -30,8 +30,8 @@ export async function login(
 
   const response = await fetchWithAuth(
     process.env.BACKEND_URL +
-      "/login?" +
-      new URLSearchParams({ useCookies: "true" }),
+    "/login?" +
+    new URLSearchParams({ useCookies: "true" }),
     {
       method: "POST",
       body: JSON.stringify(loginData),
@@ -48,8 +48,7 @@ export async function login(
       value: parsedCookie[aspnetAuthCookieName],
       expires: new Date(parsedCookie.expires),
       path: parsedCookie.path,
-      sameSite: "none",
-      secure: true
+      sameSite: "strict",
     });
   }
 
