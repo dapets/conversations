@@ -22,7 +22,7 @@ builder.Services.AddCors(config =>
 {
     config.AddDefaultPolicy(configurePolicy =>
     {
-        configurePolicy.WithOrigins("http://localhost:3000");
+        configurePolicy.SetIsOriginAllowed(origin => true);
         configurePolicy.AllowCredentials();
         configurePolicy.AllowAnyHeader();
     });
