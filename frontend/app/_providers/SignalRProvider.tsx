@@ -18,12 +18,25 @@ type HubMethodNames = {
   ) => void;
 };
 
-type ChatClientHubConnection = Omit<HubConnection, "on"> & {
+type ClientMethodNames = {
+  send: (
+    methodName: "SendMessage",
+    message: string,
+    chatRoomId: number
+  ) => Promise<void> | void;
+  invoke: (
+    methodName: "SendMessage",
+    message: string,
+    chatRoomId: number
+  ) => Promise<void> | void;
+};
+
+type ChatClientHubConnection = Omit<HubConnection, "on" | "send" | "invoke"> & {
   on<T extends keyof HubMethodNames>(
     methodName: T,
     newMethod: HubMethodNames[T]
   ): void;
-};
+} & ClientMethodNames;
 
 export const SignalRConnectionContext =
   createContext<ChatClientHubConnection | null>(null);
