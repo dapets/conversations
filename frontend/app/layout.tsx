@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { GeistSans } from "geist/font/sans";
 import SignalRProvider from "@providers/SignalRProvider";
+import { LoggedInUserProvider } from "@providers/LoggedInUserProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={GeistSans.className}>
-        <SignalRProvider>{children}</SignalRProvider>
+        <LoggedInUserProvider>
+          <SignalRProvider>{children}</SignalRProvider>
+        </LoggedInUserProvider>
       </body>
     </html>
   );

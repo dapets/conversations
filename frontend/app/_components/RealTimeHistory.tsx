@@ -10,6 +10,7 @@ import {
 import { Message } from "./Message";
 import { ChatRoomEntity, HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
+import { LoggedInUserContext } from "@providers/LoggedInUserProvider";
 
 export function RealtimeHistory({
   activeChatRoom,
@@ -21,8 +22,10 @@ export function RealtimeHistory({
   const connection = useContext(SignalRConnectionContext);
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
 
-  //assuming only one logged in user in [1]
-  const loggedInUserId = activeChatRoom.members[1].id;
+  const loggedInUserContext = useContext(LoggedInUserContext);
+  if (!loggedInUserContext)
+    throw Error("LoggedInUserContext null in RealTimeHistory");
+  const loggedInUserId = loggedInUserContext.loggedInUser.id;
 
   const receiveMessageHandler = useCallback(
     (author: UserEntity, message: string) => {

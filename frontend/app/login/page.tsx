@@ -1,16 +1,30 @@
-import LoginForm from "@components/LoginForm";
-import { login } from "app/actions";
-import { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Login",
-  description: "Login to your account",
-};
+import LoginForm from "@components/LoginForm";
+import { LoggedInUserContext } from "@providers/LoggedInUserProvider";
+import { getLoggedInUser, login } from "app/actions";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+
+const doNothing = () => {};
 
 export default function LoginPage() {
+  const router = useRouter();
+  const loggedInUserContext = useContext(LoggedInUserContext);
+  let setLoggedInUser = loggedInUserContext?.setLoggedInUser ?? doNothing;
+
   return (
-    <div className="grid place-content-center h-[100svh]">
-      <LoginForm login={login} />
-    </div>
+    <LoginForm
+      login={async (formData) => {
+        const loginSuccess = await login(formData);
+        const loggedInUser = await getLoggedInUser();
+        if (loggedInUser) {
+          setLoggedInUser(loggedInUser);
+        }
+        if (loginSuccess) {
+          router.push("/chats");
+        }
+      }}
+    />
   );
 }

@@ -90,7 +90,7 @@ export async function login(loginRequest: FormData) {
     }
   );
 
-  if (response.ok) redirect("/chats");
+  return response.ok;
 }
 
 export async function getChatRoomsList() {
@@ -118,6 +118,7 @@ export async function getChatHistoryWithId(chatRoomId: number) {
 
 export async function getLoggedInUser() {
   const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/whoami");
+  if (!result.ok) return null;
 
   return (await result.json()) as UserEntity;
 }
