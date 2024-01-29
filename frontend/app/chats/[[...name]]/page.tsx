@@ -16,7 +16,7 @@ export default async function ChatHistory({
   const chatHistory = await getChatHistoryWithId(id);
 
   return (
-    <section className="overflow-y-auto" id="">
+    <section className="overflow-y-auto p-4 pl-0 pr-14">
       <ul className="flex flex-col space-y-4">
         {chatHistory.length === 0
           ? "No messages yet."
