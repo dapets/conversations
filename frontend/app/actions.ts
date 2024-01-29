@@ -94,9 +94,7 @@ export async function login(loginRequest: FormData) {
 }
 
 export async function getChatRoomsList() {
-  const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/chats", {
-    cache: "no-store",
-  });
+  const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/chats");
 
   if (!result.ok) return undefined;
 
