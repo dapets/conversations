@@ -62,9 +62,13 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddSwaggerGen();
 }
 
-builder.Services.AddTransient<SeedDb>();
 builder.Services.Configure<SeedDbOptions>(
     builder.Configuration.GetSection(SeedDbOptions.Position));
+builder.Services.AddTransient<SeedDb>();
+
+builder.Services.Configure<PeriodicActionOptions>(
+    builder.Configuration.GetSection(PeriodicActionOptions.Position));
+builder.Services.AddTransient<PeriodicActions>();
 
 var app = builder.Build();
 
@@ -77,14 +81,17 @@ using (scope)
     shouldSeedDb = dbContext.Database.EnsureCreated();
 }
 
-if(shouldSeedDb) {
+if (shouldSeedDb)
+{
     var seedDb = app.Services.GetRequiredService<SeedDb>();
     app.Lifetime.ApplicationStarted.Register(async () =>
         await seedDb.SeedWithDemoData());
 }
 
+var periodicActions = app.Services.GetRequiredService<PeriodicActions>();
+_ = periodicActions.ClearNewDatabaseEntriesEveryHour();
+
 app.UseCors();
-app.MapIdentityApi<ApplicationUser>();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -98,6 +105,8 @@ else
 {
     app.UseHsts();
 }
+
+app.MapIdentityApi<ApplicationUser>();
 
 app.MapPost("/logout", async ([FromServices] SignInManager<ApplicationUser> signInManager) =>
 {
