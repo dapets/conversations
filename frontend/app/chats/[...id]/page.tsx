@@ -24,7 +24,7 @@ export default async function ChatHistory({
 
   return (
     <>
-      <ul className="flex flex-col space-y-0">
+      <ul className="flex flex-col space-y-2">
         {chatHistory.length === 0 ? (
           <li>
             <p className="m-auto">You haven&apost talked yet!</p>

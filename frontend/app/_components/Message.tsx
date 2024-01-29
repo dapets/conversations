@@ -17,12 +17,15 @@ export function Message({
 
   return (
     <section
-      className={cn("flex flex-col p-4 w-fit max-w-[70%] rounded-md", {
-        "ml-auto bg-primary text-primary-foreground": isAuthor,
-      })}
+      className={cn(
+        "flex flex-col space-y-2 p-2 w-fit max-w-[70%] rounded-lg",
+        {
+          "ml-auto justify-end": isAuthor,
+        }
+      )}
     >
-      <div className="flex items-center space-x-3">
-        <Avatar>
+      <div className="flex items-center space-x-3 ">
+        <Avatar className={cn({ "order-0": isAuthor })}>
           <AvatarFallback>{getUserInitials(author)}</AvatarFallback>
         </Avatar>
         <div>
@@ -35,8 +38,9 @@ export function Message({
         </div>
       </div>
       <p
-        data-isauthor={isAuthor}
-        className={cn("leading-7 py-1 [overflow-wrap:anywhere]")}
+        className={cn(
+          "leading-7 py-1 px-2 w-fit rounded-md [overflow-wrap:anywhere] bg-accent"
+        )}
       >
         {message}
       </p>
