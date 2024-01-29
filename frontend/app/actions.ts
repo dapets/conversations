@@ -30,8 +30,8 @@ export async function login(
 
   const response = await fetchWithAuth(
     process.env.BACKEND_URL +
-    "/login?" +
-    new URLSearchParams({ useCookies: "true" }),
+      "/login?" +
+      new URLSearchParams({ useCookies: "true" }),
     {
       method: "POST",
       body: JSON.stringify(loginData),
@@ -160,7 +160,9 @@ export async function logout() {
     method: "POST",
   });
   if (result.ok) {
-    cookies().delete(aspnetAuthCookieName);
+    //if we use delete the browser throws a warning about misusing SamesSite.
+    //We can't specify SameSite=Strict when using cookies().delete().
+    cookies().set(aspnetAuthCookieName, "", { sameSite: "strict" });
     redirectWithLoginChanged("/login");
   }
 
