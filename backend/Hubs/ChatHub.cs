@@ -3,6 +3,7 @@ using backend.Entities;
 using backend.Utils;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Hubs;
 
@@ -11,20 +12,23 @@ public interface IChatClient
     Task ReceiveMessage(int chatsId, AuthorDto author, string message);
 }
 
-public class ChatHub(ILogger<ChatHub> logger, IdentityUtils identityUtils, ApplicationDbContext applicationDbContext) : Hub<IChatClient>
+public class ChatHub(ILogger<ChatHub> logger,
+    IdentityUtils identityUtils,
+    ApplicationDbContext applicationDbContext,
+    ApplicationDbContext dbContext) : Hub<IChatClient>
 {
-    private static readonly string DefaultGroupId = "1";
-
-    private readonly IdentityUtils userManager = identityUtils;
+    private readonly IdentityUtils identityUtils = identityUtils;
 
     private readonly ApplicationDbContext applicationDbContext = applicationDbContext;
 
     private readonly ILogger<ChatHub> logger = logger;
 
+    private readonly ApplicationDbContext dbContext = dbContext;
+
     private async Task<AuthorDto> GetAuthorDto()
     {
         Guard.IsNotNull(Context.User);
-        var userEntity = await userManager.GetUserAsync(Context.User);
+        var userEntity = await identityUtils.GetUserAsync(Context.User);
         Guard.IsNotNull(userEntity);
 
         return new(userEntity.Id, userEntity.FirstName, userEntity.LastName, userEntity.Email ?? "No valid email found");
@@ -34,7 +38,7 @@ public class ChatHub(ILogger<ChatHub> logger, IdentityUtils identityUtils, Appli
     {
         Guard.IsNotNull(Context.User);
 
-        var author = await userManager.GetUserAsync(Context.User);
+        var author = await identityUtils.GetUserAsync(Context.User);
         var chat = await applicationDbContext.Chats.FindAsync(chatRoomId);
         Guard.IsNotNull(author);
         Guard.IsNotNull(chat);
@@ -53,12 +57,23 @@ public class ChatHub(ILogger<ChatHub> logger, IdentityUtils identityUtils, Appli
         return newHistory;
     }
 
-    public override Task OnConnectedAsync()
+    public async override Task OnConnectedAsync()
     {
-        logger.LogInformation("User with id {UserId}, email {Email} and connection id {ConnectionId} connected",
+        logger.LogInformation("User with id {username}, email {Email} and connection id {ConnectionId} connected",
             Context.UserIdentifier, Context.User?.Identity?.Name, Context.ConnectionId);
-        Groups.AddToGroupAsync(Context.ConnectionId, DefaultGroupId);
-        return base.OnConnectedAsync();
+
+        Guard.IsNotNull(Context.User);
+        var user = await identityUtils.GetUserAsync(Context.User);
+
+        var chatsIds = dbContext
+            .Chats
+            .Where(c => c.Members.Any(m => m.Id == user.Id))
+            .Select(c => c.Id)
+            .ToList();
+
+        await Task.WhenAll(chatsIds.Select(id => Groups.AddToGroupAsync(Context.ConnectionId, id.ToString())));
+
+        await base.OnConnectedAsync();
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
@@ -70,7 +85,16 @@ public class ChatHub(ILogger<ChatHub> logger, IdentityUtils identityUtils, Appli
 
     public async Task SendMessage(string message, int chatsId)
     {
+        Guard.IsNotNull(Context.User);
+        var user = await identityUtils.GetUserAsync(Context.User);
+
+        if (!await identityUtils.IsMemberOfChat(chatsId, user))
+        {
+            logger.LogInformation("User {user} tried to send message in chat with id {chatId} without being a member of that chat", user, chatsId);
+            return;
+        }
+
         await AddToHistory(message, chatsId);
-        await Clients.Groups(DefaultGroupId).ReceiveMessage(chatsId, await GetAuthorDto(), message);
+        await Clients.Groups(chatsId.ToString()).ReceiveMessage(chatsId, await GetAuthorDto(), message);
     }
 }
