@@ -4,10 +4,7 @@ import { Metadata } from "next";
 import { fetchWithAuth } from "app/dataFetchers";
 import { parse as parseCookie } from "cookie";
 import { cookies } from "next/headers";
-import {
-  aspnetAuthCookieName,
-  hasLoginChangedQueryParam,
-} from "utils/constants";
+import { aspnetAuthCookieName } from "utils/constants";
 
 export const metadata: Metadata = {
   title: "Login",
