@@ -93,9 +93,10 @@ app.MapPost("/complete-registration", async Task<Results<ProblemHttpResult, Ok>>
     var isFirstNameValid = !string.IsNullOrEmpty(completeRegistrationDto.FirstName) && completeRegistrationDto.FirstName.Length > 0;
     var isLastNameValid = !string.IsNullOrEmpty(completeRegistrationDto.LastName) && completeRegistrationDto.LastName.Length > 0;
 
-    if (!isLastNameValid || isFirstNameValid)
+    if (!isLastNameValid || !isFirstNameValid)
     {
-        return HttpHelpers.ProduceBadRequestProblem("First and last name must at least be one character long.");
+        return HttpHelpers.ProduceBadRequestProblem(
+            $"{nameof(CompleteRegistrationDto.FirstName)} and {nameof(CompleteRegistrationDto.LastName)} must be least one character long.");
     }
 
     user.FirstName = completeRegistrationDto.FirstName;
