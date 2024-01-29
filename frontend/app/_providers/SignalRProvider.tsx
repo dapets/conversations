@@ -22,7 +22,7 @@ type ChatClientHubConnection = Omit<HubConnection, "on"> & {
 export const SignalRConnectionContext =
   createContext<ChatClientHubConnection | null>(null);
 
-export default function ThemeProvider({
+export default function SignalRProvider({
   children,
 }: {
   children: React.ReactNode;
