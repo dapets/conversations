@@ -2,12 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcn/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@shadcn/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@shadcn/tooltip";
 import { logout } from "app/actions";
 import { Loader2, LogOut } from "lucide-react";
 import { useState } from "react";
@@ -18,25 +13,23 @@ export function LogoutButton({ className }: { className?: string }) {
 
   if (!isLogoutPending) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={async () => {
-                setIsLogoutPending(true);
-                await logout();
-              }}
-              className={classNames}
-              variant="ghost"
-            >
-              <LogOut className="h-6 w-6" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Log out</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={async () => {
+              setIsLogoutPending(true);
+              await logout();
+            }}
+            className={classNames}
+            variant="ghost"
+          >
+            <LogOut className="h-6 w-6" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Log out</p>
+        </TooltipContent>
+      </Tooltip>
     );
   } else {
     return (

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SignalRProvider from "@providers/SignalRProvider";
 import { Suspense } from "react";
+import { TooltipProvider } from "@shadcn/tooltip";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +18,9 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <Suspense>
-          <SignalRProvider>{children}</SignalRProvider>
+          <TooltipProvider delayDuration={500}>
+            <SignalRProvider>{children}</SignalRProvider>
+          </TooltipProvider>
         </Suspense>
       </body>
     </html>
