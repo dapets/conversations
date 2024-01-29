@@ -21,7 +21,7 @@ export default function ClientLayout({
         </ul>
       </section>
       <main className="flex flex-col justify-between p-4 w-full">
-        {children}
+        <div className="overflow-y-auto">{children}</div>
         <MessageInput />
       </main>
     </div>

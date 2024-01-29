@@ -4,12 +4,12 @@ import { sampleChatHistory } from "sampleData";
 export default function ChatHistory() {
   return (
     <ul>
-      {sampleChatHistory.messages.map((m, i) => (
+      {sampleChatHistory[0].messages.map((m, i) => (
         <li key={i} className="mb-2">
           <ChatMessage
-            author={sampleChatHistory.from}
-            message={m.message}
-            sentOn={m.date}
+            author={sampleChatHistory[0].author}
+            message={m}
+            sentOn={sampleChatHistory[0].sentOn}
           />
         </li>
       ))}
