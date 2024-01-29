@@ -1,38 +1,16 @@
 services:
   backend:
-    extends:
-      file: ./backend/compose.yaml
-      service: backend
-    networks: 
-      - static-ip
+    image: backend
+    build: backend/
+    ports:
+      - 3001:3001
   frontend:
-    extends:
-      file: ./frontend/compose.yaml
-      service: frontend
-    networks: 
-      - static-ip
-  caddy:
-    extends:
-      file: ./caddy/compose.yaml
-      service: caddy
-    networks:
-      static-ip:
-        ipv4_address: 172.20.128.2
-    volumes:
-      - caddy-data:/data
-      - caddy-config:/config
-
-# Using a custom network for caddy to automatically generate https certificates
-# for the specified ip.
-# The generated certificates are not trusted by anything.
-# But just 'acknoledging the risk' and continuing makes cookies work on safari,
-# so that's why.
-networks:
-  static-ip:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
-volumes:
-  caddy-data:
-  caddy-config:
+    image: frontend
+    build:
+      context: .
+      # we need to use both args and environment to make variables accessible during build time.
+      args:
+        - BACKEND_URL=${BACKEND_URL}
+        - NEXT_PUBLIC_SIGNALR_PORT=${NEXT_PUBLIC_SIGNALR_PORT}
+    ports:
+      - 80:3000
