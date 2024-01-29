@@ -5,7 +5,7 @@ import ChatRoomDescriptionList from "@components/ChatRoomDescriptionList";
 import { ChatRoomListEntity } from "utils/dbEntities";
 
 /**This component exists because we need to pass in render props but want to fetch data on the server.
- * Because render props can not be passed from client to server we use this wrapper.
+ * Because functions (render props) cannot be passed from server to client we use this wrapper.
  */
 export function ChatListWithServerSideProps({
   chatRooms,
