@@ -13,6 +13,18 @@ export default function ThemeProvider({
   children: React.ReactNode;
 }) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [oldCookie, setOldCookie] = useState("");
+
+  useEffect(() => {
+    const restartConnOnCookieChange = setInterval(() => {
+      if (document.cookie === oldCookie) return;
+      else {
+        setOldCookie(document.cookie);
+        connection?.stop().then(() => connection.start());
+      }
+    }, 500);
+    return () => clearInterval(restartConnOnCookieChange);
+  }, [connection, oldCookie, setOldCookie]);
 
   useEffect(() => {
     let localConn = new HubConnectionBuilder()
