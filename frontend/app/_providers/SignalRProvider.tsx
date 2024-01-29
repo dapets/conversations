@@ -57,13 +57,24 @@ export default function SignalRProvider({
    * I couldn't really find a better way to tell signalR that the cookies changed.
    * This means that every time the `hasLoginChangedQueryParam` is set to true we restart the connection.
    */
-  const shouldRestartSignalR = params.get(hasLoginChangedQueryParam) === "true";
-  if (shouldRestartSignalR) {
-    restartSignalR();
+  const haveCookiesChanged = params.get(hasLoginChangedQueryParam) === "true";
+  if (haveCookiesChanged) {
+    handleCookieChange();
   }
 
-  /** Not handling HubConnectionState.Connecting and Disconnecting. Surely that will never happen.*/
-  async function restartSignalR() {
+  async function handleCookieChange() {
+    //if there's no cookie we just logged out and anything other than stopping makes no sense.
+    if (!document.cookie) {
+      const alreadyDisconnected =
+        connection?.state !== HubConnectionState.Disconnected &&
+        connection?.state !== HubConnectionState.Disconnecting;
+      if (!alreadyDisconnected) {
+        connection?.stop();
+      }
+
+      return;
+    }
+
     switch (connection?.state) {
       case HubConnectionState.Connected:
         await connection.stop();
@@ -77,6 +88,7 @@ export default function SignalRProvider({
 
   useEffect(() => {
     if (!document.cookie) return;
+
     let localConn = new HubConnectionBuilder()
       .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
       .withAutomaticReconnect()
