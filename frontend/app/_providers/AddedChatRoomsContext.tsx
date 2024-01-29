@@ -5,7 +5,7 @@ import { ChatRoomListEntity } from "utils/dbEntities";
 
 export type AddedChatRooms = {
   addedRooms: ChatRoomListEntity[];
-  setAddedRooms: (addedRooms: ChatRoomListEntity[]) => void;
+  addRoom: (addRoom: ChatRoomListEntity) => void;
 };
 
 export const AddedChatRoomsContext = createContext<AddedChatRooms | null>(null);
@@ -21,7 +21,7 @@ export function AddedChatRoomsProvider({
     <AddedChatRoomsContext.Provider
       value={{
         addedRooms,
-        setAddedRooms,
+        addRoom: (room) => setAddedRooms((value) => [room, ...value]),
       }}
     >
       {children}
@@ -42,6 +42,6 @@ export function useAddedRooms() {
   return useAddedChatRooms().addedRooms;
 }
 
-export function useSetAddedRooms() {
-  return useAddedChatRooms().setAddedRooms;
+export function useAddSingleRoom() {
+  return useAddedChatRooms().addRoom;
 }
