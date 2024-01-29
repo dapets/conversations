@@ -57,14 +57,12 @@ export default function LoginForm({
   ) => Promise<LoginFormResult>;
 }) {
   const [loginState, loginAction] = useFormState(login, { success: true });
-  const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   return (
     <form
       action={loginAction}
-      onInput={(e) =>
-        setIsSubmitButtonDisabled(!e.currentTarget.checkValidity())
-      }
+      onInput={(e) => setIsFormValid(!e.currentTarget.checkValidity())}
     >
       <Card className="rounded-xl bg-card text-card-foreground shadow-sm">
         <CardHeader className="space-y-1">
@@ -95,7 +93,7 @@ export default function LoginForm({
           )}
         </CardContent>
         <CardFooter>
-          <SubmitLogin isSubmitButtonDisabled={isSubmitButtonDisabled} />
+          <SubmitLogin isSubmitButtonDisabled={isFormValid} />
         </CardFooter>
       </Card>
     </form>
