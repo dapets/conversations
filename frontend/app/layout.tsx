@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SignalRProvider from "@providers/SignalRProvider";
 import { Suspense } from "react";
 import { TooltipProvider } from "@shadcn/tooltip";
+import dynamic from "next/dynamic";
+
+const SignalRProvider = dynamic(() => import("@providers/SignalRProvider"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "Conversations",
