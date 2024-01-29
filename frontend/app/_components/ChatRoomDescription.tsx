@@ -27,7 +27,6 @@ export function ChatRoomDescription({
   const encodedHref =
     "/chats/" + chatRoom.id + "/" + encodeURIComponent(otherChatUserFullName);
 
-  console.log(isActive);
   return (
     <Link href={encodedHref}>
       {/* Padding behaves weird if I style the <Link> directly, don't know why*/}
@@ -36,7 +35,7 @@ export function ChatRoomDescription({
         //Because of that I'm just gonna use the custom css class `chat-room-description-layout` defined in ChatRoomDescription.css
         className={cn(
           "grid grid-areas-chat-room-description grid-cols-chat-room-description " +
-            "p-2 rounded-lg shadow " +
+            "p-2 rounded-lg " +
             "hover:bg-primary hover:text-primary-foreground ",
 
           {
