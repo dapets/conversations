@@ -1,7 +1,11 @@
 import { ChatMessage } from "app/_components/ChatMessage";
 import { sampleChatHistory } from "utils/sampleData";
 
-export default function ChatHistory({
+async function getChatHistoryWithId(userId: number) {
+  const result = fetch(process.env.BACKEND_URL + "/chats/" + userId);
+}
+
+export default async function ChatHistory({
   params,
 }: {
   params: { name: string[] };
@@ -10,9 +14,11 @@ export default function ChatHistory({
     return <section className="flex m-auto">No chat selected</section>;
   }
 
-  const name = decodeURIComponent(params.name[0]);
+  const id = +decodeURIComponent(params.name[0]);
 
-  const authorIdx = sampleChatHistory.findIndex((n) => n.author === name);
+  const chatHistory = await getChatHistoryWithId(id);
+
+  const authorIdx = sampleChatHistory.findIndex((n) => n.id === name);
   if (authorIdx < 0) return "Invalid Author: error fetching messages";
 
   return (

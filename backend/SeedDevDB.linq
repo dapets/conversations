@@ -62,7 +62,7 @@ foreach (var user in otherUsers)
 		Histories.Add(new() {
 			Author = rnd.NextSingle() > 0.5 ? user : mainUser,
 			Chats = chat,
-			SentOn = DateTimeOffset.UtcNow.AddHours(rnd.Next(1, 15)).ToString(),
+			SentOn = DateTimeOffset.UtcNow.AddHours(rnd.Next(1, 15)).ToString("o"),
 			Message = faker.Lorem.Sentences(rnd.Next(1,3))
 		});
 	}
