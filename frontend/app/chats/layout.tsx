@@ -9,9 +9,6 @@ import { getLoggedInUser } from "app/dataFetchers";
 import { Metadata } from "next";
 import React from "react";
 import { getUserDisplayName, getUserInitials } from "utils/utils";
-import { Button } from "@shadcn/button";
-import { ChevronsLeft } from "lucide-react";
-import Link from "next/link";
 import { mainId, navBarId } from "utils/constants";
 
 export const metadata: Metadata = {
