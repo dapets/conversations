@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine as build-env
 WORKDIR /build-backend
 
-Copy ./backend.csproj .
+COPY ./backend.csproj .
 RUN dotnet restore
 COPY . .
 RUN dotnet publish -c Release --no-restore -o out
