@@ -11,12 +11,15 @@ public interface IChatClient
     Task ReceiveMessage(int chatsId, AuthorDto author, string message);
 }
 
-public class ChatHub(IdentityUtils identityUtils, ApplicationDbContext applicationDbContext) : Hub<IChatClient>
+public class ChatHub(ILogger<ChatHub> logger, IdentityUtils identityUtils, ApplicationDbContext applicationDbContext) : Hub<IChatClient>
 {
     private static readonly string DefaultGroupId = "1";
 
     private readonly IdentityUtils userManager = identityUtils;
+
     private readonly ApplicationDbContext applicationDbContext = applicationDbContext;
+
+    private readonly ILogger<ChatHub> logger = logger;
 
     private async Task<AuthorDto> GetAuthorDto()
     {
@@ -52,15 +55,16 @@ public class ChatHub(IdentityUtils identityUtils, ApplicationDbContext applicati
 
     public override Task OnConnectedAsync()
     {
-        Console.WriteLine($"{Context.ConnectionId} connected");
-        Console.WriteLine($"User: {Context.User?.Identity?.Name}");
+        logger.LogInformation("User with id {UserId}, email {Email} and connection id {ConnectionId} connected",
+            Context.UserIdentifier, Context.User?.Identity?.Name, Context.ConnectionId);
         Groups.AddToGroupAsync(Context.ConnectionId, DefaultGroupId);
         return base.OnConnectedAsync();
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        Console.WriteLine($"{Context.ConnectionId} disconnected");
+        logger.LogInformation("User with id {UserId}, email {Email} and connection id {ConnectionId} disconnected",
+            Context.UserIdentifier, Context.User?.Identity?.Name, Context.ConnectionId);
         return base.OnDisconnectedAsync(exception);
     }
 
