@@ -9,6 +9,9 @@ import { getLoggedInUser } from "app/dataFetchers";
 import { Metadata } from "next";
 import React from "react";
 import { getUserDisplayName, getUserInitials } from "utils/utils";
+import { Button } from "@shadcn/button";
+import { ChevronsLeft } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Conversations",
@@ -48,6 +51,15 @@ export default async function ClientLayout({
           {chatList}
         </ScrollArea>
       </nav>
+      <Button
+        asChild
+        className="absolute left-2 top-2 block lg:hidden"
+        variant="outline"
+      >
+        <Link href="/chats">
+          <ChevronsLeft />
+        </Link>
+      </Button>
       <main className="ml-2 grid h-full w-full grid-rows-[auto_1fr_auto] gap-y-4 py-2 lg:ml-2">
         {children}
       </main>

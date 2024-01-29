@@ -17,6 +17,9 @@ export default async function ClientLayout({
   const heading = decodeURIComponent(params.id[1] ?? "Unknown user");
   return (
     <>
+      <div className="flex items-center">
+        <TypographyH2 className="mx-auto">{heading}</TypographyH2>
+      </div>
       <Button
         asChild
         className="absolute left-2 top-2 block lg:hidden"
@@ -26,9 +29,6 @@ export default async function ClientLayout({
           <ChevronsLeft />
         </Link>
       </Button>
-      <div className="flex items-center">
-        <TypographyH2 className="mx-auto">{heading}</TypographyH2>
-      </div>
       <ScrollArea
         viewportId={messageScrollContainerId}
         reverse
