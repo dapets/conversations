@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const plugin = require("tailwindcss/plugin");
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   darkMode: ["class"],
@@ -80,9 +80,14 @@ module.exports = {
         "unread-notifier avatar username last-message-date",
         "unread-notifier avatar last-message last-message",
       ],
+      "logged-in-statusbar": [
+        "avatar logged-in-user-name log-out",
+        "avatar logged-in-status log-out",
+      ],
     },
     gridTemplateColumns: {
       "chat-room-description": "1.25rem auto auto 1fr auto",
+      "logged-in-statusbar": "auto auto 1fr",
     },
   },
   plugins: [

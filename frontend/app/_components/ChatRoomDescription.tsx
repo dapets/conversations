@@ -35,7 +35,7 @@ export function ChatRoomDescription({
         //Because of that I'm just gonna use the custom css class `chat-room-description-layout` defined in ChatRoomDescription.css
         className={
           "grid grid-areas-chat-room-description grid-cols-chat-room-description " +
-          "p-2 rounded-lg " +
+          "p-2 rounded-lg shadow " +
           "data-[isactive=true]:bg-primary data-[isactive=true]:text-primary-foreground " +
           "hover:bg-primary hover:text-primary-foreground"
         }
@@ -49,7 +49,7 @@ export function ChatRoomDescription({
             }
           />
         )}
-        <Avatar className="text-primary [grid-area:avatar] place-self-center mr-2">
+        <Avatar className="text-black [grid-area:avatar] place-self-center mr-2">
           <AvatarFallback>{getUserInitials(otherChatUser)}</AvatarFallback>
         </Avatar>
         <TypographyLarge className="truncate [grid-area:username]">
