@@ -5,6 +5,7 @@ import { Button } from "@shadcn/button";
 import { Send } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect } from "react";
+import { maxMessageLength } from "utils/constants";
 import { getActiveChatRoomId } from "utils/utils";
 
 const messageInputName = "send-button";
@@ -39,6 +40,7 @@ export function MessageInput() {
         //all these focus-visible: can't be omitted or combined because firefox
         className="flex-grow rounded-lg p-2 focus-visible:outline focus:outline-2 focus-visible:outline-primary focus-visible:border-transparent border-secondary border-2"
         type="text"
+        maxLength={maxMessageLength}
         placeholder="Type a message..."
         autoComplete="off"
       />

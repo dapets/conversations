@@ -84,6 +84,8 @@ public class ChatHub(ILogger<ChatHub> logger,
     {
         Guard.IsNotNullOrEmpty(message);
         Guard.IsNotNull(Context.User);
+        Guard.HasSizeLessThanOrEqualTo(message, Constants.MaxMessageLength);
+
         var user = await identityUtils.GetUserAsync(Context.User);
 
         if (!await identityUtils.IsMemberOfChat(chatsId, user))
