@@ -1,6 +1,5 @@
 "use client";
 
-import { TypographyP } from "@/components/TypographyP";
 import dayjs from "dayjs";
 import AdvancedFormat from "dayjs/plugin/relativeTime";
 
