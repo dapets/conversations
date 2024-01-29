@@ -33,13 +33,12 @@ export function AddChatDialog() {
   }
 
   return (
-    <Dialog open={isMounted && isOpen}>
+    <Dialog
+      open={isMounted && isOpen}
+      onOpenChange={() => discardAndCloseDialog()}
+    >
       <form action={() => console.log("submitted")}>
-        <DialogContent
-          onPointerDownOutside={discardAndCloseDialog}
-          onEscapeKeyDown={discardAndCloseDialog}
-          className="max-w-md p-6"
-        >
+        <DialogContent className="max-w-md p-6">
           <CardHeader className="space-y-1 p-0">
             <CardTitle className="leading-8">
               Add a chat with a new user
@@ -62,11 +61,7 @@ export function AddChatDialog() {
             />
           </CardContent>
           <CardFooter className="mt-2 justify-between p-0">
-            <Button
-              onClick={discardAndCloseDialog}
-              variant="destructive"
-              type="button"
-            >
+            <Button variant="destructive" type="button">
               Discard
             </Button>
             <Button type="submit">Add user</Button>
