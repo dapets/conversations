@@ -6,7 +6,7 @@
   - ASP.NET Core 8
   - EF Core
   - SQLite
-  - Caddyserver for automatic https and as a reverse-proxy.
+  - Caddyserver (for automatic https and as a reverse-proxy.)
 ## Setting up a development environment
 ### Frontend
 Next.js 14 requires a Node.js version >= 18.17. The project was developed with v21.6.1.
