@@ -12,3 +12,9 @@ export async function getChatHistoryWithId(userId: number) {
   const result = await fetch(process.env.BACKEND_URL + "/chats/" + userId);
   return JSON.parse(await result.text()) as HistoryEntity[];
 }
+
+export async function getLoggedInUser() {
+  const result = await fetch(process.env.BACKEND_URL + "/whoami");
+
+  return JSON.parse(await result.text()) as UserEntity;
+}
