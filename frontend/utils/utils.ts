@@ -56,16 +56,14 @@ export function handleIsChatRoomSelected(isChatRoomSelected: boolean) {
 }
 
 export function getSignalRUrl() {
-  if (process.env.NODE_ENV === "production") {
-    return window.location.origin + "/chatHub";
-  } else {
-    return (
-      window.location.protocol +
-      "//" +
-      window.location.hostname +
-      ":" +
-      process.env.NEXT_PUBLIC_BACKEND_PORT +
-      "/chatHub"
-    );
+  if (!process.env.NEXT_PUBLIC_SIGNALR_PORT) {
+    return window.location.hostname + "/chatHub";
   }
+
+  return window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":" +
+    process.env.NEXT_PUBLIC_SIGNALR_PORT +
+    "/chatHub"
 }
