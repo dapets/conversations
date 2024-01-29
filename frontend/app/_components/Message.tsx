@@ -32,7 +32,12 @@ export function Message({
       <p className="text-sm font-semibold grid-in-author">
         {getUserDisplayName(author)}
       </p>
-      <p className="w-fit rounded-md bg-accent px-2 leading-7 grid-in-message [overflow-wrap:anywhere]">
+      <p
+        className={cn(
+          "w-fit rounded-md bg-accent px-2 leading-7 grid-in-message [overflow-wrap:anywhere]",
+          { "bg-primary text-primary-foreground": isAuthor },
+        )}
+      >
         {message}
       </p>
       <time className="text-xs text-gray-500 grid-in-last-message-date">
