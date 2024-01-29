@@ -43,7 +43,7 @@ export function ChatRoomDescription({
             {otherChatUser.lastName[0]}
           </AvatarFallback>
         </Avatar>
-        <h2 className="text-sm font-bold truncate text-left [grid-area:username]">
+        <h2 className="text-sm font-bold truncate [grid-area:username]">
           {otherChatUserFullName}
         </h2>
         {chatRoom.lastMessage && (
