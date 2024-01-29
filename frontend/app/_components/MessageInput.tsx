@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
 import { Button } from "@shadcn/button";
 import { Send } from "lucide-react";
@@ -10,14 +11,17 @@ import { getActiveChatRoomId } from "utils/utils";
 
 const messageInputName = "send-button";
 
-export function MessageInput() {
+export function MessageInput({ className }: { className: string }) {
   const signalRContext = useContext(SignalRConnectionContext);
   const pathname = usePathname();
   const activeChatRoomId = getActiveChatRoomId(pathname);
 
   return (
     <form
-      className="w-full flex items-center justify-between space-x-4"
+      className={cn(
+        "w-full flex items-center justify-between space-x-4",
+        className
+      )}
       onSubmit={(e) => {
         const form = e.target as HTMLElementTagNameMap["form"];
         const sendInput = form.elements.namedItem(

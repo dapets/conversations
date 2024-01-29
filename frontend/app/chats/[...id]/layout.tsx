@@ -25,10 +25,10 @@ export default async function ClientLayout({
   return (
     <>
       <TypographyH2>{heading}</TypographyH2>
-      <ScrollArea className="pr-14" type="always">
+      <ScrollArea className="pr-4 mr-2" type="always">
         {children}
       </ScrollArea>
-      <MessageInput />
+      <MessageInput className="pr-6" />
     </>
   );
 }

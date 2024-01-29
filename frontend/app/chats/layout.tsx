@@ -24,7 +24,7 @@ export default async function ClientLayout({
           {chatList}
         </ScrollArea>
       </nav>
-      <main className="h-full flex flex-col justify-between p-4 pl-0 pt-2 w-full space-y-4">
+      <main className="h-full flex flex-col justify-between py-2 w-full space-y-4">
         {children}
       </main>
     </div>
