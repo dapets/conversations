@@ -7,7 +7,7 @@ RUN dotnet restore
 COPY . .
 RUN dotnet publish -c Release --no-restore -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /backend
 COPY --from=build-env /build-backend/out .
 

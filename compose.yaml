@@ -1,0 +1,3 @@
+include:
+  - ./frontend/compose.yaml
+  - ./backend/compose.yaml
