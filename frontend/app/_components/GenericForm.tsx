@@ -15,6 +15,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ApiResponse, ProblemDetail } from "utils/dbEntities";
+import { useState } from "react";
 
 type SubmitButtonProps = {
   idleText: string;
@@ -41,6 +42,7 @@ function SubmitForm({ buttonText }: { buttonText: SubmitButtonProps }) {
 }
 
 export function EmailPasswordFormFields() {
+  const [isEmailValid, setIsEmailvalid] = useState(true);
   return (
     <>
       <div className="grid gap-2">
@@ -50,20 +52,29 @@ export function EmailPasswordFormFields() {
           id="email"
           name="email"
           type="email"
-          autoComplete="email"
+          autoComplete="Email"
           placeholder="name@example.com"
         />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="password">Password</Label>
         <Input
+          onChange={(e) => {
+            setIsEmailvalid(e.currentTarget.reportValidity());
+          }}
           id="password"
           autoComplete="password"
           name="password"
           type="password"
-          placeholder="password"
+          minLength={6}
+          placeholder="Password"
           required
         />
+        {!isEmailValid && (
+          <p className="italic text-destructive">
+            Password needs to be at least 6 characters long.
+          </p>
+        )}
       </div>
     </>
   );
@@ -100,7 +111,7 @@ export default function GenericForm<State>({
           {formFields}
           {!actiontate.ok && (
             <p className="leading-7 text-destructive">
-              {(actiontate.result as ProblemDetail | undefined)?.details ??
+              {(actiontate.result as ProblemDetail | undefined)?.detail ??
                 "Submission failed"}
             </p>
           )}
