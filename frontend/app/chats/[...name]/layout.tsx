@@ -1,8 +1,7 @@
 import React from "react";
-
 import { Send } from "lucide-react";
-import { MessageInput } from "app/_chatComponents/MessageInput";
-import { Button } from "@/components/ui/button";
+import { MessageInput } from "@components/MessageInput";
+import { Button } from "@shadcn/button";
 
 export default function ClientLayout({
   children,

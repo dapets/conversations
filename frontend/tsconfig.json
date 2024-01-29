@@ -21,7 +21,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["app/_chatComponents/*"],
+      "@components/*": ["app/_components/*"],
+      "@providers/*": ["app/_providers/*"],
       "@shadcn/*": ["@/components/ui/*"]
     }
   },

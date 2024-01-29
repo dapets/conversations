@@ -1,5 +1,5 @@
+import { RealtimeHistory } from "@components/RealTimeHistory";
 import { Message } from "@components/Message";
-import { RealtimeHistory } from "@components/RealtimeHistory";
 import { getChatHistoryWithId, getLoggedInUser } from "app/actions";
 
 export const scrollToId = "latest";

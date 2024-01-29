@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { GeistSans } from "geist/font";
-import SignalRProvider from "@components/SignalRProvider";
+import SignalRProvider from "@providers/SignalRProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
