@@ -1,4 +1,4 @@
-import SampleDataChatList from "@components/SampleChatDescription";
+import ChatDescriptionList from "@components/ChatDescriptionList";
 import React from "react";
 
 export default function ClientLayout({
@@ -9,7 +9,7 @@ export default function ClientLayout({
   return (
     <div className="flex h-screen w-screen">
       <nav className="p-4 overflow-y-auto md:w-64 md:block hidden">
-        <SampleDataChatList />
+        <ChatDescriptionList />
       </nav>
       {children}
     </div>

@@ -1,22 +1,31 @@
 import Link from "next/link";
+import { User } from "types/dbEntities";
 
-export function ChatDescription(props: {
-  username: string;
+export function ChatDescription({
+  user,
+  isActive,
+  lastMessage,
+}: {
+  user: User;
   isActive: boolean;
   lastMessage?: string;
 }) {
-  const encodedHref = "/chats/" + encodeURIComponent(props.username);
+  const encodedHref =
+    "/chats/" +
+    user.id +
+    "/" +
+    encodeURIComponent(`${user.firstName} ${user.lastName}`);
 
   return (
     <Link href={encodedHref} scroll={false}>
       {/* Padding behaves weird if I style the <Link> directly, don't know why*/}
       <div
-        data-isactive={props.isActive}
+        data-isactive={isActive}
         className="p-2 data-[isactive=true]:bg-primary data-[isactive=true]:text-primary-foreground hover:bg-primary hover:text-primary-foreground rounded-lg"
       >
-        <h2 className="text-sm font-bold truncate">{props.username}</h2>
+        <h2 className="text-sm font-bold truncate">{`${user.firstName} ${user.lastName}`}</h2>
         <p className="text-sm truncate font-light">
-          {props.lastMessage ?? "No messages yet."}
+          {lastMessage ?? "No messages yet."}
         </p>
       </div>
     </Link>
