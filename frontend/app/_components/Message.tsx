@@ -24,18 +24,19 @@ export function Message({
           {getRelativeLocalTimeStrFromUtcDate(sentOn)}
         </time>
       </div>
-      <div
+      <p
         data-isauthor={isAuthor}
         className={cn(
-          "flex leading-7 w-fit max-w-[70%] rounded-lg px-3 py-2 ",
-          "text-sm bg-accent text-accent-foreground",
+          "leading-7 w-fit max-w-[70%] rounded-lg",
+          "bg-accent px-3 py-1 ",
+          "break-all text-accent-foreground",
           {
             "bg-primary text-primary-foreground ml-auto": isAuthor,
           }
         )}
       >
         {message}
-      </div>
+      </p>
     </section>
   );
 }

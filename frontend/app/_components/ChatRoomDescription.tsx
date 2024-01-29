@@ -5,6 +5,8 @@ import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
 import "./ChatRoomdescription.css";
 import { getOtherChatUser, getUserDisplayName } from "utils/utils";
+import { TypographyMuted } from "@shadcn/TypographyMuted";
+import { TypographyLarge } from "@shadcn/TypographyLarge";
 
 export function ChatRoomDescription({
   chatRoom,
@@ -35,24 +37,21 @@ export function ChatRoomDescription({
         //Because of that I'm just gonna use the custom css class `chat-room-description-layout` defined in ChatRoomDescription.css
         className="grid chat-room-description-layout p-2 rounded-lg data-[isactive=true]:bg-primary data-[isactive=true]:text-primary-foreground hover:bg-primary hover:text-primary-foreground "
       >
-        <Avatar className="text-primary [grid-area:avatar] mr-2">
+        <Avatar className="text-primary [grid-area:avatar] place-self-center mr-2">
           <AvatarFallback>
             {otherChatUser.firstName[0]}
             {otherChatUser.lastName[0]}
           </AvatarFallback>
         </Avatar>
-        <h2 className="text-sm font-bold truncate [grid-area:username]">
+        <TypographyLarge className="truncate [grid-area:username]">
           {otherChatUserFullName}
-        </h2>
+        </TypographyLarge>
         {chatRoom.lastMessage && (
-          <time
-            className="text-xs truncate text-right [grid-area:last-message-date]"
-            suppressHydrationWarning
-          >
+          <time suppressHydrationWarning className="text-sm">
             {getRelativeLocalTimeStrFromUtcDate(chatRoom.lastMessage?.sentOn)}
           </time>
         )}
-        <p className="text-sm truncate font-normal text-left [grid-area:last-message]">
+        <p className="truncate font-normal text-left [grid-area:last-message]">
           {chatRoom.lastMessage?.message ?? "No messages yet."}
         </p>
       </div>
