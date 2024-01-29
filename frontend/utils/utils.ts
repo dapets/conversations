@@ -57,7 +57,7 @@ export function handleIsChatRoomSelected(isChatRoomSelected: boolean) {
 
 export function getSignalRUrl() {
   if (!process.env.NEXT_PUBLIC_SIGNALR_PORT) {
-    return window.location.hostname + "/chatHub";
+    return window.location.origin + "/chatHub";
   }
 
   const signalRUrl =
