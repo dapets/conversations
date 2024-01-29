@@ -4,8 +4,7 @@ services:
       context: .
       # we need to use both args and environment to make variables accessible during build time.
       args:
-        - BACKEND_URL=http://backend:3001
-        - NEXT_PUBLIC_SIGNALR_PORT=3001
-    environment:
-      - BACKEND_URL=http://backend:3001
-      - NEXT_PUBLIC_SIGNALR_PORT=3001
+        - BACKEND_URL=${BACKEND_URL}
+        - NEXT_PUBLIC_SIGNALR_PORT=${NEXT_PUBLIC_SIGNALR_PORT}
+    ports:
+      - "80:3000"
