@@ -46,14 +46,7 @@ export async function addChatWithUser(
 
   const jsonResult = await result.json();
 
-  if (!result.ok) {
-    const problem = jsonResult as ProblemDetail;
-
-    return {
-      ok: false,
-      result: problem,
-    };
-  } else {
+  if (result.ok) {
     const chatRoomAddedResult = jsonResult as ChatRoomCreatedDto;
     const newChatRoom: ChatRoomListEntity = {
       ...chatRoomAddedResult,
@@ -61,5 +54,12 @@ export async function addChatWithUser(
     };
 
     return { ok: true, result: newChatRoom };
+  } else {
+    const problem = jsonResult as ProblemDetail;
+
+    return {
+      ok: false,
+      result: problem,
+    };
   }
 }
