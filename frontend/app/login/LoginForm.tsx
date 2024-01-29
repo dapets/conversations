@@ -81,7 +81,7 @@ export default function LoginForm({
               id="email"
               name="email"
               type="email"
-              placeholder="max@example.com"
+              placeholder="user@example.com"
             />
           </div>
           <div className="grid gap-2">
