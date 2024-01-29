@@ -16,7 +16,7 @@ const cookieHeaderName = "Cookie";
  *
  *3. Request resolves, response.headers.getSetCookie() contains auth information
  *
- *4. Set browser cookies via cookies().set() to response.getSetCookie() (some parsing involved)
+ *4. Set browser cookies via cookies().set() to response.getSetCookie()
  *
  * The browser now has the (auth) cookies the backend api returned.
  *
@@ -94,15 +94,16 @@ export async function getChatList() {
   return JSON.parse(text) as UserEntity[][];
 }
 
-export async function getChatHistoryWithId(userId: number) {
+export async function getChatHistoryWithId(userId: string) {
   const result = await fetchWithHandleAuth(
-    process.env.BACKEND_URL + "/chats/" + userId
+    `${process.env.BACKEND_URL}/chats/${userId}/history`
   );
-  return JSON.parse(await result.text()) as HistoryEntity[];
+
+  return (await result.json()) as HistoryEntity[];
 }
 
 export async function getLoggedInUser() {
   const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/whoami");
 
-  return JSON.parse(await result.text()) as UserEntity;
+  return (await result.json()) as UserEntity;
 }

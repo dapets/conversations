@@ -10,7 +10,7 @@ export function Message({
   loggedInUserId,
 }: {
   history: HistoryEntity;
-  loggedInUserId: number;
+  loggedInUserId: string;
 }) {
   const { author, sentOn, message } = history;
 

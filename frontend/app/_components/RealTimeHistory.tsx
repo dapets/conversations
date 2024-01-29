@@ -14,7 +14,7 @@ export function RealtimeHistory({
   loggedInUserId,
   scrollToId,
 }: {
-  loggedInUserId: number;
+  loggedInUserId: string;
   scrollToId?: string;
 }) {
   const connection = useContext(SignalRConnectionContext);
@@ -28,7 +28,7 @@ export function RealtimeHistory({
           author: {
             firstName: "Sophie",
             lastName: "Mertz",
-            id: 177,
+            id: "c9430aad-41ed-4ff6-9d5e-639a6e387b2c",
           },
           id: Math.random(),
           message,
