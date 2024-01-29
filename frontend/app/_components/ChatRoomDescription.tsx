@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback } from "@shadcn/avatar";
 import Link from "next/link";
 import { getRelativeLocalTimeStrFromUtcDate } from "utils/configuredDayjs";
-import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
 import {
   getOtherChatUser,
@@ -9,7 +8,6 @@ import {
   getUserInitials,
 } from "utils/utils";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
-import styles from "./ChatRoomDescription.module.css";
 
 export function ChatRoomDescription({
   chatRoom,
