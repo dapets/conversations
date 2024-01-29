@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using backend.DTOs;
 using backend.Entities;
 using backend.Hubs;
 using backend.Utils;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +61,7 @@ else
 app.MapPost("/logout", async ([FromServices] SignInManager<ApplicationUser> signInManager) =>
 {
     await signInManager.SignOutAsync();
-    return Results.Ok();
+    return TypedResults.Ok();
 })
 .RequireAuthorization();
 
@@ -91,7 +93,8 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 })
 .RequireAuthorization();
 
-app.MapGet("/chats/{chatId}", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, int chatId, ApplicationDbContext db) =>
+app.MapGet("/chats/{chatId}", async Task<Results<NotFound, Ok<ChatRoomWithHistoryDto>>>
+    (int chatId, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
     var chat = await db.Chats
@@ -104,11 +107,16 @@ app.MapGet("/chats/{chatId}", async (ClaimsPrincipal claimsPrincipal, IdentityUt
         {
             id = chat.Id,
             members = chat.Members.Select(m => m.GetDto()),
-            history = chat.History.Select(h => h.GetDto()),
+            history = chat.History.Select(h => h.GetDto())
         })
-        .FirstAsync(c => c.id == chatId);
+        .FirstOrDefaultAsync(c => c.id == chatId);
 
-    return chat;
+    if (chat is null)
+    {
+        return TypedResults.NotFound();
+    }
+
+    return TypedResults.Ok(new ChatRoomWithHistoryDto(chat.id, chat.members, chat.history));
 })
 .RequireAuthorization();
 
