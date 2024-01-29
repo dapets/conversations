@@ -1,8 +1,4 @@
-{
-  auto_https off
-}
-
-:80 {
+conversation-demo.de {
   encode zstd gzip
 
   reverse_proxy * frontend:3000
