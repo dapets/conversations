@@ -26,7 +26,6 @@ public class ChatHub(ILogger<ChatHub> logger,
 
     private async Task<AuthorDto> GetAuthorDto()
     {
-        Guard.IsNotNull(Context.User);
         var userEntity = await identityUtils.GetUserAsync(Context.User);
 
         return new(userEntity.Id, userEntity.FirstName, userEntity.LastName, userEntity.Email ?? "No valid email found");
@@ -34,8 +33,6 @@ public class ChatHub(ILogger<ChatHub> logger,
 
     private async Task<History> AddToHistory(string message, int chatRoomId)
     {
-        Guard.IsNotNull(Context.User);
-
         var author = await identityUtils.GetUserAsync(Context.User);
         var chat = await applicationDbContext.Chats.FindAsync(chatRoomId);
         Guard.IsNotNull(chat);
@@ -59,7 +56,6 @@ public class ChatHub(ILogger<ChatHub> logger,
         logger.LogInformation("User with id {username}, email {Email} and connection id {ConnectionId} connected",
             Context.UserIdentifier, Context.User?.Identity?.Name, Context.ConnectionId);
 
-        Guard.IsNotNull(Context.User);
         var user = await identityUtils.GetUserAsync(Context.User);
 
         var chatsIds = dbContext
@@ -83,7 +79,6 @@ public class ChatHub(ILogger<ChatHub> logger,
     public async Task SendMessage(string message, int chatsId)
     {
         Guard.IsNotNullOrEmpty(message);
-        Guard.IsNotNull(Context.User);
         Guard.HasSizeLessThanOrEqualTo(message, Constants.MaxMessageLength);
 
         var user = await identityUtils.GetUserAsync(Context.User);

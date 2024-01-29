@@ -12,8 +12,9 @@ public class IdentityUtils(UserManager<ApplicationUser> userManager, Application
 
     private readonly ApplicationDbContext dbContext = dbContext;
 
-    public async Task<ApplicationUser> GetUserAsync(ClaimsPrincipal claimsPrincipal)
+    public async Task<ApplicationUser> GetUserAsync(ClaimsPrincipal? claimsPrincipal)
     {
+        Guard.IsNotNull(claimsPrincipal);
         var user = await userManager.GetUserAsync(claimsPrincipal) ?? throw new ArgumentException($"Couldn't find user corresponding to {nameof(claimsPrincipal)}");
         Guard.IsNotNull(user);
         return user;
