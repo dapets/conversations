@@ -2,7 +2,27 @@
 
 import { HistoryEntity, UserEntity } from "utils/dbEntities";
 
-type LoginRequest = { email: string; password: string };
+export async function login(loginRequest: FormData) {
+  const loginData = {
+    email: loginRequest.get("email"),
+    password: loginRequest.get("password"),
+  };
+
+  const response = await fetch(
+    process.env.BACKEND_URL +
+      "/login?" +
+      new URLSearchParams({ useCookies: "true" }),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    }
+  );
+
+  return response.ok;
+}
 
 export async function getChatList() {
   const result = await fetch(process.env.BACKEND_URL + "/chats", {

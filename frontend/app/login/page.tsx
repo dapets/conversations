@@ -1,6 +1,6 @@
-import { Metadata } from "next";
-
 import LoginForm from "@components/LoginForm";
+import { login } from "app/actions";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <div className="grid place-content-center h-[100svh]">
-      <LoginForm />
+      <LoginForm login={login} />
     </div>
   );
 }
