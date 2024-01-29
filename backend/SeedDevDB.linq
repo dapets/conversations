@@ -1,4 +1,4 @@
-<Query Kind="Statements">
+<Query Kind="Program">
   <Connection>
     <ID>363b3232-5867-446d-874d-ca41c536f665</ID>
     <NamingServiceVersion>2</NamingServiceVersion>
@@ -14,58 +14,83 @@
   </Connection>
   <NuGetReference>Bogus</NuGetReference>
   <Namespace>Bogus</Namespace>
+  <Namespace>System.Net.Http</Namespace>
+  <Namespace>System.Net.Http.Json</Namespace>
 </Query>
 
-var faker = new Faker();
-
-var userFaker = new Faker<AspNetUsers>()
-	.RuleFor(p => p.FirstName, f => f.Name.FirstName())
-	.RuleFor(p => p.LastName, f => f.Name.LastName());
-	
-var rnd = new Random();
-
-var mainUser = userFaker.Generate();
-AspNetUsers.Add(mainUser);
-
-var otherUsers = new List<AspNetUsers>();
-
-for (int i = 0; i < 15; i++)
+async void Main()
 {
-	var newUser = userFaker.Generate();
-	otherUsers.Add(newUser);
-	AspNetUsers.Add(newUser);
-}
+	var faker = new Faker();
+	var httpClient = new HttpClient();
+	httpClient.BaseAddress = new Uri("http://localhost:3001");
 
-SubmitChanges();
+	var userFaker = new Faker<AspNetUsers>()
+		.RuleFor(p => p.FirstName, f => f.Name.FirstName())
+		.RuleFor(p => p.LastName, f => f.Name.LastName());
 
-foreach (var user in otherUsers)
-{
-	var chat = new Chats();
-	Chats.Add(chat);
-	SubmitChanges();
-	
-	var first = new ChatsUser()
-	{
-		Chats = chat,
-		Members = user,
-	};
-	var second = new ChatsUser()
-	{
-		Chats = chat,
-		Members = mainUser,
-	};
-	ChatsUsers.Add(first);
-	ChatsUsers.Add(second);
-	
+	var rnd = new Random();
+
 	for (int i = 0; i < 15; i++)
 	{
-		Histories.Add(new() {
-			Author = rnd.NextSingle() > 0.5 ? user : mainUser,
+		var newUserData = userFaker.Generate();
+		var registerData = new RegisterRequest(BuildEmail(newUserData), Pw);
+
+		await httpClient.PostAsJsonAsync("/register", registerData);
+		var loginResponse = await httpClient.PostAsJsonAsync("/login", registerData);
+		var parsedLogin = await loginResponse.Content.ReadFromJsonAsync<LoginResponses>();
+		httpClient.DefaultRequestHeaders.Authorization = new("Bearer", parsedLogin.AccessToken);
+		var userResponse = await httpClient.GetFromJsonAsync<SmallUser>("/whoami");
+		
+		var user = AspNetUsers.First(u => u.Id == userResponse.Id);
+		user.FirstName = newUserData.FirstName;
+		user.LastName = newUserData.LastName;
+		AspNetUsers.Update(user);
+	}
+
+	SubmitChanges();
+	var mainUser = AspNetUsers.First();
+	var otherUsers = AspNetUsers.Skip(1);
+
+	foreach (var user in otherUsers)
+	{
+		var chat = new Chats();
+		Chats.Add(chat);
+		SubmitChanges();
+
+		var first = new ApplicationUserChats()
+		{
 			Chats = chat,
-			SentOn = DateTimeOffset.UtcNow.AddHours(rnd.Next(1, 15)).ToString("o"),
-			Message = faker.Lorem.Sentences(rnd.Next(1,3))
-		});
+			Members = user,
+		};
+		var second = new ApplicationUserChats()
+		{
+			Chats = chat,
+			Members = mainUser,
+		};
+		ApplicationUserChats.Add(first);
+		ApplicationUserChats.Add(second);
+
+		for (int i = 0; i < 15; i++)
+		{
+			Histories.Add(new()
+			{
+				Author = rnd.NextSingle() > 0.5 ? user : mainUser,
+				Chats = chat,
+				SentOn = DateTimeOffset.UtcNow.AddHours(rnd.Next(1, 15)).ToString("o"),
+				Message = faker.Lorem.Sentences(rnd.Next(1, 3))
+			});
+		}
+
+		SubmitChanges();
 	}
 	
-	SubmitChanges();
+	"Done".Dump();
+
 }
+string Pw = "Password0$";
+string BuildEmail(AspNetUsers user) => $"{user.FirstName}@{user.LastName}.com";
+
+record RegisterRequest(string Email, string Password);
+record LoginResponses(string AccessToken);
+record SmallUser(string Id);
+// You can define other methods, fields, classes and namespaces here
