@@ -28,7 +28,7 @@ export default async function ClientLayout({
       <ScrollArea className="pr-4 mr-2" type="always">
         {children}
       </ScrollArea>
-      <MessageInput className="pr-6" />
+      <MessageInput className="pr-2" />
     </>
   );
 }
