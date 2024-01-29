@@ -3,6 +3,7 @@ import "./globals.css";
 import SignalRProvider from "@providers/SignalRProvider";
 import { Suspense } from "react";
 import { TooltipProvider } from "@shadcn/tooltip";
+import { AddedChatRoomsProvider } from "@providers/AddedChatRoomsContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,9 +19,11 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <Suspense>
-          <TooltipProvider delayDuration={500}>
-            <SignalRProvider>{children}</SignalRProvider>
-          </TooltipProvider>
+          <AddedChatRoomsProvider>
+            <TooltipProvider delayDuration={500}>
+              <SignalRProvider>{children}</SignalRProvider>
+            </TooltipProvider>
+          </AddedChatRoomsProvider>
         </Suspense>
       </body>
     </html>

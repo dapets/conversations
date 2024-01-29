@@ -1,5 +1,6 @@
 "use client";
 
+import { useSetAddedRooms } from "@providers/AddedChatRoomsContext";
 import { Button } from "@shadcn/button";
 import {
   CardContent,
@@ -11,16 +12,41 @@ import {
 import { Dialog, DialogContent } from "@shadcn/dialog";
 import { Input } from "@shadcn/input";
 import { Label } from "@shadcn/label";
+import { addChatWithUser } from "app/actions";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { addChatDialogQueryParam, scrollToId } from "utils/constants";
+
+function AddChatDialogSubmitButton({ disabled }: { disabled?: boolean }) {
+  const status = useFormStatus();
+
+  if (!status.pending) {
+    return (
+      <Button disabled={disabled} type="submit">
+        Add user
+      </Button>
+    );
+  } else {
+    return <Button disabled>Adding user...</Button>;
+  }
+}
 
 export function AddChatDialog() {
   const params = useSearchParams();
+  const isOpen = params.get(addChatDialogQueryParam) === "true";
+
   const router = useRouter();
   const location = usePathname();
 
-  const isOpen = params.get(addChatDialogQueryParam) === "true";
+  function discardAndCloseDialog() {
+    router.push(location + "#" + scrollToId);
+  }
+
+  const [addChatDialogState, addChatDialogAction] = useFormState(
+    addChatWithUser,
+    null,
+  );
 
   //hack to only render the dialog once it is properly mounted
   //see: https://github.com/radix-ui/primitives/issues/1386
@@ -28,17 +54,17 @@ export function AddChatDialog() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => setIsMounted(true), []);
 
-  function discardAndCloseDialog() {
-    router.push(location + "#" + scrollToId);
-  }
+  const [isFormValid, setIsFormValid] = useState(false);
+  const setAddedRooms = useSetAddedRooms();
 
   return (
-    <Dialog
-      open={isMounted && isOpen}
-      onOpenChange={() => discardAndCloseDialog()}
-    >
-      <form action={() => console.log("submitted")}>
-        <DialogContent className="max-w-md p-6">
+    <Dialog open={isMounted && isOpen} onOpenChange={discardAndCloseDialog}>
+      <DialogContent className="max-w-md p-6">
+        <form
+          action={addChatDialogAction}
+          onChange={(e) => setIsFormValid(e.currentTarget.checkValidity())}
+          className="grid gap-4"
+        >
           <CardHeader className="space-y-1 p-0">
             <CardTitle className="leading-8">
               Add a chat with a new user
@@ -52,7 +78,6 @@ export function AddChatDialog() {
           <CardContent className="mt-2 grid gap-2 p-0">
             <Label htmlFor="email">Email</Label>
             <Input
-              autoComplete="false"
               autoFocus={false}
               required
               id="email"
@@ -62,13 +87,17 @@ export function AddChatDialog() {
             />
           </CardContent>
           <CardFooter className="mt-2 justify-between p-0">
-            <Button variant="destructive" type="button">
+            <Button
+              variant="destructive"
+              type="button"
+              onClick={discardAndCloseDialog}
+            >
               Discard
             </Button>
-            <Button type="submit">Add user</Button>
+            <AddChatDialogSubmitButton disabled={!isFormValid} />
           </CardFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }

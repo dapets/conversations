@@ -33,8 +33,10 @@ export type AddChatWithUserResponse = {
 };
 
 export async function addChatWithUser(
-  email: string,
+  _: unknown,
+  formData: FormData,
 ): Promise<AddChatWithUserResponse> {
+  const email = formData.get("email");
   const result = await fetchWithAuth(process.env.BACKEND_URL + "/chats/", {
     method: "POST",
     body: JSON.stringify({
