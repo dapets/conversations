@@ -6,17 +6,11 @@ async function getChatHistoryWithId(userId: number) {
   return JSON.parse(await result.text()) as History[];
 }
 
-const loggedInUserId = 177;
-
 export default async function ChatHistory({
   params,
 }: {
   params: { name: string[] };
 }) {
-  if (!("name" in params)) {
-    return <section className="flex m-auto">No chat selected</section>;
-  }
-
   const id = +decodeURIComponent(params.name[0]);
 
   const chatHistory = await getChatHistoryWithId(id);
