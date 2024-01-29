@@ -4,7 +4,10 @@ import { Metadata } from "next";
 import { fetchWithAuth } from "app/dataFetchers";
 import { parse as parseCookie } from "cookie";
 import { cookies } from "next/headers";
-import { aspnetAuthCookieName } from "utils/constants";
+import {
+  aspnetAuthCookieName,
+  hasLoginChangedQueryParam,
+} from "utils/constants";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -57,7 +60,7 @@ export default function LoginPage() {
           "use server";
           const loginSuccess = await login(formData);
           if (loginSuccess) {
-            redirect("/chats");
+            redirect(`/chats?${hasLoginChangedQueryParam}=true`);
           }
         }}
       />

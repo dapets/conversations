@@ -1,7 +1,13 @@
 "use client";
 
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+} from "@microsoft/signalr";
+import { useSearchParams } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
+import { hasLoginChangedQueryParam } from "utils/constants";
 import { UserEntity } from "utils/dbEntities";
 
 type HubMethodNames = {
@@ -30,18 +36,23 @@ export default function SignalRProvider({
   const [connection, setConnection] = useState<ChatClientHubConnection | null>(
     null
   );
-  const [oldCookie, setOldCookie] = useState("");
+  const params = useSearchParams();
+  const shouldRestartSignalR = params.get(hasLoginChangedQueryParam) === "true";
+  if (shouldRestartSignalR) {
+    restartSignalR();
+  }
 
-  useEffect(() => {
-    const restartConnOnCookieChange = setInterval(() => {
-      if (document.cookie === oldCookie) return;
-      else {
-        setOldCookie(document.cookie);
-        connection?.stop().then(() => connection.start());
-      }
-    }, 500);
-    return () => clearInterval(restartConnOnCookieChange);
-  }, [connection, oldCookie, setOldCookie]);
+  async function restartSignalR() {
+    switch (connection?.state) {
+      case HubConnectionState.Connected:
+        await connection.stop();
+        await connection.start();
+        break;
+      case HubConnectionState.Disconnected:
+        await connection.start();
+        break;
+    }
+  }
 
   useEffect(() => {
     let localConn = new HubConnectionBuilder()
