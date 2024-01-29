@@ -60,10 +60,13 @@ export function getSignalRUrl() {
     return window.location.hostname + "/chatHub";
   }
 
-  return window.location.protocol +
+  const signalRUrl =
+    window.location.protocol +
     "//" +
     window.location.hostname +
     ":" +
     process.env.NEXT_PUBLIC_SIGNALR_PORT +
-    "/chatHub"
+    "/chatHub";
+
+  return signalRUrl;
 }

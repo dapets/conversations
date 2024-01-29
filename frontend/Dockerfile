@@ -25,6 +25,10 @@ ARG BACKEND_URL
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules/
 COPY . .
+ARG BACKEND_URL
+ARG NEXT_PUBLIC_SIGNALR_PORT
+ENV NEXT_PUBLIC_SIGNALR_PORT=${NEXT_PUBLIC_SIGNALR_PORT}
+ENV BACKEND_URL=${BACKEND_URL}
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -39,8 +43,11 @@ RUN yarn build
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
+ARG BACKEND_URL
+ARG NEXT_PUBLIC_SIGNALR_PORT
+ENV NEXT_PUBLIC_SIGNALR_PORT=${NEXT_PUBLIC_SIGNALR_PORT}
+ENV BACKEND_URL=${BACKEND_URL}
 
-ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
