@@ -1,3 +1,4 @@
+import { Separator } from "@shadcn/separator";
 import { Metadata } from "next";
 import React from "react";
 
@@ -15,8 +16,9 @@ export default async function ClientLayout({
 }) {
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
-      <nav className="basis-1/3 max-w-sm shrink-0 overflow-y-auto md:block hidden">
-        {chatList}
+      <nav className="hidden md:flex flex-col basis-1/3 max-w-sm shrink-0 p-2">
+        <h1 className="text-2xl mb-2">Messages</h1>
+        <div className="overflow-y-auto">{chatList}</div>
       </nav>
       <main className="h-full flex flex-col justify-between p-4 w-full space-y-4">
         {children}
