@@ -18,11 +18,9 @@ export function RealTimeHistoryWithServerSideProps({
       activeChatRoom={activeChatRoom}
       scrollToId={scrollToId}
       renderMessage={(history) => (
-        <Message
-          history={history}
-          loggedInUserId={loggedInUserId}
-          key={history.id}
-        />
+        <li key={history.id}>
+          <Message history={history} loggedInUserId={loggedInUserId} />
+        </li>
       )}
     />
   );

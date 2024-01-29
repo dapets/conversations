@@ -21,15 +21,17 @@ export default async function ChatHistory({
   return (
     <section className="overflow-y-auto p-4 pl-0 pr-14">
       <ul className="flex flex-col space-y-4">
-        <li>
-          {chatHistory.length === 0 ? (
+        {chatHistory.length === 0 ? (
+          <li>
             <p className="m-auto">You haven&apost talked yet!</p>
-          ) : (
-            chatHistory.map((h) => (
-              <Message key={h.id} history={h} loggedInUserId={loggedInUserId} />
-            ))
-          )}
-        </li>
+          </li>
+        ) : (
+          chatHistory.map((h) => (
+            <li key={h.id}>
+              <Message history={h} loggedInUserId={loggedInUserId} />
+            </li>
+          ))
+        )}
         <RealTimeHistoryWithServerSideProps
           activeChatRoom={chatRoom}
           loggedInUserId={loggedInUserId}
