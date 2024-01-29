@@ -1,9 +1,9 @@
-﻿namespace backend.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace backend.Entities;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-
     public required string FirstName { get; set; }
 
     public required string LastName { get; set; }

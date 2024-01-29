@@ -23,19 +23,22 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 }
 
-var loggedInUserId = 177;
+var loggedInUserId = "177";
 
 var app = builder.Build();
 
 app.UseCors();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapHub<ChatHub>("/chatHub");
 
-app.MapGet("/whoami", (DevContext db) =>
+app.MapGet("/whoami", (ApplicationDbContext db) =>
     db.Users.FirstAsync(u => u.Id == loggedInUserId)
 );
 
-app.MapGet("/chats", (DevContext db) => db
+app.MapGet("/chats", (ApplicationDbContext db) => db
     .Chats
     .Include(c => c.Members)
     .Where(c => c.Members.Any(m => m.Id == loggedInUserId))
@@ -43,7 +46,7 @@ app.MapGet("/chats", (DevContext db) => db
     .AsAsyncEnumerable()
 );
 
-app.MapGet("/chats/{id}", (int id, DevContext db) =>
+app.MapGet("/chats/{id}", (string id, ApplicationDbContext db) =>
 {
     var commonChatHistory = db.Chats
         .Where(c => c.Members.Any(m => m.Id == id))

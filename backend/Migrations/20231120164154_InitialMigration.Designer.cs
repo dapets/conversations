@@ -9,7 +9,7 @@ using backend.Entities;
 
 namespace backend.Migrations
 {
-    [DbContext(typeof(DevContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231120164154_InitialMigration")]
     partial class InitialMigration
     {

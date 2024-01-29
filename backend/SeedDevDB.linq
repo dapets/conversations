@@ -18,22 +18,22 @@
 
 var faker = new Faker();
 
-var userFaker = new Faker<Users>()
+var userFaker = new Faker<AspNetUsers>()
 	.RuleFor(p => p.FirstName, f => f.Name.FirstName())
 	.RuleFor(p => p.LastName, f => f.Name.LastName());
 	
 var rnd = new Random();
 
 var mainUser = userFaker.Generate();
-Users.Add(mainUser);
+AspNetUsers.Add(mainUser);
 
-var otherUsers = new List<Users>();
+var otherUsers = new List<AspNetUsers>();
 
 for (int i = 0; i < 15; i++)
 {
 	var newUser = userFaker.Generate();
 	otherUsers.Add(newUser);
-	Users.Add(newUser);
+	AspNetUsers.Add(newUser);
 }
 
 SubmitChanges();

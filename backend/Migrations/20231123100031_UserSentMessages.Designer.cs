@@ -10,7 +10,7 @@ using backend.Entities;
 
 namespace backend.Migrations
 {
-    [DbContext(typeof(DevContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231123100031_UserSentMessages")]
     partial class UserSentMessages
     {
