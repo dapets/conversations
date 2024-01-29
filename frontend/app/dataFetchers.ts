@@ -5,13 +5,9 @@ import {
 } from "utils/projectTypes";
 import { cookies } from "next/headers";
 import { serialize as serializeCookie } from "cookie";
-import { redirect } from "next/navigation";
-import {
-  aspnetAuthCookieName,
-  chatHistoryTag,
-  cookieHeaderName,
-} from "utils/constants";
+import { aspnetAuthCookieName, cookieHeaderName } from "utils/constants";
 import "server-only";
+import { redirectWithLoginChanged } from "utils/utils";
 
 /** Cookie flow
  *
@@ -55,9 +51,9 @@ export async function fetchWithAuth(
 
   const response = await fetch(requestInfo, init);
   if (response.status === 401 && !requestInfo.url.includes("/login")) {
-    redirect("/login");
+    redirectWithLoginChanged("/login");
   } else if (response.status === 403) {
-    redirect("/register");
+    redirectWithLoginChanged("/register");
   }
 
   return response;
