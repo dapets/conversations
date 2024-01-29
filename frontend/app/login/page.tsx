@@ -1,29 +1,24 @@
-"use client";
-
 import LoginForm from "@components/LoginForm";
-import { LoggedInUserContext } from "@providers/LoggedInUserProvider";
-import { getLoggedInUser, login } from "app/actions";
+import { login } from "app/actions";
 import { redirect } from "next/navigation";
-import { useContext } from "react";
+import { Metadata } from "next";
 
-const doNothing = () => {};
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Login to your account",
+};
 
 export default function LoginPage() {
-  const loggedInUserContext = useContext(LoggedInUserContext);
-  let setLoggedInUser = loggedInUserContext?.setLoggedInUser ?? doNothing;
-
   return (
-    <LoginForm
-      login={async (formData) => {
-        const loginSuccess = await login(formData);
-        const loggedInUser = await getLoggedInUser();
-        if (loggedInUser) {
-          setLoggedInUser(loggedInUser);
-        }
-        if (loginSuccess) {
-          redirect("/login");
-        }
-      }}
-    />
+    <div className="grid place-content-center h-[100svh]">
+      <LoginForm
+        login={async (formData) => {
+          const loginSuccess = await login(formData);
+          if (loginSuccess) {
+            redirect("/chats");
+          }
+        }}
+      />
+    </div>
   );
 }

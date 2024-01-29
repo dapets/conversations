@@ -10,9 +10,9 @@ import {
 import { Message } from "./Message";
 import { ChatRoomEntity, HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
-import { LoggedInUserContext } from "@providers/LoggedInUserProvider";
+import { getLoggedInUser } from "app/actions";
 
-export function RealtimeHistory({
+export async function RealtimeHistory({
   activeChatRoom,
   scrollToId,
 }: {
@@ -21,11 +21,6 @@ export function RealtimeHistory({
 }) {
   const connection = useContext(SignalRConnectionContext);
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
-
-  const loggedInUserContext = useContext(LoggedInUserContext);
-  if (!loggedInUserContext)
-    throw Error("LoggedInUserContext null in RealTimeHistory");
-  const loggedInUserId = loggedInUserContext.loggedInUser.id;
 
   const receiveMessageHandler = useCallback(
     (author: UserEntity, message: string) => {
@@ -60,6 +55,10 @@ export function RealtimeHistory({
     }
     scrollToElement.scrollIntoView();
   }, [scrollToId, realtimeHistory]);
+
+  const loggedInUser = await getLoggedInUser();
+  if (!loggedInUser) throw Error("LoggedInUser null in RealTimeHistory");
+  const loggedInUserId = loggedInUser.id;
 
   return (
     <>

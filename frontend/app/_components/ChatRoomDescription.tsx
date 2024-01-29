@@ -1,10 +1,9 @@
-import { LoggedInUserContext } from "@providers/LoggedInUserProvider";
+import { getLoggedInUser } from "app/actions";
 import Link from "next/link";
-import { useContext } from "react";
 import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
 
-export function ChatRoomDescription({
+export async function ChatRoomDescription({
   chatRoom,
   isActive,
 }: {
@@ -12,9 +11,10 @@ export function ChatRoomDescription({
   isActive: boolean;
 }) {
   //currently assuming we only have chat rooms with two (logged in + additional) member
-  const loggedInUserContext = useContext(LoggedInUserContext);
+  const loggedInUser = await getLoggedInUser();
+
   const otherChatUser = chatRoom.members.filter(
-    (member) => member.id !== loggedInUserContext?.loggedInUser.id ?? Number.NaN
+    (member) => member.id !== loggedInUser?.id ?? Number.NaN
   )[0];
   const encodedHref =
     "/chats/" +

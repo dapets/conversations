@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { GeistSans } from "geist/font/sans";
 import SignalRProvider from "@providers/SignalRProvider";
-import { LoggedInUserProvider } from "@providers/LoggedInUserProvider";
-import { getLoggedInUser } from "./actions";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,10 +16,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={GeistSans.className}>
-        {/* initial value in addition to setting the context value in /login for refreshes */}
-        <LoggedInUserProvider value={await getLoggedInUser()}>
-          <SignalRProvider>{children}</SignalRProvider>
-        </LoggedInUserProvider>
+        <SignalRProvider>{children}</SignalRProvider>
       </body>
     </html>
   );
