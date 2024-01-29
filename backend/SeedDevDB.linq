@@ -16,9 +16,13 @@
   <Namespace>Bogus</Namespace>
 </Query>
 
+var faker = new Faker();
+
 var userFaker = new Faker<Users>()
 	.RuleFor(p => p.FirstName, f => f.Name.FirstName())
 	.RuleFor(p => p.LastName, f => f.Name.LastName());
+	
+var rnd = new Random();
 
 var mainUser = userFaker.Generate();
 Users.Add(mainUser);
@@ -52,6 +56,16 @@ foreach (var user in otherUsers)
 	};
 	ChatsUsers.Add(first);
 	ChatsUsers.Add(second);
+	
+	for (int i = 0; i < 15; i++)
+	{
+		Histories.Add(new() {
+			Author = rnd.NextSingle() > 0.5 ? user : mainUser,
+			Chats = chat,
+			SentOn = DateTimeOffset.UtcNow.AddHours(rnd.Next(1, 15)).ToString(),
+			Message = faker.Lorem.Sentences(rnd.Next(1,3))
+		});
+	}
 	
 	SubmitChanges();
 }
