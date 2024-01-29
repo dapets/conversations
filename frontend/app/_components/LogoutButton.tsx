@@ -3,17 +3,36 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcn/button";
 import { logout } from "app/actions";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export function LogoutButton({ className }: { className?: string }) {
-  return (
-    <Button
-      onClick={() => {
-        logout();
-      }}
-      className={cn("font-semibold", className)}
-      variant="ghost"
-    >
-      Log out
-    </Button>
-  );
+  const [isLogoutPending, setIsLogoutPending] = useState(false);
+  const classNames = cn("font-semibold", className);
+
+  if (!isLogoutPending) {
+    return (
+      <Button
+        onClick={async () => {
+          setIsLogoutPending(true);
+          await logout();
+        }}
+        className={classNames}
+        variant="ghost"
+      >
+        Log out
+      </Button>
+    );
+  } else {
+    return (
+      <Button
+        disabled
+        className={cn(className, "w-fit px-2")}
+        variant="outline"
+      >
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" type="button" />
+        Logging out...
+      </Button>
+    );
+  }
 }
