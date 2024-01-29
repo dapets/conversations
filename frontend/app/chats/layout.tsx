@@ -41,7 +41,7 @@ export default async function ClientLayout({
               {getUserDisplayName(loggedInUser)}
             </TypographyLarge>
             <p className="text-sm text-muted-foreground grid-in-logged-in-status">
-              Logged in
+              {loggedInUser.email ?? "No email available."}
             </p>
             <LogoutButton className="justify-self-end grid-in-log-out" />
           </div>
