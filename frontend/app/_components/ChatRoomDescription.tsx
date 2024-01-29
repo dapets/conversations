@@ -22,12 +22,7 @@ export function ChatRoomDescription({
   const otherChatUserFullName = getUserDisplayName(otherChatUser);
 
   const encodedHref =
-    "/chats/" +
-    chatRoom.id +
-    "/" +
-    encodeURIComponent(otherChatUserFullName) +
-    "#" +
-    scrollToId;
+    "/chats/" + chatRoom.id + "/" + encodeURIComponent(otherChatUserFullName);
 
   return (
     <Link href={encodedHref}>
