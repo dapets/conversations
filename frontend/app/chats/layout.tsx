@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Chat Window",
-  description: "Chat with other users",
+  title: "Conversations",
+  description: "Your conversations",
 };
 
 export default async function ClientLayout({
