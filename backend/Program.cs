@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlite(builder.Configuration.GetConnectionString("ApplicationDbContext"))
 );
-builder.Services.AddSignalR();
 builder.Services.AddCors(config =>
 {
     config.AddDefaultPolicy(configurePolicy =>
@@ -23,12 +22,19 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 }
 
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddSignalR();
+
 var loggedInUserId = "177";
 
 var app = builder.Build();
 
 app.UseCors();
 
+app.MapIdentityApi<User>();
 app.UseAuthentication();
 app.UseAuthorization();
 

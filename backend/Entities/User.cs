@@ -4,9 +4,9 @@ namespace backend.Entities;
 
 public class User : IdentityUser
 {
-    public required string FirstName { get; set; }
+    public string FirstName { get; set; } = string.Empty;
 
-    public required string LastName { get; set; }
+    public string LastName { get; set; } = string.Empty;
 
     public ICollection<History> SentMessages { get; set; } = new List<History>();
 
