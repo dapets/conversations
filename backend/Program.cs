@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DevContext>();
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options => options.UseSqlite(builder.Configuration.GetConnectionString("ApplicationDbContext"))
+);
 builder.Services.AddSignalR();
 builder.Services.AddCors(config =>
 {
