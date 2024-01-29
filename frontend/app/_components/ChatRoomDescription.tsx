@@ -33,6 +33,8 @@ export function ChatRoomDescription({
     "#" +
     scrollToId;
 
+  const isLastMessageAvailable = chatRoom.lastMessage?.message;
+
   return (
     <Link href={encodedHref}>
       {/* Padding behaves weird if I style the <Link> directly, don't know why*/}
@@ -72,7 +74,11 @@ export function ChatRoomDescription({
             {getRelativeLocalTimeStrFromUtcDate(chatRoom.lastMessage?.sentOn)}
           </time>
         )}
-        <p className="truncate text-left font-normal grid-in-last-message">
+        <p
+          className={cn("truncate text-left font-normal grid-in-last-message", {
+            italic: !isLastMessageAvailable,
+          })}
+        >
           {chatRoom.lastMessage?.message ?? "No messages yet."}
         </p>
       </div>

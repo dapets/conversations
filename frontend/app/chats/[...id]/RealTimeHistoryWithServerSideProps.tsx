@@ -2,20 +2,22 @@
 
 import { Message } from "@components/Message";
 import { RealtimeHistory } from "@components/RealTimeHistory";
-import { ChatRoomEntity } from "utils/dbEntities";
 
 export function RealTimeHistoryWithServerSideProps({
-  activeChatRoom,
+  activeChatRoomId,
+  doesRoomHaveMessages,
   scrollToId,
   loggedInUserId,
 }: {
-  activeChatRoom: ChatRoomEntity;
+  activeChatRoomId: number;
+  doesRoomHaveMessages: boolean;
   scrollToId: string;
   loggedInUserId: string;
 }) {
   return (
     <RealtimeHistory
-      activeChatRoom={activeChatRoom}
+      activeChatRoomId={activeChatRoomId}
+      doesRoomHaveMessages={doesRoomHaveMessages}
       scrollToId={scrollToId}
       renderMessage={(history) => (
         <li key={history.id}>
