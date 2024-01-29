@@ -1,11 +1,6 @@
-using System.Runtime.Versioning;
 using System.Security.Claims;
 using backend;
 using backend.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +20,7 @@ builder.Services.AddCors(config =>
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddScoped<IdentityUtils>();
 
 builder.Services.AddSignalR();
 
@@ -34,9 +30,6 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 }
-
-
-var loggedInUserId = "177";
 
 var app = builder.Build();
 
@@ -58,25 +51,31 @@ else
 
 app.MapHub<ChatHub>("/chatHub");
 
-app.MapGet("/whoami", (ClaimsPrincipal user, [FromServices] UserManager<ApplicationUser> userManager) =>
+app.MapGet("/whoami", (ClaimsPrincipal claimsPrincipal, IdentityUtils utils) =>
 {
-    return userManager.GetUserAsync(user);
+    return utils.GetUser(claimsPrincipal);
 })
 .RequireAuthorization();
 
-app.MapGet("/chats", (ApplicationDbContext db) => db
+app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
+{
+    var loggedInUser = await utils.GetUser(claimsPrincipal);
+    return db
     .Chats
     .Include(c => c.Members)
-    .Where(c => c.Members.Any(m => m.Id == loggedInUserId))
+    .Where(c => c.Members.Any(m => m.Id == loggedInUser.Id))
     .Select(c => c.Members)
-    .AsAsyncEnumerable()
-);
+    .AsAsyncEnumerable();
+}
+)
+.RequireAuthorization();
 
-app.MapGet("/chats/{id}", (string id, ApplicationDbContext db) =>
+app.MapGet("/chats/{id}", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, string id, ApplicationDbContext db) =>
 {
+    var loggedInUser = await utils.GetUser(claimsPrincipal);
     var commonChatHistory = db.Chats
         .Where(c => c.Members.Any(m => m.Id == id))
-        .Where(c => c.Members.Any(m => m.Id == loggedInUserId))
+        .Where(c => c.Members.Contains(loggedInUser))
         .Include(c => c.History)
         .ThenInclude(h => h.Author)
         //We are creating a dto to avoid cyclic references when serializing
@@ -91,6 +90,7 @@ app.MapGet("/chats/{id}", (string id, ApplicationDbContext db) =>
         .ToListAsync();
 
     return commonChatHistory;
-});
+})
+.RequireAuthorization();
 
 app.Run();
