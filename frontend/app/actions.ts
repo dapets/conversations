@@ -33,7 +33,6 @@ export type AddChatWithUserResponse = {
 };
 
 export async function addChatWithUser(
-  _: unknown,
   formData: FormData,
 ): Promise<AddChatWithUserResponse> {
   const email = formData.get("email");

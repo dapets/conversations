@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { ChatRoomListEntity } from "utils/dbEntities";
 
 export type AddedChatRooms = {
@@ -16,12 +16,16 @@ export function AddedChatRoomsProvider({
   children: React.ReactNode;
 }) {
   const [addedRooms, setAddedRooms] = useState<ChatRoomListEntity[]>([]);
+  const addRoom = useCallback(
+    (room: ChatRoomListEntity) => setAddedRooms((value) => [room, ...value]),
+    [],
+  );
 
   return (
     <AddedChatRoomsContext.Provider
       value={{
         addedRooms,
-        addRoom: (room) => setAddedRooms((value) => [room, ...value]),
+        addRoom,
       }}
     >
       {children}
@@ -29,7 +33,7 @@ export function AddedChatRoomsProvider({
   );
 }
 
-export function useAddedChatRooms() {
+function useAddedChatRoomsContext() {
   const addedChatRoomsContext = useContext(AddedChatRoomsContext);
   if (!addedChatRoomsContext) {
     throw new Error("Tried using AddedChatRoomsContext when it was null");
@@ -39,9 +43,9 @@ export function useAddedChatRooms() {
 }
 
 export function useAddedRooms() {
-  return useAddedChatRooms().addedRooms;
+  return useAddedChatRoomsContext().addedRooms;
 }
 
 export function useAddSingleRoom() {
-  return useAddedChatRooms().addRoom;
+  return useAddedChatRoomsContext().addRoom;
 }

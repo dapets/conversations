@@ -16,7 +16,7 @@ import { addChatWithUser } from "app/actions";
 import { Loader2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { addChatDialogQueryParam, scrollToId } from "utils/constants";
 import { ChatRoomListEntity, ProblemDetail } from "utils/dbEntities";
 
@@ -40,26 +40,34 @@ function AddChatDialogSubmitButton({ disabled }: { disabled?: boolean }) {
 }
 
 export function AddChatDialog() {
-  const params = useSearchParams();
-  const isOpen = params.get(addChatDialogQueryParam) === "true";
-
   const router = useRouter();
   const location = usePathname();
 
   const discardAndCloseDialog = useCallback(() => {
-    router.push(location + "#" + scrollToId);
+    const segment = location.endsWith("/chats") ? "" : "#" + scrollToId;
+    router.push(location + segment);
   }, [location, router]);
 
   const addSingleRoom = useAddSingleRoom();
-  const [addChatFormState, addChatAction] = useFormState(addChatWithUser, null);
 
-  let formProblem: ProblemDetail | null = null;
-  let newChatRoom: ChatRoomListEntity | null = null;
-  if (addChatFormState?.ok === false) {
-    formProblem = addChatFormState?.result as ProblemDetail;
-  } else if (addChatFormState?.ok === true) {
-    newChatRoom = addChatFormState.result as ChatRoomListEntity;
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [formProblem, setFormProblem] = useState<ProblemDetail | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    const response = await addChatWithUser(formData);
+    if (response.ok) {
+      const newChatRoom = response.result as ChatRoomListEntity;
+      addSingleRoom(newChatRoom);
+      discardAndCloseDialog();
+    } else {
+      setFormProblem(response.result as ProblemDetail);
+    }
+
+    return response;
   }
+
+  const params = useSearchParams();
+  const isOpen = params.get(addChatDialogQueryParam) === "true";
 
   //hack to only render the dialog once it is properly mounted
   //see: https://github.com/radix-ui/primitives/issues/1386
@@ -67,13 +75,11 @@ export function AddChatDialog() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => setIsMounted(true), []);
 
-  const [isFormValid, setIsFormValid] = useState(false);
-
   return (
     <Dialog open={isMounted && isOpen} onOpenChange={discardAndCloseDialog}>
       <DialogContent className="max-w-md p-6">
         <form
-          action={addChatAction}
+          action={handleSubmit}
           onChange={(e) => setIsFormValid(e.currentTarget.checkValidity())}
           className="grid gap-4"
         >
