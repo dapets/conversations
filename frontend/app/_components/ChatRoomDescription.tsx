@@ -5,7 +5,6 @@ import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
 import "./ChatRoomdescription.css";
 import { getOtherChatUser, getUserDisplayName } from "utils/utils";
-import { TypographyMuted } from "@shadcn/TypographyMuted";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
 
 export function ChatRoomDescription({
