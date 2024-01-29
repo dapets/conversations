@@ -74,12 +74,8 @@ using (scope)
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
 
-    var options = scope.ServiceProvider.GetRequiredService<IOptions<SeedDbOptions>>();
-    var demoUserEmail = options.Value.DemoUserEmail;
-    var demoUserPassword = options.Value.DemoUserPassword;
-
     app.Lifetime.ApplicationStarted.Register(async () =>
-        await SeedDb.SeedWithDemoData(demoUserEmail, demoUserPassword, dbContext));
+        await SeedDb.SeedWithDemoData(app.Services));
 }
 
 app.UseCors();

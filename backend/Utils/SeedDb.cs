@@ -1,6 +1,7 @@
 ﻿using backend.DTOs;
 using backend.Entities;
 using Bogus;
+using Microsoft.Extensions.Options;
 
 namespace backend.Utils;
 
@@ -141,10 +142,19 @@ public class SeedDb
         }
     }
 
-    public static async Task SeedWithDemoData(string demoUserEmail, string demoUserPassword, ApplicationDbContext dbContext)
+    public static async Task SeedWithDemoData(IServiceProvider provider)
     {
-        var users = await GenerateAndRegisterMockUsers(demoUserEmail, demoUserPassword);
+        var scope = provider.CreateScope();
+        using (scope)
+        {
+            var options = provider.GetRequiredService<IOptions<SeedDbOptions>>();
+            var demoUserEmail = options.Value.DemoUserEmail;
+            var demoUserPassword = options.Value.DemoUserPassword;
 
-        await GenerateMockChatMessages(users, dbContext);
+            var users = await GenerateAndRegisterMockUsers(demoUserEmail, demoUserPassword);
+
+            var dbContext = provider.GetRequiredService<ApplicationDbContext>();
+            await GenerateMockChatMessages(users, dbContext);
+        }
     }
 }
