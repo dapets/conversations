@@ -70,22 +70,28 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 )
 .RequireAuthorization();
 
-app.MapGet("/chats/{id}", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, string id, ApplicationDbContext db) =>
+app.MapGet("/chats/{id}/history", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, string id, ApplicationDbContext db) =>
 {
     var loggedInUser = await utils.GetUser(claimsPrincipal);
-    var commonChatHistory = db.Chats
+    var commonChatHistory = await db.Chats
         .Where(c => c.Members.Any(m => m.Id == id))
         .Where(c => c.Members.Contains(loggedInUser))
         .Include(c => c.History)
         .ThenInclude(h => h.Author)
-        //We are creating a dto to avoid cyclic references when serializing
         .SelectMany(c => c.History)
+        .OrderBy(h => h.SentOn)
+        //We are creating a dto to avoid cyclic references when serializing
         .Select(h => new
         {
             h.Id,
             h.Message,
             h.SentOn,
-            h.Author
+            author = new
+            {
+                id = h.Author.Id,
+                h.Author.FirstName,
+                h.Author.LastName,
+            }
         })
         .ToListAsync();
 
