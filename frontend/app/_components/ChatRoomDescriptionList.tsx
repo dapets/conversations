@@ -7,42 +7,28 @@ import { useCallback, useEffect, useState } from "react";
 import { ChatRoomListEntity, UserEntity } from "utils/projectTypes";
 import { getActiveChatRoomId } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
-import {
-  useChatRooms,
-  useSetChatRooms,
-} from "@providers/AddedChatRoomsContext";
 
 export default function ChatRoomDescriptionList({
   loggedInUserId,
+  initialChatRooms,
 }: {
   loggedInUserId: string;
+  initialChatRooms: ChatRoomListEntity[];
 }) {
   const conn = useSignalR();
   const pathname = usePathname();
-  let chatRooms = useChatRooms();
-  if (!chatRooms) {
-    chatRooms = [];
-  }
-  const setChatRooms = useSetChatRooms();
+  const [chatRooms, setChatRooms] =
+    useState<ChatRoomListEntity[]>(initialChatRooms);
 
   const activeChatRoomId = getActiveChatRoomId(pathname);
   const activeRoom = chatRooms.find((r) => r.id === activeChatRoomId);
   if (activeRoom?.isUnread) {
     activeRoom.isUnread = false;
-    if (!setChatRooms) {
-      throw new Error("setChatRooms was null in ChatRoomDescriptionList");
-    }
     setChatRooms([...chatRooms]);
   }
 
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
-      if (!setChatRooms) {
-        throw new Error("setChatRooms was null in handleIncomingMessage");
-      }
-      if (!chatRooms) {
-        throw new Error("chatRooms was undefined in handleIncomingMessage");
-      }
       const roomIdx = chatRooms.findIndex((r) => r.id === chatRoomId);
       let roomMessageWasSentIn = chatRooms[roomIdx];
       if (!roomMessageWasSentIn) {

@@ -18,7 +18,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { addChatDialogQueryParam, scrollToId } from "utils/constants";
-import { ChatRoomListEntity, ProblemDetail } from "utils/projectTypes";
+import { ProblemDetail } from "utils/projectTypes";
 
 function AddChatDialogSubmitButton() {
   const status = useFormStatus();
@@ -44,18 +44,11 @@ export function AddChatDialog() {
     router.push(location + segment);
   }, [location, router]);
 
-  const setChatRooms = useSetChatRooms();
-
   const [formProblem, setFormProblem] = useState<ProblemDetail | null>(null);
 
   async function handleSubmit(formData: FormData) {
     const response = await addChatWithUser(formData);
     if (response.ok) {
-      const newChatRoom = response.result as ChatRoomListEntity;
-      if (!setChatRooms) {
-        throw new Error("setChatRooms was null in AddChatDialog");
-      }
-      setChatRooms((rooms) => [newChatRoom, ...rooms]);
       discardAndCloseDialog();
     } else {
       setFormProblem(response.result as ProblemDetail);

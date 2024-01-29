@@ -16,6 +16,7 @@ type HubMethodNames = {
     author: UserEntity,
     message: string,
   ) => void;
+  AddChatRoom: (chatRoomId: number, members: UserEntity[]) => void;
 };
 
 type ClientMethodNames = {

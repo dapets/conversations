@@ -66,7 +66,9 @@ export async function fetchWithAuth(
 export async function getChatRoomsList() {
   const result = await fetchWithAuth(process.env.BACKEND_URL + "/chats");
 
-  if (!result.ok) return undefined;
+  if (!result.ok) {
+    throw new Error(`Error fetching chat rooms ${result}`);
+  }
 
   const text = await result.text();
   return JSON.parse(text) as ChatRoomListEntity[];
