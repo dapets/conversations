@@ -1,15 +1,15 @@
 <Query Kind="Program">
   <Connection>
-    <ID>363b3232-5867-446d-874d-ca41c536f665</ID>
+    <ID>3f392c14-cc24-4e56-a467-a1d88be0f49a</ID>
     <NamingServiceVersion>2</NamingServiceVersion>
     <Persist>true</Persist>
     <Driver Assembly="(internal)" PublicKeyToken="no-strong-name">LINQPad.Drivers.EFCore.DynamicDriver</Driver>
-    <AttachFileName>C:\Users\dave\code\video\backend\dev.db</AttachFileName>
-    <DisplayName>videoDevDB</DisplayName>
+    <AttachFileName>\Users\dave\code\video\backend\prod.db</AttachFileName>
+    <AllowDateOnlyTimeOnly>true</AllowDateOnlyTimeOnly>
     <DriverData>
+      <EFProvider>Microsoft.EntityFrameworkCore.Sqlite</EFProvider>
       <EncryptSqlTraffic>True</EncryptSqlTraffic>
       <PreserveNumeric1>True</PreserveNumeric1>
-      <EFProvider>Microsoft.EntityFrameworkCore.Sqlite</EFProvider>
     </DriverData>
   </Connection>
   <NuGetReference>Bogus</NuGetReference>
@@ -39,6 +39,8 @@ async void Main()
 		var loginResponse = await httpClient.PostAsJsonAsync("/login", registerData);
 		var parsedLogin = await loginResponse.Content.ReadFromJsonAsync<LoginResponses>();
 		httpClient.DefaultRequestHeaders.Authorization = new("Bearer", parsedLogin.AccessToken);
+		var completeRegistrationRequest = new CompleteRegistrationRequest(newUserData.FirstName, newUserData.LastName);
+		await httpClient.PostAsJsonAsync("/complete-registration", completeRegistrationRequest);
 		var userResponse = await httpClient.GetFromJsonAsync<SmallUser>("/whoami");
 		
 		var user = AspNetUsers.First(u => u.Id == userResponse.Id);
@@ -89,10 +91,11 @@ async void Main()
 	"Done".Dump();
 
 }
-string Pw = "Password0$";
+string Pw = "123456";
 string BuildEmail(AspNetUsers user) => $"{user.FirstName}@{user.LastName}.com";
 
 record RegisterRequest(string Email, string Password);
+record CompleteRegistrationRequest(string FirstName, string LastName);
 record LoginResponses(string AccessToken);
 record SmallUser(string Id);
 // You can define other methods, fields, classes and namespaces here
