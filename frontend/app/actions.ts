@@ -10,6 +10,7 @@ import {
   ChatRoomCreatedDto,
   ChatRoomListEntity,
   ProblemDetail,
+  RegisterResponse,
 } from "utils/dbEntities";
 import { parse as parseCookie } from "cookie";
 
@@ -62,6 +63,46 @@ export async function login(
       },
     };
   }
+}
+
+export async function register(
+  _: unknown,
+  formData: FormData,
+): Promise<ApiResponse<ProblemDetail>> {
+  const registerRequest = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  const registerResponse = await fetchWithAuth(
+    process.env.BACKEND_URL + "/register",
+    {
+      method: "POST",
+      body: JSON.stringify(registerRequest),
+    },
+  );
+
+  if (registerResponse.ok) return { ok: true };
+
+  const body = (await registerResponse.json()) as RegisterResponse;
+  const flattenedErrors = Object.values(body.errors)[0][0];
+  if (!flattenedErrors) {
+    throw new Error(
+      "Register failed but error response was not in the expected format",
+    );
+  }
+
+  console.log(body.errors);
+  console.log(flattenedErrors);
+  return {
+    ok: false,
+    result: { status: body.status, detail: flattenedErrors },
+  };
+
+  // const loginResponse = login(formData);
+  // if(!(await loginResponse).ok)
+
+  // const finishRegistrationResponse = await fetchWithAuth();
 }
 
 export async function logout() {
