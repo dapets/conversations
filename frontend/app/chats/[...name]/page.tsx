@@ -9,9 +9,9 @@ export default async function ChatHistory({
 }: {
   params: { name: string[] };
 }) {
-  const id = +decodeURIComponent(params.name[0]);
+  const chatPartnerId = +decodeURIComponent(params.name[0]);
 
-  const chatHistory = await getChatHistoryWithId(id);
+  const chatHistory = await getChatHistoryWithId(chatPartnerId);
   const loggedInUserId = (await getLoggedInUser()).id;
 
   return (
