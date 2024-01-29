@@ -4,7 +4,5 @@ services:
       context: .
       args:
         - BACKEND_URL=http://backend:3001
-    ports:
-      - 3000:3000
     environment:
       - BACKEND_URL=http://backend:3001
