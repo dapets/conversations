@@ -49,7 +49,7 @@ export function ChatRoomDescription({
             className={
               "[grid-area:unread-notifier] self-center " +
               "h-3 w-3 " +
-              "rounded-full bg-blue-500"
+              "rounded-full bg-sky-500"
             }
           />
         )}
