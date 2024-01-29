@@ -1,16 +1,12 @@
-"use server";
-
 import {
   ChatRoomEntity,
   ChatRoomListEntity,
   UserEntity,
 } from "utils/dbEntities";
 import { cookies } from "next/headers";
-import { parse as parseCookie, serialize as serializeCookie } from "cookie";
+import { serialize as serializeCookie } from "cookie";
 import { redirect } from "next/navigation";
-
-const aspnetAuthCookieName = ".AspNetCore.Identity.Application";
-const cookieHeaderName = "Cookie";
+import { aspnetAuthCookieName, cookieHeaderName } from "utils/constants";
 
 /** Cookie flow
  *
@@ -27,7 +23,7 @@ const cookieHeaderName = "Cookie";
  *
  * On every subsequent request we 'forward' the browser (auth) cookies to nextjs' fetch.
  */
-async function fetchWithHandleAuth(
+export async function fetchWithAuth(
   requestInfo: RequestInfo,
   init?: RequestInit
 ) {
@@ -54,47 +50,11 @@ async function fetchWithHandleAuth(
     redirect("/login");
   }
 
-  const serverCookies = response.headers.getSetCookie();
-  for (const serverCookie of serverCookies) {
-    const parsedCookie = parseCookie(serverCookie);
-    if (!parsedCookie[aspnetAuthCookieName]) continue;
-
-    cookies().set({
-      name: aspnetAuthCookieName,
-      value: parsedCookie[aspnetAuthCookieName],
-      expires: new Date(parsedCookie.expires),
-      path: parsedCookie.path,
-      sameSite: "none",
-      secure: true,
-    });
-  }
   return response;
 }
 
-export async function login(loginRequest: FormData) {
-  const loginData = {
-    email: loginRequest.get("email"),
-    password: loginRequest.get("password"),
-  };
-
-  const response = await fetchWithHandleAuth(
-    process.env.BACKEND_URL +
-      "/login?" +
-      new URLSearchParams({ useCookies: "true" }),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData),
-    }
-  );
-
-  return response.ok;
-}
-
 export async function getChatRoomsList() {
-  const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/chats");
+  const result = await fetchWithAuth(process.env.BACKEND_URL + "/chats");
 
   if (!result.ok) return undefined;
 
@@ -103,7 +63,7 @@ export async function getChatRoomsList() {
 }
 
 export async function getChatHistoryWithId(chatRoomId: number) {
-  const response = await fetchWithHandleAuth(
+  const response = await fetchWithAuth(
     `${process.env.BACKEND_URL}/chats/${chatRoomId}`
   );
 
@@ -115,7 +75,7 @@ export async function getChatHistoryWithId(chatRoomId: number) {
 }
 
 export async function getLoggedInUser() {
-  const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/whoami");
+  const result = await fetchWithAuth(process.env.BACKEND_URL + "/whoami");
   if (!result.ok) return null;
 
   return (await result.json()) as UserEntity;

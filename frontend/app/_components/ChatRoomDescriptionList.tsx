@@ -1,15 +1,23 @@
 "use client";
 
-import { ChatRoomDescription } from "@components/ChatRoomDescription";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
 import { usePathname } from "next/navigation";
 import { useCallback, useContext, useEffect } from "react";
-import { ChatRoomListEntity, UserEntity } from "utils/dbEntities";
+import {
+  ChatRoomEntity,
+  ChatRoomListEntity,
+  UserEntity,
+} from "utils/dbEntities";
 
 export default function ChatRoomDescriptionList({
   chatRooms,
+  renderChatRoomDescription,
 }: {
   chatRooms: ChatRoomListEntity[];
+  renderChatRoomDescription: (
+    chatRoom: ChatRoomEntity,
+    isActive: boolean
+  ) => React.ReactNode;
 }) {
   const conn = useContext(SignalRConnectionContext);
   const pathname = usePathname();
@@ -18,8 +26,8 @@ export default function ChatRoomDescriptionList({
   const activeChatRoomId = +segments[2];
 
   const handleIncomingMessage = useCallback(
-    (author: UserEntity, message: unknown) => {
-      console.log(author, message);
+    (chatRoomId: number, author: UserEntity, message: unknown) => {
+      console.log(chatRoomId, author, message);
     },
     []
   );
@@ -32,12 +40,12 @@ export default function ChatRoomDescriptionList({
 
   return (
     <ul className="space-y-1">
-      {chatRooms.map((chatRoom, i) => (
-        <li key={i}>
-          <ChatRoomDescription
-            chatRoom={chatRoom}
-            isActive={chatRoom.id === activeChatRoomId}
-          />
+      {chatRooms.map((chatRoom) => (
+        <li key={chatRoom.id}>
+          {renderChatRoomDescription(
+            chatRoom,
+            chatRoom.id === activeChatRoomId
+          )}
         </li>
       ))}
     </ul>

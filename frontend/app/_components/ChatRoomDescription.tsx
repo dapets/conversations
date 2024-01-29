@@ -1,20 +1,19 @@
-import { getLoggedInUser } from "app/actions";
 import Link from "next/link";
 import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
 
-export async function ChatRoomDescription({
+export function ChatRoomDescription({
   chatRoom,
+  loggedInUserId,
   isActive,
 }: {
   chatRoom: ChatRoomListEntity;
+  loggedInUserId: string;
   isActive: boolean;
 }) {
   //currently assuming we only have chat rooms with two (logged in + additional) member
-  const loggedInUser = await getLoggedInUser();
-
   const otherChatUser = chatRoom.members.filter(
-    (member) => member.id !== loggedInUser?.id ?? Number.NaN
+    (member) => member.id !== loggedInUserId ?? Number.NaN
   )[0];
   const encodedHref =
     "/chats/" +

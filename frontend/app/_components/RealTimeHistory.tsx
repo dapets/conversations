@@ -7,18 +7,17 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
-import { Message } from "./Message";
 import { ChatRoomEntity, HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
 
-export async function RealtimeHistory({
+export function RealtimeHistory({
   activeChatRoom,
-  loggedInUserId,
   scrollToId,
+  renderMessage,
 }: {
   activeChatRoom: ChatRoomEntity;
-  loggedInUserId: string;
   scrollToId?: string;
+  renderMessage: (newMessage: HistoryEntity) => React.ReactNode;
 }) {
   const connection = useContext(SignalRConnectionContext);
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
@@ -59,9 +58,9 @@ export async function RealtimeHistory({
 
   return (
     <>
-      {realtimeHistory.map((h) => (
-        <Message history={h} key={h.id} loggedInUserId={loggedInUserId} />
-      ))}
+      {realtimeHistory.map((h) => {
+        renderMessage(h);
+      })}
     </>
   );
 }

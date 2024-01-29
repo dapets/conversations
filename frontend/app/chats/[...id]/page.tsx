@@ -1,7 +1,7 @@
-import { RealtimeHistory } from "@components/RealTimeHistory";
 import { Message } from "@components/Message";
-import { getChatHistoryWithId, getLoggedInUser } from "app/actions";
 import { scrollToId } from "utils/constants";
+import { getChatHistoryWithId, getLoggedInUser } from "app/dataFetchers";
+import { RealTimeHistoryWithServerSideProps } from "./RealTimeHistoryWithServerSideProps";
 
 export default async function ChatHistory({
   params,
@@ -29,8 +29,12 @@ export default async function ChatHistory({
               <Message key={h.id} history={h} loggedInUserId={loggedInUserId} />
             ))
           )}
-          <RealtimeHistory activeChatRoom={chatRoom} scrollToId={scrollToId} />
         </li>
+        <RealTimeHistoryWithServerSideProps
+          activeChatRoom={chatRoom}
+          loggedInUserId={loggedInUserId}
+          scrollToId={scrollToId}
+        />
       </ul>
       {/* we're using this element to scroll to the latest chat message */}
       <span className="w-0 h-0" id={scrollToId} />
