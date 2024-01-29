@@ -18,26 +18,26 @@ export function Message({
   return (
     <section
       className={cn(
-        "flex items-center gap-4 space-y-2 p-2 w-fit max-w-[70%] rounded-lg",
+        "grid grid-areas-message items-center gap-y-1 gap-x-2 p-2 w-fit max-w-[70%] rounded-lg",
         {
-          "ml-auto justify-end": isAuthor,
+          "ml-auto justify-items-end": isAuthor,
         }
       )}
     >
-      <Avatar className="w-12 h-12">
+      <Avatar
+        className={cn("grid-in-avatar", { "grid-in-avatar-author": isAuthor })}
+      >
         <AvatarFallback>{getUserInitials(author)}</AvatarFallback>
       </Avatar>
-      <div className="flex flex-col gap-2">
-        <div className="text-sm font-semibold">
-          {getUserDisplayName(author)}
-        </div>
-        <p className="leading-7 py-1 px-2 w-fit rounded-md [overflow-wrap:anywhere] bg-accent">
-          {message}
-        </p>
-        <div className="text-xs text-gray-500">
-          {getRelativeLocalTimeStrFromUtcDate(sentOn)}
-        </div>
-      </div>
+      <p className="grid-in-author text-sm font-semibold">
+        {getUserDisplayName(author)}
+      </p>
+      <p className="grid-in-message leading-7 px-2 w-fit rounded-md [overflow-wrap:anywhere] bg-accent">
+        {message}
+      </p>
+      <time className="grid-in-last-message-date text-xs text-gray-500">
+        {getRelativeLocalTimeStrFromUtcDate(sentOn)}
+      </time>
     </section>
   );
 }

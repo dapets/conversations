@@ -84,6 +84,11 @@ module.exports = {
         "avatar logged-in-user-name log-out",
         "avatar logged-in-status log-out",
       ],
+      message: [
+        ". author .",
+        "avatar message avatar-author",
+        ". last-message-date .",
+      ],
     },
     gridTemplateColumns: {
       "chat-room-description": "1.25rem auto auto 1fr auto",
