@@ -239,13 +239,11 @@ app.MapGet("/chats/{chatId}", async Task<Results<NotFound, UnauthorizedHttpResul
         .Include(chats => chats.History)
         .ThenInclude(history => history.Author)
         .ThenInclude(history => history.Chats)
-        .Include(chats => chats.Members)
-        //Chat.GetDto() includes lastMessage, but we need the full history here
         .Select(chat => new
         {
             id = chat.Id,
-            members = chat.Members.Select(m => m.GetDto()),
-            history = chat.History.Select(h => h.GetDto())
+            members = chat.Members,
+            history = chat.History
         })
         .FirstOrDefaultAsync(c => c.id == chatId);
 
@@ -254,7 +252,10 @@ app.MapGet("/chats/{chatId}", async Task<Results<NotFound, UnauthorizedHttpResul
         return TypedResults.NotFound();
     }
 
-    return TypedResults.Ok(new ChatRoomWithHistoryDto(chat.id, chat.members, chat.history));
+    var membersDtos = chat.members.Select(member => member.GetDto());
+    var historyDtos = chat.history.Select(history => history.GetDto());
+
+    return TypedResults.Ok(new ChatRoomWithHistoryDto(chat.id, membersDtos, historyDtos));
 })
 .RequireAuthorization("HasFinishedRegistrationAndLastName");
 
