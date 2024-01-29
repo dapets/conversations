@@ -56,11 +56,17 @@ export default function LoginPage() {
   return (
     <div className="grid place-content-center h-[100svh]">
       <LoginForm
-        login={async (formData) => {
+        login={async (_, formData) => {
           "use server";
-          const loginSuccess = await login(formData);
-          if (loginSuccess) {
-            redirect(`/chats?${hasLoginChangedQueryParam}=true`);
+          const result = await login(formData);
+
+          if (result) {
+            redirect("/chats");
+          } else {
+            return {
+              success: false,
+              message: "Email or password incorrect.",
+            };
           }
         }}
       />
