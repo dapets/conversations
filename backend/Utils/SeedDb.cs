@@ -112,7 +112,7 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
         return addUsersTasks.Select(task => task.Result);
     }
 
-    private async Task GenerateMockChat(string userId, ApplicationUser mainUser, ApplicationDbContext dbContext)
+    private static async Task GenerateMockChat(string userId, ApplicationUser mainUser, ApplicationDbContext dbContext)
     {
         var rnd = new Random();
         var faker = new Faker();
@@ -128,6 +128,8 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
 
         await dbContext.Chats.AddAsync(newChat);
         await dbContext.SaveChangesAsync();
+
+        var conversationStart = DateTime.UtcNow.AddHours(-rnd.Next(5, 15));
         for (int i = 0; i < 15; i++)
         {
 
@@ -135,7 +137,7 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
             {
                 Author = rnd.NextSingle() > 0.5 ? user : mainUser,
                 Chats = newChat,
-                SentOn = DateTime.UtcNow.AddHours(-rnd.Next(0, 15)),
+                SentOn = conversationStart.AddMinutes(10 * i),
                 Message = faker.Lorem.Sentences(rnd.Next(1, 3))
             });
         }
