@@ -70,15 +70,18 @@ var app = builder.Build();
 
 
 var scope = app.Services.CreateScope();
+var shouldSeedDb = false;
 using (scope)
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.EnsureCreated();
+    shouldSeedDb = dbContext.Database.EnsureCreated();
 }
 
-var seedDb = app.Services.GetRequiredService<SeedDb>();
-app.Lifetime.ApplicationStarted.Register(async () =>
-    await seedDb.SeedWithDemoData());
+if(shouldSeedDb) {
+    var seedDb = app.Services.GetRequiredService<SeedDb>();
+    app.Lifetime.ApplicationStarted.Register(async () =>
+        await seedDb.SeedWithDemoData());
+}
 
 app.UseCors();
 app.MapIdentityApi<ApplicationUser>();
