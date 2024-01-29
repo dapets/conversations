@@ -1,20 +1,12 @@
-export const sampleUsers = [
-  {
-    name: "Benni",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Heinz",
-  },
-  {
-    name: "Fritz",
-  },
-  {
-    name: "Peter",
-  },
-];
+import { faker } from "@faker-js/faker";
+
+const sampleUsers: { username: string }[] = [];
+
+for (let index = 0; index < 20; index++) {
+  sampleUsers.push({ username: faker.person.fullName() });
+}
+
+export { sampleUsers };
 
 export const sampleChatHistory = {
   from: "Benni",
