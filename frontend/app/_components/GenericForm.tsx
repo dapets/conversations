@@ -14,14 +14,14 @@ import { Input } from "@shadcn/input";
 import { useFormState, useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { ApiResponse } from "utils/dbEntities";
+import { ApiResponse, ProblemDetail } from "utils/dbEntities";
 
 type SubmitButtonProps = {
   idleText: string;
   pendingText: string;
 };
 
-function SubmitLogin({ buttonText }: { buttonText: SubmitButtonProps }) {
+function SubmitForm({ buttonText }: { buttonText: SubmitButtonProps }) {
   const status = useFormStatus();
 
   if (!status.pending) {
@@ -40,11 +40,41 @@ function SubmitLogin({ buttonText }: { buttonText: SubmitButtonProps }) {
   }
 }
 
-export default function EnterEmailPasswordForm<State>({
+export function EmailPasswordFormFields() {
+  return (
+    <>
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          required
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="name@example.com"
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          autoComplete="password"
+          name="password"
+          type="password"
+          placeholder="password"
+          required
+        />
+      </div>
+    </>
+  );
+}
+
+export default function GenericForm<State>({
   submitAction,
   title,
   description,
   buttonText,
+  formFields,
   showSignupHint,
 }: {
   submitAction(
@@ -54,9 +84,10 @@ export default function EnterEmailPasswordForm<State>({
   title: string;
   description: string;
   buttonText: SubmitButtonProps;
+  formFields: React.ReactNode;
   showSignupHint?: boolean;
 }) {
-  const [loginState, loginAction] = useFormState(submitAction, { ok: true });
+  const [actiontate, loginAction] = useFormState(submitAction, { ok: true });
 
   return (
     <form action={loginAction}>
@@ -66,36 +97,17 @@ export default function EnterEmailPasswordForm<State>({
           <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 p-6 pt-0">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              required
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="name@example.com"
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              autoComplete="password"
-              name="password"
-              type="password"
-              required
-            />
-          </div>
-          {!loginState.ok && (
+          {formFields}
+          {!actiontate.ok && (
             <p className="leading-7 text-destructive">
-              {loginState.message ?? "Login failed"}
+              {(actiontate.result as ProblemDetail | undefined)?.details ??
+                "Submission failed"}
             </p>
           )}
         </CardContent>
         <CardFooter>
           <div className="w-full">
-            <SubmitLogin buttonText={buttonText} />
+            <SubmitForm buttonText={buttonText} />
             {showSignupHint && (
               <p className="mt-4 text-center text-sm text-muted-foreground">
                 <Link
