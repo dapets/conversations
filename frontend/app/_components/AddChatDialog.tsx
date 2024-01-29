@@ -20,15 +20,11 @@ import { useFormStatus } from "react-dom";
 import { addChatDialogQueryParam, scrollToId } from "utils/constants";
 import { ChatRoomListEntity, ProblemDetail } from "utils/dbEntities";
 
-function AddChatDialogSubmitButton({ disabled }: { disabled?: boolean }) {
+function AddChatDialogSubmitButton() {
   const status = useFormStatus();
 
   if (!status.pending) {
-    return (
-      <Button disabled={disabled} type="submit">
-        Add user
-      </Button>
-    );
+    return <Button type="submit">Add user</Button>;
   } else {
     return (
       <Button disabled type="button">
@@ -50,7 +46,6 @@ export function AddChatDialog() {
 
   const setChatRooms = useSetChatRooms();
 
-  const [isFormValid, setIsFormValid] = useState(false);
   const [formProblem, setFormProblem] = useState<ProblemDetail | null>(null);
 
   async function handleSubmit(formData: FormData) {
@@ -81,11 +76,7 @@ export function AddChatDialog() {
   return (
     <Dialog open={isMounted && isOpen} onOpenChange={discardAndCloseDialog}>
       <DialogContent className="max-w-md p-6">
-        <form
-          action={handleSubmit}
-          onChange={(e) => setIsFormValid(e.currentTarget.checkValidity())}
-          className="grid gap-4"
-        >
+        <form action={handleSubmit} className="grid gap-4">
           <CardHeader className="space-y-1 p-0">
             <CardTitle className="leading-8">
               Add a chat with a new user
@@ -120,7 +111,7 @@ export function AddChatDialog() {
             >
               Discard
             </Button>
-            <AddChatDialogSubmitButton disabled={!isFormValid} />
+            <AddChatDialogSubmitButton />
           </CardFooter>
         </form>
       </DialogContent>

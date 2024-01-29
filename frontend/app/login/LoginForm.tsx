@@ -12,25 +12,17 @@ import {
 import { Label } from "@shadcn/label";
 import { Input } from "@shadcn/input";
 import { useFormState, useFormStatus } from "react-dom";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
-function SubmitLogin({
-  isSubmitButtonDisabled,
-}: {
-  isSubmitButtonDisabled: boolean;
-}) {
+function SubmitLogin() {
   const status = useFormStatus();
 
   if (!status.pending) {
     return (
-      <Button
-        disabled={isSubmitButtonDisabled}
-        className="disabled flex w-full items-center"
-        type="submit"
-      >
-        <LogIn className="mr-2 h-4 w-4" />
-        <p>Login</p>
+      <Button className="w-full" type="submit">
+        Login
       </Button>
     );
   } else {
@@ -57,13 +49,9 @@ export default function LoginForm({
   ) => Promise<LoginFormResult>;
 }) {
   const [loginState, loginAction] = useFormState(login, { success: true });
-  const [isFormValid, setIsFormValid] = useState(false);
 
   return (
-    <form
-      action={loginAction}
-      onInput={(e) => setIsFormValid(!e.currentTarget.checkValidity())}
-    >
+    <form action={loginAction}>
       <Card className="rounded-xl bg-card text-card-foreground shadow-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="leading-8">Log in</CardTitle>
@@ -79,12 +67,19 @@ export default function LoginForm({
               id="email"
               name="email"
               type="email"
-              placeholder="user@example.com"
+              autoComplete="email"
+              placeholder="name@example.com"
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              autoComplete="password"
+              name="password"
+              type="password"
+              required
+            />
           </div>
           {!loginState.success && (
             <p className="leading-7 text-destructive">
@@ -93,7 +88,17 @@ export default function LoginForm({
           )}
         </CardContent>
         <CardFooter>
-          <SubmitLogin isSubmitButtonDisabled={isFormValid} />
+          <div className="w-full">
+            <SubmitLogin />
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+              <Link
+                href="/register"
+                className="hover:text-brand underline underline-offset-4"
+              >
+                Don&apos;t have an account? Sign Up
+              </Link>
+            </p>
+          </div>
         </CardFooter>
       </Card>
     </form>
