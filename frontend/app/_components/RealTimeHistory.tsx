@@ -56,11 +56,5 @@ export function RealtimeHistory({
     scrollToElement.scrollIntoView();
   }, [scrollToId, realtimeHistory]);
 
-  return (
-    <>
-      {realtimeHistory.map((h) => {
-        renderMessage(h);
-      })}
-    </>
-  );
+  return <>{realtimeHistory.map((h) => renderMessage(h))}</>;
 }
