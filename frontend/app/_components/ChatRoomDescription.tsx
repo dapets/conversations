@@ -31,7 +31,7 @@ export function ChatRoomDescription({
         className="p-2 data-[isactive=true]:bg-primary data-[isactive=true]:text-primary-foreground hover:bg-primary hover:text-primary-foreground rounded-lg"
       >
         <h2 className="text-sm font-bold truncate">{`${otherChatUser.firstName} ${otherChatUser.lastName}`}</h2>
-        <p className="text-sm truncate font-light">
+        <p className="text-sm truncate font-normal">
           {chatRoom.lastMessage?.message ?? "No messages yet."}
         </p>
       </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
-import { usePathname, useRouter } from "next/navigation";
+import { revalidateChatHistory } from "app/actions";
+import { usePathname } from "next/navigation";
 import { useCallback, useContext, useEffect, useState } from "react";
 import {
   ChatRoomEntity,
@@ -31,15 +32,21 @@ export default function ChatRoomDescriptionList({
     (chatRoomId: number, author: UserEntity, message: string) => {
       let room = chatRooms.find((r) => r.id === chatRoomId);
       if (!room) return;
-      (room.lastMessage = {
+      room.lastMessage = {
         author,
         message,
         sentOn: new Date(),
         id: Math.random(),
-      }),
-        setChatRooms([...chatRooms]);
+      };
+
+      setChatRooms([...chatRooms]);
+
+      //already updating our current chat in RealTimeHistory
+      if (activeChatRoomId !== chatRoomId) {
+        revalidateChatHistory(chatRoomId);
+      }
     },
-    [chatRooms, setChatRooms]
+    [chatRooms, setChatRooms, activeChatRoomId]
   );
 
   useEffect(() => {
