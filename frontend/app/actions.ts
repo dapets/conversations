@@ -14,9 +14,9 @@ const cookieHeaderName = "Cookie";
  *
  *2. cookies() is emtpy, request.headers['Cookie'] is empty
  *
- *3. Request resolves, response.headers.getSetCookie() contains auth information
+ *3. If login information was valid request resolves and a response.headers['set-cookie] contains auth information
  *
- *4. Set browser cookies via cookies().set() to response.getSetCookie()
+ *4. Set browser cookies via cookies().set() to response.headers['set-cookie'][AspNetAuthCookieName]
  *
  * The browser now has the (auth) cookies the backend api returned.
  *
