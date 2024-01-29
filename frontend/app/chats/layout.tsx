@@ -1,6 +1,6 @@
 import ChatDescriptionList from "@components/ChatDescriptionList";
 import React from "react";
-import { User } from "types/dbEntities";
+import { User } from "utils/types/dbEntities";
 
 async function getChatList() {
   const result = await fetch(process.env.BACKEND_URL + "/chats", {

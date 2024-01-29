@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User } from "types/dbEntities";
+import { User } from "utils/types/dbEntities";
 
 export function ChatDescription({
   user,

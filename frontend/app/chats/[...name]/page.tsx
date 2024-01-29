@@ -1,5 +1,5 @@
 import { ChatMessage } from "app/_components/ChatMessage";
-import { History } from "types/dbEntities";
+import { History } from "utils/types/dbEntities";
 
 async function getChatHistoryWithId(userId: number) {
   const result = await fetch(process.env.BACKEND_URL + "/chats/" + userId);

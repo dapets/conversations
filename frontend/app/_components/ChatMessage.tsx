@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import AdvancedFormat from "dayjs/plugin/relativeTime";
-import { History, User } from "types/dbEntities";
+import { History, User } from "utils/types/dbEntities";
 
 dayjs.extend(AdvancedFormat);
 
