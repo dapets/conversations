@@ -6,7 +6,7 @@ import {
   HubConnectionState,
 } from "@microsoft/signalr";
 import { useSearchParams } from "next/navigation";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { hasLoginChangedQueryParam } from "utils/constants";
 import { UserEntity } from "utils/dbEntities";
 
@@ -97,4 +97,11 @@ export default function SignalRProvider({
       {children}
     </SignalRConnectionContext.Provider>
   );
+}
+
+export function useSignalR() {
+  const signalRConnectionContext = useContext(SignalRConnectionContext);
+  //we can't throw an error here to guarantee non-null because the context isn't instantly available due to server-rendering.
+
+  return signalRConnectionContext;
 }

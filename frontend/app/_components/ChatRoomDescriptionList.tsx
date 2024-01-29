@@ -1,9 +1,9 @@
 "use client";
 
-import { SignalRConnectionContext } from "@providers/SignalRProvider";
+import { useSignalR } from "@providers/SignalRProvider";
 import { revalidateChatHistory } from "app/actions";
 import { usePathname } from "next/navigation";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ChatRoomListEntity, UserEntity } from "utils/dbEntities";
 import { getActiveChatRoomId } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
@@ -15,7 +15,7 @@ export default function ChatRoomDescriptionList({
   initalChatRooms: ChatRoomListEntity[];
   loggedInUserId: string;
 }) {
-  const conn = useContext(SignalRConnectionContext);
+  const conn = useSignalR();
   const pathname = usePathname();
   const [chatRooms, setChatRooms] = useState(initalChatRooms);
 

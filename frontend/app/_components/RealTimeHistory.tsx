@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { HistoryEntity, UserEntity } from "utils/dbEntities";
-import { SignalRConnectionContext } from "@providers/SignalRProvider";
+import { useSignalR } from "@providers/SignalRProvider";
 import { messageScrollContainerId } from "utils/constants";
 
 const intentionalUserScrollHeight = 1000;
@@ -24,7 +18,7 @@ export function RealtimeHistory({
   scrollToId?: string;
   renderMessage: (newMessage: HistoryEntity) => React.ReactNode;
 }) {
-  const connection = useContext(SignalRConnectionContext);
+  const connection = useSignalR();
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
   const [doesRoomHaveMessages, setDoesRoomHaveMessages] = useState(
     doesRoomHaveMessagesInitial,
