@@ -71,7 +71,7 @@ export function RealtimeHistory({
       }
     } else {
       console.error(
-        "Couldn't find scroll container. with id",
+        "Couldn't find scroll container with id",
         messageScrollContainerId,
       );
     }

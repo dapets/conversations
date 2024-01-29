@@ -11,11 +11,9 @@ export default async function ChatHistory({
   if (!params?.id) throw new Error("params or id undefined");
   const chatRoomId = +decodeURIComponent(params.id[0]);
 
-  const chatRoomData = getChatHistoryById(chatRoomId);
-  const loggedInUserIdData = getLoggedInUser();
   const [loggedInUser, chatRoom] = await Promise.all([
-    loggedInUserIdData,
-    chatRoomData,
+    getLoggedInUser(),
+    getChatHistoryById(chatRoomId),
   ]);
 
   const chatHistory = chatRoom.history;

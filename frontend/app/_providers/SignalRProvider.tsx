@@ -95,7 +95,7 @@ export default function SignalRProvider({
       .configureLogging(
         process.env.NEXT_PUBLIC_ENV === "production"
           ? LogLevel.Warning
-          : LogLevel.Debug,
+          : LogLevel.Information,
       )
       .build();
     localConn
