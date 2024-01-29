@@ -75,23 +75,23 @@ app.MapGet("/chats/{id}/history", async (ClaimsPrincipal claimsPrincipal, Identi
 {
     var loggedInUser = await utils.GetUser(claimsPrincipal);
     var commonChatHistory = await db.Chats
-        .Where(c => c.Members.Any(m => m.Id == id))
-        .Where(c => c.Members.Contains(loggedInUser))
-        .Include(c => c.History)
-        .ThenInclude(h => h.Author)
-        .SelectMany(c => c.History)
-        .OrderBy(h => h.SentOn)
+        .Where(chats => chats.Members.Any(m => m.Id == id))
+        .Where(chats => chats.Members.Contains(loggedInUser))
+        .Include(chats => chats.History)
+        .ThenInclude(history => history.Author)
+        .SelectMany(chats => chats.History)
+        .OrderBy(history => history.SentOn)
         //We are creating a dto to avoid cyclic references when serializing
-        .Select(h => new
+        .Select(history => new
         {
-            h.Id,
-            h.Message,
-            h.SentOn,
+            history.Id,
+            history.Message,
+            history.SentOn,
             author = new
             {
-                id = h.Author.Id,
-                h.Author.FirstName,
-                h.Author.LastName,
+                id = history.Author.Id,
+                history.Author.FirstName,
+                history.Author.LastName,
             }
         })
         .ToListAsync();
