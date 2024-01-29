@@ -7,9 +7,9 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-col justify-between p-4 w-full space-y-4">
-      {children}
+    <>
+      <div className="overflow-y-auto pr-10">{children}</div>
       <MessageInput />
-    </main>
+    </>
   );
 }

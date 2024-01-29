@@ -18,9 +18,9 @@ export default async function ClientLayout({
       <nav className="basis-1/3 max-w-sm shrink-0 overflow-y-auto md:block hidden">
         {chatList}
       </nav>
-      <section className="flex-grow overflow-y-auto p-4 pl-0 pr-0">
+      <main className="h-full flex flex-col justify-between p-4 w-full space-y-4">
         {children}
-      </section>
+      </main>
     </div>
   );
 }
