@@ -8,4 +8,4 @@ public record ChatRoomWithHistoryDto(int Id, IEnumerable<ApplicationUserDto> Mem
 
 public record AddChatWithUserDto(string Email);
 
-public record ChatRoomCreatedDto(int ChatRoomId, IEnumerable<ApplicationUserDto> Members);
+public record ChatRoomCreatedDto(int Id, IEnumerable<ApplicationUserDto> Members);
