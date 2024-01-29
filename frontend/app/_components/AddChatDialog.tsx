@@ -59,18 +59,16 @@ export function AddChatDialog() {
               Click &apos;Add User&apos; when you&apos;re done.
             </CardDescription>
           </CardHeader>
-          <CardContent className="mt-2 grid gap-6 p-0">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                autoFocus={false}
-                required
-                id="email"
-                name="email"
-                type="email"
-                placeholder="user@example.com"
-              />
-            </div>
+          <CardContent className="mt-2 grid gap-2 p-0">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              autoFocus={false}
+              required
+              id="email"
+              name="email"
+              type="email"
+              placeholder="user@example.com"
+            />
           </CardContent>
           <CardFooter className="mt-2 justify-between p-0">
             <Button
