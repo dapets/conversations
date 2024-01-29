@@ -48,5 +48,5 @@ export type ProblemDetail = {
 
 export type ApiResponse<T> = {
   ok: boolean;
-  result?: T;
+  result?: ProblemDetail | T;
 };

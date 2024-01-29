@@ -21,7 +21,7 @@ export async function revalidateChatHistory(historyId: number) {
 
 export async function login(
   loginRequest: FormData,
-): Promise<ApiResponse<ProblemDetail>> {
+): Promise<ApiResponse<undefined>> {
   "use server";
   const loginData = {
     email: loginRequest.get("email"),
@@ -54,13 +54,14 @@ export async function login(
   }
 
   if (response.ok) {
-    redirect("/chats");
+    return { ok: true };
   } else {
     const responseBody = (await response.json()) as LoginResponse;
     const descriptiveDetail =
       responseBody.detail === "Failed"
         ? "Email or password incorrect"
         : "Too many attempts. Please try again later.";
+
     return {
       ok: false,
       result: {
@@ -72,9 +73,20 @@ export async function login(
 }
 
 export async function register(
-  _: unknown,
   formData: FormData,
-): Promise<ApiResponse<ProblemDetail>> {
+): Promise<ApiResponse<undefined>> {
+  const completeRegistrationDto = {
+    firstName: formData.get("first-name")?.toString(),
+    lastName: formData.get("last-name")?.toString(),
+  };
+
+  if (!completeRegistrationDto.firstName || !completeRegistrationDto.lastName) {
+    return {
+      ok: false,
+      result: { status: 400, detail: "Must enter a first and last name" },
+    };
+  }
+
   const registerRequest = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -88,27 +100,57 @@ export async function register(
     },
   );
 
-  if (registerResponse.ok) return { ok: true };
+  if (!registerResponse.ok) {
+    const body = (await registerResponse.json()) as RegisterResponse;
+    const flattenedErrors = Object.values(body.errors)[0][0];
+    if (!flattenedErrors) {
+      throw new Error(
+        "Register failed but error response was not in the expected format",
+      );
+    }
 
-  const body = (await registerResponse.json()) as RegisterResponse;
-  const flattenedErrors = Object.values(body.errors)[0][0];
-  if (!flattenedErrors) {
-    throw new Error(
-      "Register failed but error response was not in the expected format",
-    );
+    return {
+      ok: false,
+      result: { status: body.status, detail: flattenedErrors },
+    };
   }
 
-  console.log(body.errors);
-  console.log(flattenedErrors);
+  const loginResponse = login(formData);
+  if (!(await loginResponse).ok) {
+    return loginResponse;
+  }
+
+  const completeRegistrationResponse = completeRegistration(
+    completeRegistrationDto,
+  );
+
+  return completeRegistrationResponse;
+}
+
+export async function completeRegistration(completeRegistrationDto: {
+  firstName: string;
+  lastName: string;
+}): Promise<ApiResponse<undefined>> {
+  const completeRegistrationResponse = await fetchWithAuth(
+    process.env.BACKEND_URL + "/complete-registration",
+    {
+      method: "POST",
+      body: JSON.stringify(completeRegistrationDto),
+    },
+  );
+
+  if (completeRegistrationResponse.ok) {
+    return { ok: true };
+  }
+
+  const error = (await completeRegistrationResponse.json()) as ProblemDetail;
   return {
     ok: false,
-    result: { status: body.status, detail: flattenedErrors },
+    result: {
+      status: error.status,
+      detail: error.detail,
+    },
   };
-
-  // const loginResponse = login(formData);
-  // if(!(await loginResponse).ok)
-
-  // const finishRegistrationResponse = await fetchWithAuth();
 }
 
 export async function logout() {
