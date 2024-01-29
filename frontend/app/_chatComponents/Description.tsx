@@ -1,3 +1,4 @@
+import { scrollToId } from "app/chats/[...name]/page";
 import Link from "next/link";
 import { UserEntity } from "utils/types/dbEntities";
 
@@ -15,7 +16,8 @@ export function Description({
     user.id +
     "/" +
     encodeURIComponent(`${user.firstName} ${user.lastName}`) +
-    "#latest";
+    "#" +
+    scrollToId;
 
   return (
     <Link href={encodedHref}>

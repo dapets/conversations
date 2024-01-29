@@ -1,15 +1,15 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { Message } from "./Message";
 import { HistoryEntity } from "utils/types/dbEntities";
 import { SignalRConnectionContext } from "./SignalRProvider";
 
 export function RealtimeHistory({
   loggedInUserId,
-  onNewChatMessageRendered: onNewMessage,
+  scrollToId,
 }: {
   loggedInUserId: number;
-  onNewChatMessageRendered?: () => {};
+  scrollToId?: string;
 }) {
   const connection = useContext(SignalRConnectionContext);
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
@@ -37,6 +37,16 @@ export function RealtimeHistory({
       connection?.off("ReceiveMessage", receiveMessageHandler);
     };
   }, [connection, setRealtimeHistory]);
+
+  //using useEffect leads to visual glitches when a lot of messages arrive
+  useLayoutEffect(() => {
+    const scrollToElement = document.querySelector("#" + scrollToId);
+    if (!scrollToElement) {
+      console.info("New chat message but no element to scroll to.");
+      return;
+    }
+    scrollToElement.scrollIntoView();
+  }, [scrollToId, realtimeHistory]);
 
   return (
     <>
