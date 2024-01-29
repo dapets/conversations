@@ -6,13 +6,63 @@ import { redirect } from "next/navigation";
 import { aspnetAuthCookieName } from "utils/constants";
 import { fetchWithAuth } from "./dataFetchers";
 import {
+  ApiResponse,
   ChatRoomCreatedDto,
   ChatRoomListEntity,
   ProblemDetail,
 } from "utils/dbEntities";
+import { parse as parseCookie } from "cookie";
 
 export async function revalidateChatHistory(historyId: number) {
   revalidatePath("chats/" + historyId, "page");
+}
+
+export async function login(
+  _: unknown,
+  loginRequest: FormData,
+): Promise<ApiResponse<undefined>> {
+  "use server";
+  const loginData = {
+    email: loginRequest.get("email"),
+    password: loginRequest.get("password"),
+  };
+
+  const response = await fetchWithAuth(
+    process.env.BACKEND_URL +
+      "/login?" +
+      new URLSearchParams({ useCookies: "true" }),
+    {
+      method: "POST",
+      body: JSON.stringify(loginData),
+    },
+  );
+
+  const serverCookies = response.headers.getSetCookie();
+  for (const serverCookie of serverCookies) {
+    const parsedCookie = parseCookie(serverCookie);
+    if (!parsedCookie[aspnetAuthCookieName]) continue;
+
+    cookies().set({
+      name: aspnetAuthCookieName,
+      value: parsedCookie[aspnetAuthCookieName],
+      expires: new Date(parsedCookie.expires),
+      path: parsedCookie.path,
+      sameSite: "none",
+      secure: true,
+    });
+  }
+
+  if (response.ok) {
+    redirect("/chats");
+  } else {
+    return {
+      ok: false,
+      result: {
+        status: response.status,
+        detail: "Email or password incorrect.",
+      },
+    };
+  }
 }
 
 export async function logout() {
@@ -27,14 +77,9 @@ export async function logout() {
   throw new Error("Coulnd't log out user");
 }
 
-export type AddChatWithUserResponse = {
-  ok: boolean;
-  result: ProblemDetail | ChatRoomListEntity;
-};
-
 export async function addChatWithUser(
   formData: FormData,
-): Promise<AddChatWithUserResponse> {
+): Promise<ApiResponse<ChatRoomListEntity>> {
   const email = formData.get("email");
   const result = await fetchWithAuth(process.env.BACKEND_URL + "/chats/", {
     method: "POST",

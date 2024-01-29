@@ -31,3 +31,8 @@ export type ProblemDetail = {
   status: number;
   detail: string;
 };
+
+export type ApiResponse<T> = {
+  ok: boolean;
+  result?: ProblemDetail | T;
+};

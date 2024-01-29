@@ -13,51 +13,57 @@ import { Label } from "@shadcn/label";
 import { Input } from "@shadcn/input";
 import { useFormState, useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
+import { ApiResponse } from "utils/dbEntities";
 
-function SubmitLogin() {
+type SubmitButtonProps = {
+  idleText: string;
+  pendingText: string;
+};
+
+function SubmitLogin({ buttonText }: { buttonText: SubmitButtonProps }) {
   const status = useFormStatus();
 
   if (!status.pending) {
     return (
       <Button className="w-full" type="submit">
-        Login
+        {buttonText.idleText}
       </Button>
     );
   } else {
     return (
       <Button disabled className="w-full" type="button">
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Logging in...
+        {buttonText.pendingText}
       </Button>
     );
   }
 }
 
-type LoginFormResult = {
-  success: boolean;
-  message?: string;
-};
-
-export default function LoginForm({
-  login,
+export default function EnterEmailPasswordForm<State>({
+  submitAction,
+  title,
+  description,
+  buttonText,
+  showSignupHint,
 }: {
-  login: (
-    result: LoginFormResult,
-    loginRequest: FormData,
-  ) => Promise<LoginFormResult>;
+  submitAction(
+    prevState: ApiResponse<State>,
+    formData: FormData,
+  ): Promise<ApiResponse<State>>;
+  title: string;
+  description: string;
+  buttonText: SubmitButtonProps;
+  showSignupHint?: boolean;
 }) {
-  const [loginState, loginAction] = useFormState(login, { success: true });
+  const [loginState, loginAction] = useFormState(submitAction, { ok: true });
 
   return (
     <form action={loginAction}>
       <Card className="rounded-xl bg-card text-card-foreground shadow-sm">
         <CardHeader className="space-y-1">
-          <CardTitle className="leading-8">Log in</CardTitle>
-          <CardDescription>
-            Enter your information below to log into your account.
-          </CardDescription>
+          <CardTitle className="leading-8">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 p-6 pt-0">
           <div className="grid gap-2">
@@ -81,7 +87,7 @@ export default function LoginForm({
               required
             />
           </div>
-          {!loginState.success && (
+          {!loginState.ok && (
             <p className="leading-7 text-destructive">
               {loginState.message ?? "Login failed"}
             </p>
@@ -89,15 +95,17 @@ export default function LoginForm({
         </CardContent>
         <CardFooter>
           <div className="w-full">
-            <SubmitLogin />
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              <Link
-                href="/register"
-                className="hover:text-brand underline underline-offset-4"
-              >
-                Don&apos;t have an account? Sign Up
-              </Link>
-            </p>
+            <SubmitLogin buttonText={buttonText} />
+            {showSignupHint && (
+              <p className="mt-4 text-center text-sm text-muted-foreground">
+                <Link
+                  href="/register"
+                  className="hover:text-brand underline underline-offset-4"
+                >
+                  Don&apos;t have an account? Sign Up
+                </Link>
+              </p>
+            )}
           </div>
         </CardFooter>
       </Card>
