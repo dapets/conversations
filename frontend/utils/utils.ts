@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { UserEntity } from "./projectTypes";
+import { hasLoginChangedQueryParam } from "./constants";
 
 export function getActiveChatRoomId(pathname: string) {
   const segments = pathname.split("/");
@@ -25,4 +27,8 @@ export function getUserDisplayName(user: UserEntity) {
 
 export function getUserInitials(user: UserEntity) {
   return user.firstName[0] + user.lastName[0];
+}
+
+export function redirectWithLoginChanged(url: string) {
+  redirect(url + `?${hasLoginChangedQueryParam}=true`);
 }

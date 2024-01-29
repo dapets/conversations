@@ -90,7 +90,7 @@ export default function GenericForm<State>({
   description,
   buttonText,
   formFields,
-  showSignupHint,
+  mutedRedirect,
 }: {
   submitAction(
     prevState: ApiResponse<State>,
@@ -100,7 +100,10 @@ export default function GenericForm<State>({
   description: string;
   buttonText: SubmitButtonProps;
   formFields: React.ReactNode;
-  showSignupHint?: boolean;
+  mutedRedirect?: {
+    text: string;
+    url: string;
+  };
 }) {
   const [actionState, loginAction] = useFormState(submitAction, { ok: true });
 
@@ -123,13 +126,13 @@ export default function GenericForm<State>({
         <CardFooter>
           <div className="w-full">
             <SubmitForm buttonText={buttonText} />
-            {showSignupHint && (
+            {mutedRedirect && (
               <p className="mt-4 text-center text-sm text-muted-foreground">
                 <Link
-                  href="/register"
+                  href={mutedRedirect.url}
                   className="hover:text-brand underline underline-offset-4"
                 >
-                  Don&apos;t have an account? Sign Up
+                  {mutedRedirect.text}
                 </Link>
               </p>
             )}

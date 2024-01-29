@@ -3,7 +3,7 @@ import { Input } from "@shadcn/input";
 import { Label } from "@shadcn/label";
 import { register } from "app/actions";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirectWithLoginChanged } from "utils/utils";
 
 export const metadata: Metadata = {
   title: "Sign Up",
@@ -17,11 +17,15 @@ export default function RegisterPage() {
         title="Sign up"
         description="Enter your information below to sign up using a new account."
         buttonText={{ idleText: "Sign up", pendingText: "Signing up..." }}
+        mutedRedirect={{
+          text: "Already have an account? Login instead",
+          url: "/login",
+        }}
         submitAction={async (_, formData) => {
           "use server";
           const response = await register(formData);
           if (response.ok) {
-            redirect("/chats");
+            redirectWithLoginChanged("/chats");
           }
 
           return response;

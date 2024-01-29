@@ -1,8 +1,7 @@
 import GenericForm, { EmailPasswordFormFields } from "@components/GenericForm";
 import { login } from "app/actions";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { hasLoginChangedQueryParam } from "utils/constants";
+import { redirectWithLoginChanged } from "utils/utils";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -16,12 +15,15 @@ export default function LoginPage() {
         title="Log in"
         description="Enter your information below to log into your account."
         buttonText={{ idleText: "Login", pendingText: "Logging in..." }}
-        showSignupHint
+        mutedRedirect={{
+          text: "Don't have an account? Sign Up",
+          url: "/register",
+        }}
         submitAction={async (_, formData) => {
           "use server";
           const response = await login(formData);
           if (response.ok) {
-            redirect("/chats?" + `${hasLoginChangedQueryParam}=true`);
+            redirectWithLoginChanged("/chats");
           }
 
           return response;

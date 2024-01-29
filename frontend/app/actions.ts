@@ -2,11 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import {
-  aspnetAuthCookieName,
-  hasLoginChangedQueryParam,
-} from "utils/constants";
+import { aspnetAuthCookieName } from "utils/constants";
 import { fetchWithAuth } from "./dataFetchers";
 import {
   ApiResponse,
@@ -17,6 +13,7 @@ import {
   RegisterResponse,
 } from "utils/projectTypes";
 import { parse as parseCookie } from "cookie";
+import { redirectWithLoginChanged } from "utils/utils";
 
 export async function revalidateChatHistory(historyId: number) {
   revalidatePath("chats/" + historyId, "page");
@@ -63,7 +60,7 @@ export async function login(
     const responseBody = (await response.json()) as LoginResponse;
     const descriptiveDetail =
       responseBody.detail === "Failed"
-        ? "Email or password incorrect"
+        ? "Email or password incorrect."
         : "Too many attempts. Please try again later.";
 
     return {
@@ -165,7 +162,7 @@ export async function logout() {
   });
   if (result.ok) {
     cookies().delete(aspnetAuthCookieName);
-    redirect("/login?" + `${hasLoginChangedQueryParam}=true`);
+    redirectWithLoginChanged("/login");
   }
 
   throw new Error("Coulnd't log out user");
