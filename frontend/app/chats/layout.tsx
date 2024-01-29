@@ -4,6 +4,7 @@ import { TypographyH2 } from "@shadcn/TypographyH1";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
 import { Avatar, AvatarFallback } from "@shadcn/avatar";
 import { Button } from "@shadcn/button";
+import { logout } from "app/actions";
 import { getLoggedInUser } from "app/dataFetchers";
 import { Metadata } from "next";
 import React from "react";
@@ -26,7 +27,7 @@ export default async function ClientLayout({
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
       <nav className="ml-2 hidden max-w-sm shrink-0 basis-1/3 flex-col bg-background p-2 lg:flex">
-        <div className="mb-2 mr-6 grid grid-cols-logged-in-statusbar items-center justify-around rounded-lg border border-blue-100 p-2 shadow shadow-blue-100 grid-areas-logged-in-statusbar">
+        <div className="mr-6 grid grid-cols-logged-in-statusbar items-center justify-around rounded-lg border border-accent p-2 shadow-lg shadow-accent grid-areas-logged-in-statusbar">
           <Avatar className="mr-2 grid-in-avatar">
             <AvatarFallback>{getUserInitials(loggedInUser)}</AvatarFallback>
           </Avatar>
@@ -36,9 +37,12 @@ export default async function ClientLayout({
           <p className="text-sm text-muted-foreground grid-in-logged-in-status">
             Logged in
           </p>
-          <LogoutButton className="justify-self-end grid-in-log-out " />
+          <LogoutButton className="justify-self-end grid-in-log-out" />
         </div>
-        <TypographyH2 className="mb-4">Messages</TypographyH2>
+        <div className="mb-4 mt-4 flex justify-around">
+          <TypographyH2>Messages</TypographyH2>
+          <Button variant="ghost">Add chat</Button>
+        </div>
         <ScrollArea className="pr-6" type="always" data-state="visible">
           {chatList}
         </ScrollArea>
