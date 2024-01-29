@@ -27,7 +27,7 @@ export default async function ClientLayout({
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
       <AddChatDialog />
-      <nav className="ml-2 hidden max-w-md shrink-0 basis-1/3 flex-col bg-background p-2 lg:flex">
+      <nav className="ml-2 flex max-w-md shrink-0 basis-1/3 flex-col bg-background p-2">
         <div className="mr-4 grid grid-cols-logged-in-statusbar items-center justify-around rounded-lg border p-2 shadow-lg shadow-accent grid-areas-logged-in-statusbar">
           <Avatar className="mr-2 grid-in-avatar">
             <AvatarFallback>{getUserInitials(loggedInUser)}</AvatarFallback>
