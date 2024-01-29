@@ -53,6 +53,8 @@ async void Main()
 
 	foreach (var user in otherUsers)
 	{
+		if(user.Id == mainUser.Id) continue;
+		
 		var chat = new Chats();
 		Chats.Add(chat);
 		SubmitChanges();
