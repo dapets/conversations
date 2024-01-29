@@ -1,4 +1,4 @@
-import LoginForm from "@components/LoginForm";
+import LoginForm from "app/login/LoginForm";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import { fetchWithAuth } from "app/dataFetchers";
