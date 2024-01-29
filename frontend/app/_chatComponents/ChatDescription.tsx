@@ -2,7 +2,7 @@ import { scrollToId } from "app/chats/[...name]/page";
 import Link from "next/link";
 import { UserEntity } from "utils/types/dbEntities";
 
-export function Description({
+export function ChatDescription({
   user,
   isActive,
   lastMessage,

@@ -1,4 +1,4 @@
-import DescriptionList from "@components/DescriptionList";
+import ChatDescriptionList from "@components/DescriptionList";
 import React from "react";
 import { getChatList } from "utils/dataFetchers";
 
@@ -12,7 +12,7 @@ export default async function ClientLayout({
   return (
     <div className="flex h-screen w-screen">
       <nav className="p-4 overflow-y-auto md:w-64 md:block hidden">
-        <DescriptionList chatList={chats} />
+        <ChatDescriptionList chatList={chats} />
       </nav>
       {children}
     </div>
