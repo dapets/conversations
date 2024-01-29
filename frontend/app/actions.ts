@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { aspnetAuthCookieName } from "utils/constants";
+import {
+  aspnetAuthCookieName,
+  hasLoginChangedQueryParam,
+} from "utils/constants";
 import { fetchWithAuth } from "./dataFetchers";
 import {
   ApiResponse,
@@ -54,6 +57,7 @@ export async function login(
   }
 
   if (response.ok) {
+    //can't redirect here because we also use login() when registering and we don't want to be immediately redirected
     return { ok: true };
   } else {
     const responseBody = (await response.json()) as LoginResponse;
@@ -161,7 +165,7 @@ export async function logout() {
   });
   if (result.ok) {
     cookies().delete(aspnetAuthCookieName);
-    redirect("/login");
+    redirect("/login?" + `${hasLoginChangedQueryParam}=true`);
   }
 
   throw new Error("Coulnd't log out user");

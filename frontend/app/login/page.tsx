@@ -2,6 +2,7 @@ import GenericForm, { EmailPasswordFormFields } from "@components/GenericForm";
 import { login } from "app/actions";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { hasLoginChangedQueryParam } from "utils/constants";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -20,7 +21,7 @@ export default function LoginPage() {
           "use server";
           const response = await login(formData);
           if (response.ok) {
-            redirect("/chats");
+            redirect("/chats?" + `${hasLoginChangedQueryParam}=true`);
           }
 
           return response;
