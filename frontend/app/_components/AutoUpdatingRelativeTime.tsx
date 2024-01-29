@@ -18,7 +18,7 @@ export function AutoUpdatingRelativeTime({
       setLocalTime(getRelativeLocalTimeStrFromUtcDate(date));
     }
 
-    const timeout = setInterval(() => updateTime(), 1000 * 30);
+    const timeout = setInterval(() => updateTime(), 1000 * 15);
 
     const visibilityChangedAbortController = new AbortController();
     document.addEventListener(
