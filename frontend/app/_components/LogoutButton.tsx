@@ -20,8 +20,7 @@ export function LogoutButton({ className }: { className?: string }) {
         className={classNames}
         variant="ghost"
       >
-        <LogOut className="mr-2 h-4 w-4" />
-        Log out
+        <LogOut className="h-6 w-6" />
       </Button>
     );
   } else {
