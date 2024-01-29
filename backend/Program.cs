@@ -63,7 +63,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
     return db
     .Chats
     .Include(c => c.Members)
-    .Where(c => c.Members.Any(m => m.Id == loggedInUser.Id))
+    .Where(c => c.Members.Contains(loggedInUser))
     .Select(c => c.Members)
     .AsAsyncEnumerable();
 }
