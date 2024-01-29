@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 import { HistoryEntity } from "utils/dbEntities";
-import { getRelativeLocalTimeStrFromUtcDate } from "utils/configuredDayjs";
 import { getUserDisplayName, getUserInitials } from "utils/utils";
 import { Avatar, AvatarFallback } from "@shadcn/avatar";
+import { AutoUpdatingRelativeTime } from "./AutoUpdatingRelativeTime";
 
 export function Message({
   history,
@@ -40,9 +40,10 @@ export function Message({
       >
         {message}
       </p>
-      <time className="text-xs text-gray-500 grid-in-last-message-date">
-        {getRelativeLocalTimeStrFromUtcDate(sentOn)}
-      </time>
+      <AutoUpdatingRelativeTime
+        date={sentOn}
+        className="text-xs text-gray-500 grid-in-last-message-date"
+      />
     </section>
   );
 }

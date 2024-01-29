@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback } from "@shadcn/avatar";
 import Link from "next/link";
-import { getRelativeLocalTimeStrFromUtcDate } from "utils/configuredDayjs";
 import { ChatRoomListEntity } from "utils/dbEntities";
 import {
   getOtherChatUser,
@@ -10,6 +9,7 @@ import {
 import { TypographyLarge } from "@shadcn/TypographyLarge";
 import { cn } from "@/lib/utils";
 import { scrollToId } from "utils/constants";
+import { AutoUpdatingRelativeTime } from "./AutoUpdatingRelativeTime";
 
 export function ChatRoomDescription({
   chatRoom,
@@ -67,12 +67,10 @@ export function ChatRoomDescription({
           {otherChatUserFullName}
         </TypographyLarge>
         {chatRoom.lastMessage && (
-          <time
-            suppressHydrationWarning
+          <AutoUpdatingRelativeTime
+            date={chatRoom.lastMessage.sentOn}
             className="text-right text-sm grid-in-last-message-date"
-          >
-            {getRelativeLocalTimeStrFromUtcDate(chatRoom.lastMessage?.sentOn)}
-          </time>
+          />
         )}
         <p
           className={cn("truncate text-left font-normal grid-in-last-message", {
