@@ -28,7 +28,7 @@ export default async function ClientLayout({
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
       <nav className="ml-2 hidden max-w-sm shrink-0 basis-1/3 flex-col bg-background p-2 lg:flex">
-        <div className="mr-4 grid grid-cols-logged-in-statusbar items-center justify-around rounded-lg p-2 grid-areas-logged-in-statusbar">
+        <div className="mr-4 grid grid-cols-logged-in-statusbar items-center justify-around rounded-lg border p-2 shadow-lg shadow-accent grid-areas-logged-in-statusbar">
           <Avatar className="mr-2 grid-in-avatar">
             <AvatarFallback>{getUserInitials(loggedInUser)}</AvatarFallback>
           </Avatar>
@@ -40,7 +40,7 @@ export default async function ClientLayout({
           </p>
           <LogoutButton className="justify-self-end grid-in-log-out" />
         </div>
-        <div className="mb-4 mr-6 mt-4 flex justify-between">
+        <div className="mb-4 mr-6 mt-5 flex justify-between">
           <TypographyH2>Messages</TypographyH2>
           <AddChatButton />
         </div>
