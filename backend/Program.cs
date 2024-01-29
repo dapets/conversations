@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using backend;
 using backend.Entities;
+using backend.Hubs;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

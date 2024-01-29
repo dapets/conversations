@@ -1,17 +1,29 @@
-﻿using backend.Entities;
+﻿using backend.DTOs;
+using backend.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
-namespace backend;
+namespace backend.Hubs;
 
 public interface IChatClient
 {
-    Task ReceiveMessage(string information);
+    Task ReceiveMessage(AuthorDto author, string message);
 }
 
-public class ChatHub : Hub<IChatClient>
+public class ChatHub(UserManager<ApplicationUser> userManager) : Hub<IChatClient>
 {
-
     private static readonly string DefaultGroupId = "1";
+
+    private readonly UserManager<ApplicationUser> userManager = userManager;
+
+    private async Task<AuthorDto> GetAuthorDto()
+    {
+        if (Context.User is null) throw new InvalidOperationException($"{nameof(Context.User)} is null");
+
+        var userEntity = await userManager.GetUserAsync(Context.User) ?? throw new InvalidOperationException($"{nameof(Context.User)} is null");
+
+        return new(userEntity.Id, userEntity.FirstName, userEntity.LastName, userEntity.Email ?? "No valid email found");
+    }
 
     public override Task OnConnectedAsync()
     {
@@ -29,6 +41,6 @@ public class ChatHub : Hub<IChatClient>
 
     public async Task SendMessage(string message)
     {
-        await Clients.Groups(DefaultGroupId).ReceiveMessage(message);
+        await Clients.Groups(DefaultGroupId).ReceiveMessage(await GetAuthorDto(), message);
     }
 }

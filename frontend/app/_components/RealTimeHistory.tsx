@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { Message } from "./Message";
-import { HistoryEntity } from "utils/dbEntities";
+import { HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
 
 export function RealtimeHistory({
@@ -21,15 +21,11 @@ export function RealtimeHistory({
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
 
   const receiveMessageHandler = useCallback(
-    (message: string) => {
+    (author: UserEntity, message: string) => {
       setRealtimeHistory((history) => [
         ...history,
         {
-          author: {
-            firstName: "Sophie",
-            lastName: "Mertz",
-            id: "c9430aad-41ed-4ff6-9d5e-639a6e387b2c",
-          },
+          author,
           id: Math.random(),
           message,
           sentOn: new Date(),
