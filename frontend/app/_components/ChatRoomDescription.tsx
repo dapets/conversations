@@ -32,9 +32,8 @@ export function ChatRoomDescription({
         //tailwind doesn't really support grid-template-areas but specifying col-start- and row-start- got pretty messy.
         //Because of that I'm just gonna use the custom css class `chat-room-description-layout` defined in ChatRoomDescription.css
         className={
-          styles["chat-room-description-layout"] +
-          " " +
-          "grid p-2 rounded-lg " +
+          "grid grid-areas-chat-room-description grid-cols-chat-room-description " +
+          "p-2 rounded-lg " +
           "data-[isactive=true]:bg-primary data-[isactive=true]:text-primary-foreground " +
           "hover:bg-primary hover:text-primary-foreground"
         }
@@ -42,7 +41,7 @@ export function ChatRoomDescription({
         {isUnread && (
           <span
             className={
-              "[grid-area:unread-notifier] self-center " +
+              "grid-in-unread-notifier self-center " +
               "h-3 w-3 " +
               "rounded-full bg-sky-500"
             }
@@ -60,12 +59,12 @@ export function ChatRoomDescription({
         {chatRoom.lastMessage && (
           <time
             suppressHydrationWarning
-            className="text-sm text-right [grid-area:last-message-date]"
+            className="text-sm text-right grid-in-last-message-date"
           >
             {getRelativeLocalTimeStrFromUtcDate(chatRoom.lastMessage?.sentOn)}
           </time>
         )}
-        <p className="truncate font-normal text-left [grid-area:last-message]">
+        <p className="truncate font-normal text-left grid-in-last-message">
           {chatRoom.lastMessage?.message ?? "No messages yet."}
         </p>
       </div>

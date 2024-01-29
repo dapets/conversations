@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -8,6 +10,7 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
+  gridTemplateAreas: {},
   theme: {
     container: {
       center: true,
@@ -28,7 +31,7 @@ module.exports = {
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "hsl(var(--secoGndary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
@@ -72,6 +75,18 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
+    gridTemplateAreas: {
+      "chat-room-description": [
+        "unread-notifier avatar username last-message-date",
+        "unread-notifier avatar last-message last-message",
+      ],
+    },
+    gridTemplateColumns: {
+      "chat-room-description": "1.25rem auto auto 1fr auto",
+    },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@savvywombat/tailwindcss-grid-areas"),
+  ],
 };
