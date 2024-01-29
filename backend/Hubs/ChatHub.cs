@@ -3,7 +3,6 @@ using backend.Entities;
 using backend.Utils;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace backend.Hubs;
 
@@ -29,7 +28,6 @@ public class ChatHub(ILogger<ChatHub> logger,
     {
         Guard.IsNotNull(Context.User);
         var userEntity = await identityUtils.GetUserAsync(Context.User);
-        Guard.IsNotNull(userEntity);
 
         return new(userEntity.Id, userEntity.FirstName, userEntity.LastName, userEntity.Email ?? "No valid email found");
     }
@@ -40,7 +38,6 @@ public class ChatHub(ILogger<ChatHub> logger,
 
         var author = await identityUtils.GetUserAsync(Context.User);
         var chat = await applicationDbContext.Chats.FindAsync(chatRoomId);
-        Guard.IsNotNull(author);
         Guard.IsNotNull(chat);
 
         var newHistory = new History()
