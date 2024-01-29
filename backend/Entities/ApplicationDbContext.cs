@@ -20,9 +20,10 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<ApplicationUser>()
-            .Property(u => u.UserName)
-            .HasComputedColumnSql("[FirstName] || ' ' || [LastName]");
+        //interferes with AspNetCore Identity which needs to set the username directly
+        // builder.Entity<ApplicationUser>()
+        //     .Property(u => u.UserName)
+        //     .HasComputedColumnSql("[FirstName] || ' ' || [LastName]");
 
         base.OnModelCreating(builder);
     }
