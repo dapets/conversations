@@ -3,9 +3,8 @@
 import { cn } from "@/lib/utils";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
 import { Button } from "@shadcn/button";
-import { Send } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { maxMessageLength } from "utils/constants";
 import { getActiveChatRoomId } from "utils/utils";
 
@@ -48,8 +47,8 @@ export function MessageInput({ className }: { className: string }) {
         placeholder="Type a message..."
         autoComplete="off"
       />
-      <Button type="submit" className="flex h-10 w-10">
-        <Send className="m-auto h-4 w-4 flex-shrink-0" />
+      <Button type="submit" className="">
+        Send
       </Button>
     </form>
   );
