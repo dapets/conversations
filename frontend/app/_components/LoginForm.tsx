@@ -21,7 +21,7 @@ export default function LoginForm({
         <CardHeader className="space-y-1">
           <CardTitle className="leading-8">Log in</CardTitle>
           <CardDescription className="">
-            Enter your information below to log into your account
+            Enter your information below to log into your account.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6 pt-0 grid gap-4">
