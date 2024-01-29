@@ -1,7 +1,3 @@
 export default function NoChatSelected() {
-  return (
-    <section className="m-auto flex h-full">
-      <p className="m-auto">No chat selected</p>
-    </section>
-  );
+  return <p className="row-start-2 place-self-center">No chat selected</p>;
 }
