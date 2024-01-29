@@ -16,17 +16,19 @@ builder.Services.AddCors(config =>
         configurePolicy.AllowAnyHeader();
     });
 });
-
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-}
-
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<User>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddSignalR();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+}
+
 
 var loggedInUserId = "177";
 
@@ -38,11 +40,18 @@ app.MapIdentityApi<User>();
 app.UseAuthentication();
 app.UseAuthorization();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.MapHub<ChatHub>("/chatHub");
 
 app.MapGet("/whoami", (ApplicationDbContext db) =>
     db.Users.FirstAsync(u => u.Id == loggedInUserId)
-);
+)
+.RequireAuthorization();
 
 app.MapGet("/chats", (ApplicationDbContext db) => db
     .Chats
