@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { MessageInput } from "@components/MessageInput";
 import { TypographyH2 } from "@shadcn/TypographyH1";
 import { ScrollArea } from "@shadcn/ScrollArea";
 import { messageScrollContainerId } from "utils/constants";
 import { Button } from "@shadcn/button";
 import Link from "next/link";
-import { ChevronsLeft } from "lucide-react";
+import { ChevronsLeft, Loader2 } from "lucide-react";
 
 export default async function ClientLayout({
   children,
@@ -35,7 +35,17 @@ export default async function ClientLayout({
         className="mr-2 pr-4"
         type="always"
       >
-        {children}
+        <Suspense
+          fallback={
+            //Inside a display: table from ScrollArea so any other centering method (probably?) won't work.
+            //Need this extra div because translate-x on the Loader would mess up the animation.
+            <div className="absolute left-1/2 top-1/2 translate-x-[-50%]">
+              <Loader2 className="h-12 w-12 animate-spin" />
+            </div>
+          }
+        >
+          {children}
+        </Suspense>
       </ScrollArea>
       <MessageInput className="pr-2" />
     </>
