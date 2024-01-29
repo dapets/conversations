@@ -65,7 +65,7 @@ export default function SignalRProvider({
         //this happens in dev mode because effects are executed twice
         if (reason instanceof Error) {
           console.info(
-            "Connection was aborted while still trying to connect to the server." +
+            "Connection was aborted while trying to connect to the server." +
               "This usually happens in development mode."
           );
         } else {
