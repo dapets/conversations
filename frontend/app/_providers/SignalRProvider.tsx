@@ -4,6 +4,7 @@ import {
   HubConnection,
   HubConnectionBuilder,
   HubConnectionState,
+  LogLevel,
 } from "@microsoft/signalr";
 import { useSearchParams } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -69,9 +70,15 @@ export default function SignalRProvider({
   }
 
   useEffect(() => {
+    if (!document.cookie) return;
     let localConn = new HubConnectionBuilder()
       .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
       .withAutomaticReconnect()
+      .configureLogging(
+        process.env.NEXT_PUBLIC_ENV === "production"
+          ? LogLevel.Warning
+          : LogLevel.Debug,
+      )
       .build();
     localConn
       .start()
