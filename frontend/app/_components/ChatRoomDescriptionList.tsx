@@ -18,8 +18,6 @@ export default function ChatRoomDescriptionList({
     <ul className="space-y-1">
       {chatRooms.map((chatRoom, i) => (
         <li key={i}>
-          {/* using u[0] because the second member is (currently) the logged in user */}
-          {/* need a proper way to handle multiple people in a chat room */}
           <ChatRoomDescription
             chatRoom={chatRoom}
             isActive={chatRoom.id === activeUserId}
