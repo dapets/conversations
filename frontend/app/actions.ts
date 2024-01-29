@@ -20,7 +20,6 @@ export async function revalidateChatHistory(historyId: number) {
 
 export async function login(
   loginRequest: FormData,
-): Promise<ApiResponse<undefined>> {
   "use server";
   const loginData = {
     email: loginRequest.get("email"),
