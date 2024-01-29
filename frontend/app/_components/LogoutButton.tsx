@@ -25,11 +25,7 @@ export function LogoutButton({ className }: { className?: string }) {
     );
   } else {
     return (
-      <Button
-        disabled
-        className={cn(className, "w-fit px-2")}
-        variant="outline"
-      >
+      <Button disabled className={cn(className, "w-fit px-2")} variant="ghost">
         <Loader2 className="mr-2 h-4 w-4 animate-spin" type="button" />
         Logging out...
       </Button>
