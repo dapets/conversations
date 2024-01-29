@@ -15,7 +15,7 @@ export function RealtimeHistory({
 }: {
   activeChatRoomId: number;
   doesRoomHaveMessages: boolean;
-  scrollToId?: string;
+  scrollToId: string;
   renderMessage: (newMessage: HistoryEntity) => React.ReactNode;
 }) {
   const connection = useSignalR();
@@ -79,6 +79,13 @@ export function RealtimeHistory({
       scrollToElement.scrollIntoView();
     }
   }, [scrollToId, realtimeHistory]);
+
+  //this is important on refresh
+  useEffect(() => {
+    const scrollToElement = document.getElementById(scrollToId);
+    if (!scrollToElement) return;
+    scrollToElement.scrollIntoView();
+  }, [scrollToId])
 
   //we're rendering this on the client because newly created chat rooms have no messages
   //and if we receive a new message we would have to revalidate something on the server if we wanted to render it there.
