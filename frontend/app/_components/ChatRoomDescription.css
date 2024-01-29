@@ -1,6 +1,0 @@
-.chat-room-description-layout {
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas:
-    "avatar username last-message-date"
-    "avatar last-message last-message";
-}

@@ -18,20 +18,31 @@ export default function ChatRoomDescriptionList({
   chatRooms: ChatRoomListEntity[];
   renderChatRoomDescription: (
     chatRoom: ChatRoomEntity,
-    isActive: boolean
+    isActive: boolean,
+    isUnread?: boolean
   ) => React.ReactNode;
 }) {
   const conn = useContext(SignalRConnectionContext);
   const pathname = usePathname();
-
   const [chatRooms, setChatRooms] = useState(initalChatRooms);
 
   const activeChatRoomId = getActiveChatRoomId(pathname);
+  const activeRoom = chatRooms.find((r) => r.id === activeChatRoomId);
+  if (activeRoom?.isUnread) {
+    activeRoom.isUnread = false;
+    setChatRooms([...chatRooms]);
+  }
 
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
       let room = chatRooms.find((r) => r.id === chatRoomId);
-      if (!room) return;
+      if (!room)
+        throw Error(
+          `No room with chatRoomId ${chatRoomId} of message ${message} exists`
+        );
+      if (room.id !== activeChatRoomId) {
+        room.isUnread = true;
+      }
       room.lastMessage = {
         author,
         message,
@@ -67,7 +78,8 @@ export default function ChatRoomDescriptionList({
         <li key={chatRoom.id}>
           {renderChatRoomDescription(
             chatRoom,
-            chatRoom.id === activeChatRoomId
+            chatRoom.id === activeChatRoomId,
+            chatRoom.isUnread
           )}
         </li>
       ))}

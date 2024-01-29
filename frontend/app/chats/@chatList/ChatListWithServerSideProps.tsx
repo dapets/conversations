@@ -17,11 +17,12 @@ export function ChatListWithServerSideProps({
   return (
     <ChatRoomDescriptionList
       chatRooms={chatRooms}
-      renderChatRoomDescription={(chatRoom, isActive) => (
+      renderChatRoomDescription={(chatRoom, isActive, isUnread) => (
         <ChatRoomDescription
           loggedInUserId={loggedInUserId}
           chatRoom={chatRoom}
           isActive={isActive}
+          isUnread={isUnread}
         />
       )}
     />

@@ -1,0 +1,6 @@
+.chat-room-description-layout {
+  grid-template-columns: 1.25rem auto auto 1fr auto;
+  grid-template-areas:
+    "unread-notifier avatar username last-message-date"
+    "unread-notifier avatar last-message last-message";
+}

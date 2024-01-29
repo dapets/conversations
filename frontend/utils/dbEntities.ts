@@ -15,6 +15,7 @@ export type ChatRoomEntity = {
   id: number;
   members: UserEntity[];
   history: HistoryEntity[];
+  isUnread?: boolean;
 };
 
 export type ChatRoomListEntity = Exclude<ChatRoomEntity, "history"> & {
