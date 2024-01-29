@@ -33,6 +33,7 @@ export default async function ClientLayout({
       <AddChatDialog />
       <nav
         id={navBarId}
+        suppressHydrationWarning
         //the default "flex"'s specificity isn't high enough, that's why we use [&:not(#fakeId)]:lg:flex
         className="ml-2 flex shrink-0 basis-full flex-col bg-background p-2 data-[is-chat-room-selected=false]:hidden lg:max-w-lg lg:basis-1/3 [&:not(#fakeId)]:lg:flex"
       >
@@ -58,6 +59,7 @@ export default async function ClientLayout({
       </nav>
       <main
         id={mainId}
+        suppressHydrationWarning
         className="ml-2 hidden h-full w-full grid-rows-[auto_1fr_auto] gap-y-4 py-2 data-[is-chat-room-selected=true]:grid lg:ml-2 lg:grid"
       >
         {children}

@@ -46,7 +46,10 @@ export function handleIsChatRoomSelected(isChatRoomSelected: boolean) {
   const main = document.getElementById(mainId);
   const nav = document.getElementById(navBarId);
 
-  if (!main || !nav) throw new Error("main or nav element unavailable");
+  if (!main || !nav) {
+    //we might be on the server.
+    return;
+  }
 
   main.dataset[isChatRoomSelectedData] = isChatRoomSelected.toString();
   nav.dataset[isChatRoomSelectedData] = (!isChatRoomSelected).toString();
