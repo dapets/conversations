@@ -1,7 +1,4 @@
-{
-    debug
-}
-localhost, 172.20.10.5, 172.23.0.1, 172.23.0.4 {
+https://, 172.20.128.2 {
   reverse_proxy * frontend:3000
   reverse_proxy /chatHub* backend:3001
 }

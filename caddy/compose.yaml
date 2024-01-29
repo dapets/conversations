@@ -1,16 +1,9 @@
 services:
   caddy:
     build: .
-    volumes:
-      - caddy-data:/data
-      - caddy-config:/config
     ports:
       - 80:80
       - 443:443
     develop:
       watch:
         - action: rebuild
-
-volumes:
-  caddy-data:
-  caddy-config:

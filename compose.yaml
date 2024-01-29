@@ -1,4 +1,38 @@
-include:
-  - ./backend/compose.yaml
-  - ./frontend/compose.yaml
-  - ./caddy/compose.yaml
+services:
+  backend:
+    extends:
+      file: ./backend/compose.yaml
+      service: backend
+    networks: 
+      - static-ip
+  frontend:
+    extends:
+      file: ./frontend/compose.yaml
+      service: frontend
+    networks: 
+      - static-ip
+  caddy:
+    extends:
+      file: ./caddy/compose.yaml
+      service: caddy
+    networks:
+      static-ip:
+        ipv4_address: 172.20.128.2
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+
+# Using a custom network for caddy to automatically generate https certificates
+# for the specified ip.
+# The generated certificates are not trusted by anything.
+# But just 'acknoledging the risk' and continuing makes cookies work on safari,
+# so that's why.
+networks:
+  static-ip:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  caddy-data:
+  caddy-config:
