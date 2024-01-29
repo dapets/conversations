@@ -1,4 +1,4 @@
-import { ChatMessage } from "app/_components/ChatMessage";
+import { Message } from "app/_chatComponents/Message";
 import { History } from "utils/types/dbEntities";
 
 async function getChatHistoryWithId(userId: number) {
@@ -22,7 +22,7 @@ export default async function ChatHistory({
           ? "No messages yet."
           : chatHistory.map((h) => (
               <li key={h.id}>
-                <ChatMessage history={h} />
+                <Message history={h} />
               </li>
             ))}
         {/* we're using this element to scroll to the latest chat message */}

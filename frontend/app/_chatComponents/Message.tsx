@@ -11,7 +11,7 @@ async function getSelf() {
   return JSON.parse(await result.text()) as User;
 }
 
-export async function ChatMessage(props: { history: History }) {
+export async function Message(props: { history: History }) {
   const { author, sentOn, message } = props.history;
 
   const iAm = await getSelf();

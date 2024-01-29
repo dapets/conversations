@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { User } from "utils/types/dbEntities";
 
-export function ChatDescription({
+export function Description({
   user,
   isActive,
   lastMessage,

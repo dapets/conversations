@@ -1,4 +1,4 @@
-import ChatDescriptionList from "@components/ChatDescriptionList";
+import DescriptionList from "@components/DescriptionList";
 import React from "react";
 import { User } from "utils/types/dbEntities";
 
@@ -20,7 +20,7 @@ export default async function ClientLayout({
   return (
     <div className="flex h-screen w-screen">
       <nav className="p-4 overflow-y-auto md:w-64 md:block hidden">
-        <ChatDescriptionList chatList={chats} />
+        <DescriptionList chatList={chats} />
       </nav>
       {children}
     </div>

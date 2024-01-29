@@ -1,14 +1,10 @@
 "use client";
 
-import { ChatDescription } from "@components/ChatDescription";
+import { Description } from "@components/Description";
 import { usePathname } from "next/navigation";
 import { User } from "utils/types/dbEntities";
 
-export default function ChatDescriptionList({
-  chatList,
-}: {
-  chatList: User[][];
-}) {
+export default function DescriptionList({ chatList }: { chatList: User[][] }) {
   const pathname = usePathname();
 
   const segments = pathname.split("/");
@@ -19,7 +15,7 @@ export default function ChatDescriptionList({
       {chatList.map((u, i) => (
         <li key={i}>
           {/* using u[1] because the first member is (currently) the logged in user */}
-          <ChatDescription user={u[1]} isActive={u[1].id === activeUserId} />
+          <Description user={u[1]} isActive={u[1].id === activeUserId} />
         </li>
       ))}
     </ul>
