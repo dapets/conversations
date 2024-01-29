@@ -1,7 +1,13 @@
 "use client";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { Message } from "./Message";
-import { HistoryEntity } from "utils/types/dbEntities";
+import { HistoryEntity, UserEntity } from "utils/types/dbEntities";
 import { SignalRConnectionContext } from "./SignalRProvider";
 
 export function RealtimeHistory({
@@ -14,21 +20,24 @@ export function RealtimeHistory({
   const connection = useContext(SignalRConnectionContext);
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
 
-  function receiveMessageHandler(information: string) {
-    setRealtimeHistory((history) => [
-      ...history,
-      {
-        author: {
-          firstName: "Sophie",
-          lastName: "Mertz",
-          id: 177,
+  const receiveMessageHandler = useCallback(
+    (message: string) => {
+      setRealtimeHistory((history) => [
+        ...history,
+        {
+          author: {
+            firstName: "Sophie",
+            lastName: "Mertz",
+            id: 177,
+          },
+          id: Math.random(),
+          message,
+          sentOn: new Date(),
         },
-        id: Math.random(),
-        message: information,
-        sentOn: new Date(),
-      },
-    ]);
-  }
+      ]);
+    },
+    [setRealtimeHistory]
+  );
 
   useEffect(() => {
     connection?.on("ReceiveMessage", receiveMessageHandler);
@@ -36,7 +45,7 @@ export function RealtimeHistory({
     return () => {
       connection?.off("ReceiveMessage", receiveMessageHandler);
     };
-  }, [connection, setRealtimeHistory]);
+  }, [connection, setRealtimeHistory, receiveMessageHandler]);
 
   //using useEffect leads to visual glitches when a lot of messages arrive
   useLayoutEffect(() => {
