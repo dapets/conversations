@@ -6,7 +6,12 @@ import {
 import { cookies } from "next/headers";
 import { serialize as serializeCookie } from "cookie";
 import { redirect } from "next/navigation";
-import { aspnetAuthCookieName, cookieHeaderName } from "utils/constants";
+import {
+  aspnetAuthCookieName,
+  chatHistoryTag,
+  cookieHeaderName,
+} from "utils/constants";
+import "server-only";
 
 /** Cookie flow
  *
@@ -63,20 +68,22 @@ export async function getChatRoomsList() {
 }
 
 export async function getChatHistoryWithId(chatRoomId: number) {
-  const response = await fetchWithAuth(
+  const result = await fetchWithAuth(
     `${process.env.BACKEND_URL}/chats/${chatRoomId}`
   );
 
-  if (!response.ok) {
+  if (!result.ok) {
     throw new Error("Failed fetching history");
   }
 
-  return (await response.json()) as ChatRoomEntity;
+  return (await result.json()) as ChatRoomEntity;
 }
 
 export async function getLoggedInUser() {
   const result = await fetchWithAuth(process.env.BACKEND_URL + "/whoami");
-  if (!result.ok) return null;
+  if (!result.ok) {
+    throw new Error("Failed fetching user");
+  }
 
   return (await result.json()) as UserEntity;
 }
