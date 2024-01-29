@@ -16,8 +16,8 @@
 </Query>
 
 new Button("Remove last", (_) => {
-	var latestChat = Chats.Skip(Chats.Count() - 1).First().Dump();
-	Chats.Remove(latestChat);
+	var latestChat = AspNetUsers.Skip(AspNetUsers.Count() - 1).First().Dump();
+	AspNetUsers.Remove(latestChat);
 	SubmitChanges();
 }).Dump();
-Chats.Skip(Chats.Count() - 3).Dump();
+AspNetUsers.Skip(AspNetUsers.Count() - 3).Dump();
