@@ -18,7 +18,16 @@ export default async function RootLayout({
       <body>
         <Suspense>
           <TooltipProvider delayDuration={500}>
-            <SignalRProvider>{children}</SignalRProvider>
+            <SignalRProvider>
+              <div className="grid h-[100dvh] w-[100dvw] grid-rows-[minmax(0,auto),minmax(0,1fr)]">
+                {process.env.IS_TEST_INSTANCE && (
+                  <p className="text-md m-2 rounded-lg bg-accent p-2 text-center font-mono font-medium leading-3">
+                    This is a test instance. The database resets every hour.
+                  </p>
+                )}
+                {children}
+              </div>
+            </SignalRProvider>
           </TooltipProvider>
         </Suspense>
       </body>

@@ -26,7 +26,7 @@ export default async function ClientLayout({
   const loggedInUser = await getLoggedInUser();
 
   return (
-    <div className="flex h-[100dvh] w-[100dvw]">
+    <div className="flex">
       <AddChatDialog />
       <nav
         id={navBarId}
