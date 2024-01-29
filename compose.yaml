@@ -1,6 +1,7 @@
 services:
   backend:
     image: backend
+    restart: unless-stopped
     build:
       context: backend/
     ports:
@@ -9,15 +10,19 @@ services:
     # For pre-rendering nextjs pages
     depends_on:
       - backend
+    restart: unless-stopped
     image: frontend
     build:
       context: frontend/
   caddy:
     image: caddy
+    restart: unless-stopped
     build:
       context: ./caddy/
     ports:
       - 80:80
+      - "443:443"
+      - "443:443/udp"
     develop:
       watch:
         - path: ./caddy/
