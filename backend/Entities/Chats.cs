@@ -6,5 +6,5 @@ public partial class Chats
 
     public required ICollection<History> History { get; set; } = new List<History>();
 
-    public required ICollection<User> Members { get; set; } = new List<User>();
+    public required ICollection<ApplicationUser> Members { get; set; } = new List<ApplicationUser>();
 }

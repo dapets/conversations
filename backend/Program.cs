@@ -17,7 +17,7 @@ builder.Services.AddCors(config =>
     });
 });
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<User>()
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddSignalR();
@@ -36,7 +36,7 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.MapIdentityApi<User>();
+app.MapIdentityApi<ApplicationUser>();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -44,6 +44,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseHsts();
 }
 
 app.MapHub<ChatHub>("/chatHub");

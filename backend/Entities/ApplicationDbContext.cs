@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Entities;
 
-public partial class ApplicationDbContext : IdentityDbContext<User>
+public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext()
     {
@@ -20,7 +20,7 @@ public partial class ApplicationDbContext : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<User>()
+        builder.Entity<ApplicationUser>()
             .Property(u => u.UserName)
             .HasComputedColumnSql("[FirstName] || ' ' || [LastName]");
 
