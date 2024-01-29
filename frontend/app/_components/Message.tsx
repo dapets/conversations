@@ -1,9 +1,11 @@
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import AdvancedFormat from "dayjs/plugin/relativeTime";
+import UTC from "dayjs/plugin/utc";
 import { HistoryEntity } from "utils/dbEntities";
 
 dayjs.extend(AdvancedFormat);
+dayjs.extend(UTC);
 
 export function Message({
   history,
@@ -23,7 +25,7 @@ export function Message({
           {author.firstName + " " + author.lastName}
         </h2>
         <time className="text-sm text-zinc-600 ml-4" suppressHydrationWarning>
-          {dayjs().to(sentOn)}
+          {dayjs().to(dayjs.utc(sentOn).local())}
         </time>
       </div>
       <div
