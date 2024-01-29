@@ -50,7 +50,9 @@ export async function fetchWithAuth(
     );
   }
 
-  request.headers.append("Content-Type", "application/json");
+  if (request.method === "POST" || request.method === "PUT") {
+    request.headers.append("Content-Type", "application/json");
+  }
 
   const response = await fetch(request, init);
   if (response.status === 401 && !request.url.includes("/login")) {
