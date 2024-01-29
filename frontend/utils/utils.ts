@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import { UserEntity } from "./projectTypes";
-import { hasLoginChangedQueryParam } from "./constants";
+import {
+  hasLoginChangedQueryParam,
+  isChatRoomSelectedData,
+  mainId,
+  navBarId,
+} from "./constants";
 
 export function getActiveChatRoomId(pathname: string) {
   const segments = pathname.split("/");
@@ -31,4 +36,18 @@ export function getUserInitials(user: UserEntity) {
 
 export function redirectWithLoginChanged(url: string) {
   redirect(url + `?${hasLoginChangedQueryParam}=true`);
+}
+
+/**Set data-[isChatRoomVisible] on the main and nav elements.
+ * This makes certain content (in)visible on small screens. */
+export function handleIsChatRoomSelected(isChatRoomSelected: boolean) {
+  if (typeof window !== "object") return;
+
+  const main = document.getElementById(mainId);
+  const nav = document.getElementById(navBarId);
+
+  if (!main || !nav) throw new Error("main or nav element unavailable");
+
+  main.dataset[isChatRoomSelectedData] = isChatRoomSelected.toString();
+  nav.dataset[isChatRoomSelectedData] = (!isChatRoomSelected).toString();
 }

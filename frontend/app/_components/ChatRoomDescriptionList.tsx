@@ -5,7 +5,7 @@ import { revalidateChatHistory } from "app/actions";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ChatRoomListEntity, UserEntity } from "utils/projectTypes";
-import { getActiveChatRoomId } from "utils/utils";
+import { getActiveChatRoomId, handleIsChatRoomSelected } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
 import useOpenAddChatDialog from "app/_hooks/useOpenAddChatDialog";
 import { Button } from "@shadcn/button";
@@ -29,6 +29,7 @@ export default function ChatRoomDescriptionList({
     activeRoom.isUnread = false;
     setChatRooms([...chatRooms]);
   }
+  handleIsChatRoomSelected(!!activeRoom);
 
   const handleAddNewChatRoom = useCallback(
     (chatRoomId: number, members: UserEntity[]) => {
