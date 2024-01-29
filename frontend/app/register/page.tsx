@@ -26,6 +26,7 @@ export default function RegisterPage() {
               <div className="grid gap-2">
                 <Label htmlFor="first-name">First name</Label>
                 <Input
+                  required
                   id="first-name"
                   name="first-name"
                   type="text"
@@ -36,6 +37,7 @@ export default function RegisterPage() {
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last name</Label>
                 <Input
+                  required
                   id="last-name"
                   name="last-name"
                   type="text"
