@@ -9,6 +9,7 @@ import {
 } from "utils/utils";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
 import { cn } from "@/lib/utils";
+import { scrollToId } from "utils/constants";
 
 export function ChatRoomDescription({
   chatRoom,
@@ -25,7 +26,12 @@ export function ChatRoomDescription({
   const otherChatUserFullName = getUserDisplayName(otherChatUser);
 
   const encodedHref =
-    "/chats/" + chatRoom.id + "/" + encodeURIComponent(otherChatUserFullName);
+    "/chats/" +
+    chatRoom.id +
+    "/" +
+    encodeURIComponent(otherChatUserFullName) +
+    "#" +
+    scrollToId;
 
   return (
     <Link href={encodedHref}>
