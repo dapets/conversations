@@ -37,10 +37,10 @@ export function ChatRoomDescription({
         className={cn(
           "grid grid-areas-chat-room-description grid-cols-chat-room-description " +
             "p-2 rounded-lg shadow " +
-            "hover:bg-primary hover:text-primary-foreground hover:shadow-md",
+            "hover:bg-primary hover:text-primary-foreground ",
 
           {
-            " bg-primary text-primary-foreground shadow-md ": isActive,
+            "bg-primary text-primary-foreground ": isActive,
           }
         )}
       >
