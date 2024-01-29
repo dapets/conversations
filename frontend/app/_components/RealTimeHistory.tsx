@@ -33,7 +33,7 @@ export function RealtimeHistory({
           author,
           id: Math.random(),
           message,
-          sentOn: new Date(),
+          sentOn: new Date().toISOString(),
         },
       ]);
       setDoesRoomHaveMessages(true);
