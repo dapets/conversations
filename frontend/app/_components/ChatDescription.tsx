@@ -14,10 +14,11 @@ export function ChatDescription({
     "/chats/" +
     user.id +
     "/" +
-    encodeURIComponent(`${user.firstName} ${user.lastName}`);
+    encodeURIComponent(`${user.firstName} ${user.lastName}`) +
+    "#latest";
 
   return (
-    <Link href={encodedHref} scroll={false}>
+    <Link href={encodedHref}>
       {/* Padding behaves weird if I style the <Link> directly, don't know why*/}
       <div
         data-isactive={isActive}

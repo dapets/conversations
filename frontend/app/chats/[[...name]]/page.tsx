@@ -1,9 +1,12 @@
 import { ChatMessage } from "app/_components/ChatMessage";
-import { sampleChatHistory } from "utils/sampleData";
+import { History } from "types/dbEntities";
 
 async function getChatHistoryWithId(userId: number) {
-  const result = fetch(process.env.BACKEND_URL + "/chats/" + userId);
+  const result = await fetch(process.env.BACKEND_URL + "/chats/" + userId);
+  return JSON.parse(await result.text()) as History[];
 }
+
+const loggedInUserId = 177;
 
 export default async function ChatHistory({
   params,
@@ -18,21 +21,18 @@ export default async function ChatHistory({
 
   const chatHistory = await getChatHistoryWithId(id);
 
-  const authorIdx = sampleChatHistory.findIndex((n) => n.id === name);
-  if (authorIdx < 0) return "Invalid Author: error fetching messages";
-
   return (
-    <section className="overflow-y-auto">
+    <section className="overflow-y-auto" id="">
       <ul className="flex flex-col space-y-4">
-        {sampleChatHistory[authorIdx].messages.map((m, i) => (
-          <li key={i}>
-            <ChatMessage
-              author={sampleChatHistory[authorIdx].author}
-              message={m}
-              sentOn={new Date(Date.parse(sampleChatHistory[authorIdx].sentOn))}
-            />
-          </li>
-        ))}
+        {chatHistory.length === 0
+          ? "No messages yet."
+          : chatHistory.map((h) => (
+              <li key={h.id}>
+                <ChatMessage history={h} />
+              </li>
+            ))}
+        {/* we're using this element to scroll to the latest chat message */}
+        <span className="w-0 h-0" id="latest" />
       </ul>
     </section>
   );
