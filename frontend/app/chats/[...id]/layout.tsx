@@ -3,6 +3,7 @@ import { MessageInput } from "@components/MessageInput";
 import { getChatHistoryById, getLoggedInUser } from "app/dataFetchers";
 import { TypographyH2 } from "@shadcn/TypographyH1";
 import { getOtherChatUser, getUserDisplayName } from "utils/utils";
+import { ScrollArea } from "@shadcn/ScrollArea";
 
 export default async function ClientLayout({
   children,
@@ -24,7 +25,9 @@ export default async function ClientLayout({
   return (
     <>
       <TypographyH2>{heading}</TypographyH2>
-      <div className="overflow-y-auto pr-10">{children}</div>
+      <ScrollArea className="pr-14" type="always">
+        {children}
+      </ScrollArea>
       <MessageInput />
     </>
   );
