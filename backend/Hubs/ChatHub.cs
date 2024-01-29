@@ -1,5 +1,4 @@
-﻿using backend.DTOs;
-using backend.Entities;
+﻿using backend.Entities;
 using backend.Utils;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,9 @@ namespace backend.Hubs;
 
 public interface IChatClient
 {
-    Task ReceiveMessage(int chatsId, AuthorDto author, string message);
+    Task ReceiveMessage(int chatsId, ApplicationUserDto author, string message);
+
+    Task AddChatRoom(int chatRoomId, IEnumerable<ApplicationUserDto> members);
 }
 
 [Authorize]
@@ -29,7 +30,7 @@ public class ChatHub(ILogger<ChatHub> logger,
 
     private readonly ApplicationDbContext dbContext = dbContext;
 
-    private async Task<AuthorDto> GetAuthorDto()
+    private async Task<ApplicationUserDto> GetApplicationUserDto()
     {
         var userEntity = await identityUtils.GetUserAsync(Context.User);
 
@@ -100,6 +101,6 @@ public class ChatHub(ILogger<ChatHub> logger,
         }
 
         await AddToHistory(message, chatsId);
-        await Clients.Groups(chatsId.ToString()).ReceiveMessage(chatsId, await GetAuthorDto(), message);
+        await Clients.Groups(chatsId.ToString()).ReceiveMessage(chatsId, await GetApplicationUserDto(), message);
     }
 }

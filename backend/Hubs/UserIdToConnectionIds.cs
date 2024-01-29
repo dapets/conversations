@@ -31,6 +31,16 @@ public class UserIdToConnectionIds(IHubContext<ChatHub> hubContext)
     }
   }
 
+  public List<string> GetUsersConnectionIds(ApplicationUser user)
+  {
+    if (Dict.TryGetValue(user.Id, out var connections))
+    {
+      return connections;
+    }
+
+    return [];
+  }
+
   public void RemoveConnectionFromDict(ApplicationUser user, string connectionId)
   {
     if (Dict.TryGetValue(user.Id, out List<string>? value))

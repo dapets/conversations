@@ -144,7 +144,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 .RequireAuthorization("HasFinishedRegistrationAndLastName");
 
 app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDto>>>
-    ([FromBody] AddChatWithUserDto body, IHubContext<ChatHub> hubContext,
+    ([FromBody] AddChatWithUserDto body, IHubContext<ChatHub, IChatClient> hubContext,
     UserIdToConnectionIds userIdToConnectionIds,
     ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
@@ -180,19 +180,26 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
         return HttpHelpers.ProduceBadRequestProblem($"User {loggedInUser.Email} is already in a chat room with {userToAdd.Email}.");
     }
 
+    var members = new List<ApplicationUser>(2) { userToAdd, loggedInUser };
+
     var newChat = new Chats()
     {
-        Members = [userToAdd, loggedInUser],
+        Members = members,
         History = null!
     };
 
     await db.Chats.AddAsync(newChat);
     await db.SaveChangesAsync();
 
+    var connections = userIdToConnectionIds.GetUsersConnectionIds(loggedInUser);
+    connections.AddRange(userIdToConnectionIds.GetUsersConnectionIds(userToAdd));
+
     await Task.WhenAll(
         userIdToConnectionIds.AddUserIdToSignalRGroup(loggedInUser.Id, newChat.Id.ToString()),
-        userIdToConnectionIds.AddUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString())
+        userIdToConnectionIds.AddUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString()),
+        hubContext.Clients.Clients(connections).AddChatRoom(newChat.Id, members.Select(m => m.GetDto()))
     );
+
 
     var resultDto = new ChatRoomCreatedDto(newChat.Id, newChat.Members.Select(member => member.GetDto()));
 
