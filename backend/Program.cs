@@ -49,7 +49,8 @@ else
     app.UseHsts();
 }
 
-app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatHub>("/chatHub")
+    .RequireAuthorization();
 
 app.MapGet("/whoami", (ClaimsPrincipal claimsPrincipal, IdentityUtils utils) =>
 {
