@@ -27,6 +27,19 @@ export default function ChatRoomDescriptionList({
     setChatRooms([...chatRooms]);
   }
 
+  const handleAddNewChatRoom = useCallback(
+    (chatRoomId: number, members: UserEntity[]) => {
+      const newRoom: ChatRoomListEntity = {
+        id: chatRoomId,
+        members: members,
+        isUnread: true,
+      };
+
+      setChatRooms((value) => [newRoom, ...value]);
+    },
+    [],
+  );
+
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
       const roomIdx = chatRooms.findIndex((r) => r.id === chatRoomId);
@@ -64,8 +77,12 @@ export default function ChatRoomDescriptionList({
   useEffect(() => {
     if (!conn) return;
     conn.on("ReceiveMessage", handleIncomingMessage);
-    return () => conn.off("ReceiveMessage", handleIncomingMessage);
-  }, [conn, handleIncomingMessage]);
+    conn.on("AddChatRoom", handleAddNewChatRoom);
+    return () => {
+      conn.off("ReceiveMessage", handleIncomingMessage);
+      conn.off("AddChatRoom", handleAddNewChatRoom);
+    };
+  }, [conn, handleIncomingMessage, handleAddNewChatRoom]);
 
   return (
     <ul className="space-y-3">

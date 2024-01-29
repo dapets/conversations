@@ -191,15 +191,12 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
     await db.Chats.AddAsync(newChat);
     await db.SaveChangesAsync();
 
-    var connections = userIdToConnectionIds.GetUsersConnectionIds(loggedInUser);
-    connections.AddRange(userIdToConnectionIds.GetUsersConnectionIds(userToAdd));
-
     await Task.WhenAll(
         userIdToConnectionIds.AddUserIdToSignalRGroup(loggedInUser.Id, newChat.Id.ToString()),
-        userIdToConnectionIds.AddUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString()),
-        hubContext.Clients.Clients(connections).AddChatRoom(newChat.Id, members.Select(m => m.GetDto()))
+        userIdToConnectionIds.AddUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString())
     );
 
+    await hubContext.Clients.Group(newChat.Id.ToString()).AddChatRoom(newChat.Id, members.Select(m => m.GetDto()));
 
     var resultDto = new ChatRoomCreatedDto(newChat.Id, newChat.Members.Select(member => member.GetDto()));
 
