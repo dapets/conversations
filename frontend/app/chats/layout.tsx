@@ -1,4 +1,4 @@
-import { AddChatButton } from "@components/AddChatButton";
+import { AddChatIconButton } from "@components/AddChatIconButton";
 import { AddChatDialog } from "@components/AddChatDialog";
 import { LogoutButton } from "@components/LogoutButton";
 import { ScrollArea } from "@shadcn/ScrollArea";
@@ -42,7 +42,7 @@ export default async function ClientLayout({
         </div>
         <div className="mb-4 mr-6 mt-5 flex justify-between">
           <TypographyH2>Messages</TypographyH2>
-          <AddChatButton />
+          <AddChatIconButton />
         </div>
         <ScrollArea className="pr-6" type="always" data-state="visible">
           {chatList}
