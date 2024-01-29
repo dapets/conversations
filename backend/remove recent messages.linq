@@ -18,25 +18,32 @@
 void Main()
 {
 	Util.HorizontalRun(true,
-	new Button("Remove entries", onClick: ((_) =>
-	{
-		trackRecents();
-		SubmitChanges();
-		trackRecents();
-	})),
-	new Button("Refresh", onClick: (_ => trackRecents()))
+		new Button("Remove entries", onClick: ((_) =>
+		{
+			removedNo.Content = trackRecents();
+			SubmitChanges();
+			trackRecents();
+		})),
+		new Button("Refresh", onClick: (_ =>
+		{
+			removedNo.Content = 0;
+			trackRecents();
+		}))
 	).Dump();
+	removedNo.Dump("No of removed columns");
 	removeMeContainer.Dump("Recent messages");
 	trackRecents();
 }
 public DumpContainer removeMeContainer = new DumpContainer();
-void trackRecents()
+public DumpContainer removedNo = new DumpContainer();
+int trackRecents()
 {
 	var isRecentEnough = (History history) => (DateTime.Now - DateTime.Parse(history.SentOn)).Days < 5;
 	var removeMe = Histories.AsEnumerable().Where(h => isRecentEnough(h));
 	removeMeContainer.Content = removeMe;
 	Histories.RemoveRange(removeMe);
-}
 
+	return removeMe.Count();
+}
 
 // You can define other methods, fields, classes and namespaces here
