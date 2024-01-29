@@ -65,11 +65,16 @@ app.MapGet("/whoami", async (ClaimsPrincipal claimsPrincipal, IdentityUtils util
 app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
+
     return db
     .Chats
-    .Include(c => c.Members)
-    .Include(c => c.History)
-    .Where(c => c.Members.Contains(loggedInUser))
+    .Include(chats => chats.Members)
+    .Include(chats => chats.History)
+    .Where(chats => chats.Members.Contains(loggedInUser))
+    .OrderByDescending(chats => chats
+        .History
+        .OrderBy(h => h.SentOn)
+        .Last())
     .Select(chat => chat.GetDto())
     .AsAsyncEnumerable();
 })

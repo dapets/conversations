@@ -39,6 +39,12 @@ export default function ChatRoomDescriptionList({
         id: Math.random(),
       };
 
+      chatRooms.sort(
+        (a, b) =>
+          new Date(b.lastMessage?.sentOn ?? 0).getTime() -
+          new Date(a.lastMessage?.sentOn ?? 0).getTime()
+      );
+
       setChatRooms([...chatRooms]);
 
       //already updating our current chat in RealTimeHistory
