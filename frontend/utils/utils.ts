@@ -7,9 +7,10 @@ import {
   navBarId,
 } from "./constants";
 
-export function getActiveChatRoomId(pathname: string) {
+export function getActiveChatRoomId(pathname: string): Number | null {
   const segments = pathname.split("/");
   const activeChatRoomId = +segments[2];
+  if (isNaN(activeChatRoomId)) return null;
 
   return activeChatRoomId;
 }
@@ -47,7 +48,6 @@ export function handleIsChatRoomSelected(isChatRoomSelected: boolean) {
   const nav = document.getElementById(navBarId);
 
   if (!main || !nav) {
-    //we might be on the server.
     return;
   }
 

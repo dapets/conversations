@@ -2,6 +2,7 @@ import { Message } from "@components/Message";
 import { scrollToId } from "utils/constants";
 import { getChatHistoryById, getLoggedInUser } from "app/dataFetchers";
 import { RealTimeHistoryWithServerSideProps } from "./RealTimeHistoryWithServerSideProps";
+import { HandleIsChatRoomSelected } from "@components/HandleIsChatRoomSelected";
 
 export default async function ChatHistory({
   params,
@@ -21,6 +22,7 @@ export default async function ChatHistory({
 
   return (
     <>
+      <HandleIsChatRoomSelected />
       <ul className="flex flex-col space-y-2">
         {chatHistory.map((h) => (
           <li key={h.id}>
