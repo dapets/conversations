@@ -14,7 +14,9 @@ export default async function ChatHistory({
 
   const chatRoom = await getChatHistoryWithId(chatRoomId);
   const chatHistory = chatRoom.history;
-  const loggedInUserId = (await getLoggedInUser()).id;
+  const loggedInUserId = (await getLoggedInUser())?.id;
+  if (!loggedInUserId)
+    throw Error("Tried to render chat history while logged in user was null");
 
   return (
     <section className="overflow-y-auto p-4 pl-0 pr-14">
