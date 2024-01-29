@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using backend.Auth;
 using backend.DTOs;
 using backend.Entities;
 using backend.Hubs;
 using backend.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,12 +27,29 @@ builder.Services.AddCors(config =>
         configurePolicy.AllowAnyHeader();
     });
 });
-builder.Services.AddAuthorization();
+
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IdentityUtils>();
-builder.Services.AddIdentityCore<ApplicationUser>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+builder.Services.AddIdentityCore<ApplicationUser>();
+builder.Services.AddTransient<IAuthorizationHandler, HasFinishedRegistrationHandler>();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("HasFinishedRegistrationAndLastName", policy => policy
+        .RequireAuthenticatedUser()
+        .AddRequirements(new HasFinishedRegistrationRequirement())
+    );
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+});
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<UserIdToConnectionIds>();
@@ -67,15 +86,36 @@ app.MapPost("/logout", async ([FromServices] SignInManager<ApplicationUser> sign
 })
 .RequireAuthorization();
 
+app.MapPost("/complete-registration", async Task<Results<ProblemHttpResult, Ok>>
+(ClaimsPrincipal claimsPrincipal, IdentityUtils utils, [FromBody] CompleteRegistrationDto completeRegistrationDto, ApplicationDbContext dbContext) =>
+{
+    var user = await utils.GetUserAsync(claimsPrincipal);
+    var isFirstNameValid = !string.IsNullOrEmpty(completeRegistrationDto.FirstName) && completeRegistrationDto.FirstName.Length > 0;
+    var isLastNameValid = !string.IsNullOrEmpty(completeRegistrationDto.LastName) && completeRegistrationDto.LastName.Length > 0;
+
+    if (!isLastNameValid || isFirstNameValid)
+    {
+        return HttpHelpers.ProduceBadRequestProblem("First and last name must at least be one character long.");
+    }
+
+    user.FirstName = completeRegistrationDto.FirstName;
+    user.LastName = completeRegistrationDto.LastName;
+
+    dbContext.Update(user);
+    await dbContext.SaveChangesAsync();
+
+    return TypedResults.Ok();
+}).RequireAuthorization();
+
 app.MapHub<ChatHub>("/chatHub")
-    .RequireAuthorization();
+    .RequireAuthorization("HasFinishedRegistrationAndLastName");
 
 app.MapGet("/whoami", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils) =>
 {
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
     return loggedInUser.GetDto();
 })
-.RequireAuthorization();
+.RequireAuthorization("HasFinishedRegistrationAndLastName");
 
 app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
@@ -93,7 +133,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
     .Select(chat => chat.GetDto())
     .AsAsyncEnumerable();
 })
-.RequireAuthorization();
+.RequireAuthorization("HasFinishedRegistrationAndLastName");
 
 app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDto>>>
     ([FromBody] AddChatWithUserDto body, IHubContext<ChatHub> hubContext,
@@ -150,7 +190,7 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
 
     return TypedResults.Ok(resultDto);
 })
-.RequireAuthorization();
+.RequireAuthorization("HasFinishedRegistrationAndLastName");
 
 app.MapGet("/chats/{chatId}", async Task<Results<NotFound, Ok<ChatRoomWithHistoryDto>>>
     (int chatId, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
@@ -177,6 +217,6 @@ app.MapGet("/chats/{chatId}", async Task<Results<NotFound, Ok<ChatRoomWithHistor
 
     return TypedResults.Ok(new ChatRoomWithHistoryDto(chat.id, chat.members, chat.history));
 })
-.RequireAuthorization();
+.RequireAuthorization("HasFinishedRegistrationAndLastName");
 
 app.Run();

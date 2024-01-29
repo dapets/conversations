@@ -13,10 +13,10 @@ public class ApplicationUser : IdentityUser, IGetDto<ApplicationUserDto>
     public string LastName { get; set; } = string.Empty;
 
     [PersonalData]
-    public ICollection<History> SentMessages { get; set; } = new List<History>();
+    public ICollection<History> SentMessages { get; set; } = [];
 
     [PersonalData]
-    public ICollection<Chats> Chats { get; set; } = new List<Chats>();
+    public ICollection<Chats> Chats { get; set; } = [];
 
     public ApplicationUserDto GetDto() => new(Id, FirstName, LastName);
 }
