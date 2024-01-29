@@ -21,7 +21,6 @@ export function RealtimeHistory({
 }: {
   activeChatRoomId: number;
   doesRoomHaveMessages: boolean;
-  historyLength: number;
   scrollToId?: string;
   renderMessage: (newMessage: HistoryEntity) => React.ReactNode;
 }) {
