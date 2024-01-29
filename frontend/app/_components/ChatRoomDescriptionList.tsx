@@ -15,7 +15,7 @@ export default function ChatRoomDescriptionList({
   const pathname = usePathname();
 
   const segments = pathname.split("/");
-  const activeUserId = +segments[2];
+  const activeChatRoomId = +segments[2];
 
   const handleIncomingMessage = useCallback(
     (author: UserEntity, message: unknown) => {
@@ -36,7 +36,7 @@ export default function ChatRoomDescriptionList({
         <li key={i}>
           <ChatRoomDescription
             chatRoom={chatRoom}
-            isActive={chatRoom.id === activeUserId}
+            isActive={chatRoom.id === activeChatRoomId}
           />
         </li>
       ))}
