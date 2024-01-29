@@ -152,6 +152,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
 
     var orderedChats = dbContext.Chats
+    //these includes are necessary for chat.lastmMessage.GetDto(), which requires Chat to not be null;
     .Include(chats => chats.History)
     .ThenInclude(history => history.Chats)
     .Where(chatsDto => chatsDto.Members.Contains(loggedInUser))
@@ -164,9 +165,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
             .OrderBy(history => history.SentOn)
             .Last()
     })
-    //String sorts the DateTime of kind UTC correctly 
-    //whereas a normal DateTime (DateTime.parse(chatsDto.lastMessage)) does not.
-    .OrderByDescending(chatsDto => chatsDto.lastMessage)
+    .OrderByDescending(dto => dto.lastMessage.SentOn)
     .ToList();
 
     var dtos = orderedChats.Select(chat => new
@@ -175,6 +174,9 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
         members = chat.members.Select(m => m.GetDto()),
         lastMessage = chat.lastMessage.GetDto()
     });
+
+    //doing this on the db (for some reason) doesn't sort them properly.
+    // var sortedDtos = dtos.OrderByDescending(dto => dto.lastMessage.SentOn);
 
     return dtos;
 })
