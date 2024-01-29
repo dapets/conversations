@@ -14,9 +14,9 @@ export function ChatMessage(props: {
     <section>
       <div className="mb-1 flex items-baseline">
         <h2 className="text-base font-bold">{props.author}</h2>
-        <span className="ml-4 text-sm text-zinc-600">
+        <time className="ml-4 text-sm text-zinc-600" suppressHydrationWarning>
           {dayjs().to(props.sentOn)}
-        </span>
+        </time>
       </div>
       <p>{props.message}</p>
     </section>

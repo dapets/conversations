@@ -1,12 +1,20 @@
+"use client";
+
 import { ChatDescription } from "@components/ChatDescription";
+import { usePathname } from "next/navigation";
 import { sampleUsers } from "sampleData";
 
 export default function SampleDataChatList() {
+  const pathname = usePathname();
+
   return (
     <ul>
       {sampleUsers.map((u, i) => (
         <li key={i}>
-          <ChatDescription username={u.username} />
+          <ChatDescription
+            username={u.username}
+            isActive={decodeURI(pathname).endsWith(u.username)}
+          />
         </li>
       ))}
     </ul>

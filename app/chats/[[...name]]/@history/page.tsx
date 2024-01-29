@@ -1,4 +1,4 @@
-import { ChatMessage } from "@components/ChatMessage";
+import { ChatMessage } from "app/_components/ChatMessage";
 import { sampleChatHistory } from "sampleData";
 
 export default function ChatHistory({
@@ -22,7 +22,7 @@ export default function ChatHistory({
             <ChatMessage
               author={sampleChatHistory[authorIdx].author}
               message={m}
-              sentOn={sampleChatHistory[authorIdx].sentOn}
+              sentOn={new Date(Date.parse(sampleChatHistory[authorIdx].sentOn))}
             />
           </li>
         ))}

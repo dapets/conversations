@@ -1,7 +1,7 @@
 import React from "react";
 
-import { MessageInput } from "@components/MessageInput";
-import SampleDataChatList from "../_description/Description";
+import { MessageInput } from "app/_components/MessageInput";
+import SampleDataChatList from "../../_components/SampleDataChatList";
 
 export default function ClientLayout({
   children,

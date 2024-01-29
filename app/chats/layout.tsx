@@ -1,6 +1,5 @@
+import SampleDataChatList from "@components/SampleChatDescription";
 import React from "react";
-
-import SampleDataChatList from "./_description/Description";
 
 export default function ClientLayout({
   children,
