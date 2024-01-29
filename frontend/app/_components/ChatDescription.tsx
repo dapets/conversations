@@ -1,5 +1,5 @@
-import { scrollToId } from "app/chats/[...name]/page";
 import Link from "next/link";
+import { scrollToId } from "utils/constants";
 import { UserEntity } from "utils/dbEntities";
 
 export function ChatDescription({
