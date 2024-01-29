@@ -28,28 +28,28 @@ export default function ChatRoomDescriptionList({
 
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
-      let room = chatRooms.find((r) => r.id === chatRoomId);
-      if (!room)
+      const roomIdx = chatRooms.findIndex((r) => r.id === chatRoomId);
+      let roomForMessage = chatRooms[roomIdx];
+      if (!roomForMessage)
         throw Error(
           `No room with chatRoomId ${chatRoomId} of message ${message} exists`
         );
-      if (room.id !== activeChatRoomId && author.id !== loggedInUserId) {
-        room.isUnread = true;
+      if (
+        roomForMessage.id !== activeChatRoomId &&
+        author.id !== loggedInUserId
+      ) {
+        roomForMessage.isUnread = true;
       }
-      room.lastMessage = {
+      roomForMessage.lastMessage = {
         author,
         message,
         sentOn: new Date(),
         id: Math.random(),
       };
 
-      chatRooms.sort(
-        (a, b) =>
-          new Date(b.lastMessage?.sentOn ?? 0).getTime() -
-          new Date(a.lastMessage?.sentOn ?? 0).getTime()
-      );
-
-      setChatRooms([...chatRooms]);
+      //move rooms with new messages to the top
+      chatRooms.splice(roomIdx, 1);
+      setChatRooms([roomForMessage, ...chatRooms]);
 
       //already updating our current chat in RealTimeHistory
       if (activeChatRoomId !== chatRoomId) {
