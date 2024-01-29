@@ -1,4 +1,4 @@
-<Query Kind="Statements">
+<Query Kind="Program">
   <Connection>
     <ID>363b3232-5867-446d-874d-ca41c536f665</ID>
     <NamingServiceVersion>2</NamingServiceVersion>
@@ -15,7 +15,21 @@
   <Namespace>LINQPad.Controls</Namespace>
 </Query>
 
-var removeMeContainer = new DumpContainer().Dump("Recent messages");
+void Main()
+{
+	Util.HorizontalRun(true,
+	new Button("Remove entries", onClick: ((_) =>
+	{
+		trackRecents();
+		SubmitChanges();
+		trackRecents();
+	})),
+	new Button("Refresh", onClick: (_ => trackRecents()))
+	).Dump();
+	removeMeContainer.Dump("Recent messages");
+	trackRecents();
+}
+public DumpContainer removeMeContainer = new DumpContainer();
 void trackRecents()
 {
 	var isRecentEnough = (History history) => (DateTime.Now - DateTime.Parse(history.SentOn)).Days < 5;
@@ -24,13 +38,5 @@ void trackRecents()
 	Histories.RemoveRange(removeMe);
 }
 
-trackRecents();
-Util.HorizontalRun(true,
-new Button("Remove entries", onClick: ((_) =>
-{
-	trackRecents();
-	SubmitChanges();
-	trackRecents();
-})),
-new Button("Refresh", onClick: (_ => trackRecents()))
-).Dump();
+
+// You can define other methods, fields, classes and namespaces here
