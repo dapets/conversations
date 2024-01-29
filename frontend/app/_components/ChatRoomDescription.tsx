@@ -3,7 +3,11 @@ import Link from "next/link";
 import { getRelativeLocalTimeStrFromUtcDate } from "utils/configuredDayjs";
 import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
-import { getOtherChatUser, getUserDisplayName } from "utils/utils";
+import {
+  getOtherChatUser,
+  getUserDisplayName,
+  getUserInitials,
+} from "utils/utils";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
 import styles from "./ChatRoomDescription.module.css";
 
@@ -48,10 +52,7 @@ export function ChatRoomDescription({
           />
         )}
         <Avatar className="text-primary [grid-area:avatar] place-self-center mr-2">
-          <AvatarFallback>
-            {otherChatUser.firstName[0]}
-            {otherChatUser.lastName[0]}
-          </AvatarFallback>
+          <AvatarFallback>{getUserInitials(otherChatUser)}</AvatarFallback>
         </Avatar>
         <TypographyLarge className="truncate [grid-area:username]">
           {otherChatUserFullName}

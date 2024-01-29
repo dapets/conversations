@@ -22,3 +22,7 @@ export function getOtherChatUser(
 export function getUserDisplayName(user: UserEntity) {
   return user.firstName + " " + user.lastName;
 }
+
+export function getUserInitials(user: UserEntity) {
+  return user.firstName[0] + user.lastName[0];
+}
