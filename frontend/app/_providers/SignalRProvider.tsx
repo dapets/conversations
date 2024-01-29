@@ -7,7 +7,7 @@ import {
   LogLevel,
 } from "@microsoft/signalr";
 import { useSearchParams } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { hasLoginChangedQueryParam } from "utils/constants";
 import { UserEntity } from "utils/projectTypes";
 
@@ -85,6 +85,11 @@ export default function SignalRProvider({
       return;
     }
 
+    restartSignalR();
+  }
+
+  async function restartSignalR() {
+    if (typeof window !== "object") return;
     switch (connection.state) {
       case HubConnectionState.Connected:
         await connection.stop();
@@ -95,6 +100,11 @@ export default function SignalRProvider({
         break;
     }
   }
+
+  //we need this effect for restarting signalR if the window was unloaded
+  useEffect(() => {
+    restartSignalR();
+  }, []);
 
   return (
     <SignalRConnectionContext.Provider value={connection}>
