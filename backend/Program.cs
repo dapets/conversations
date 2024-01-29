@@ -193,10 +193,15 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
 })
 .RequireAuthorization("HasFinishedRegistrationAndLastName");
 
-app.MapGet("/chats/{chatId}", async Task<Results<NotFound, Ok<ChatRoomWithHistoryDto>>>
+app.MapGet("/chats/{chatId}", async Task<Results<NotFound, UnauthorizedHttpResult, Ok<ChatRoomWithHistoryDto>>>
     (int chatId, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
+    if (!await utils.IsMemberOfChat(chatId, loggedInUser))
+    {
+        return TypedResults.Unauthorized();
+    }
+
     var chat = await db.Chats
         .Include(chats => chats.History)
         .ThenInclude(history => history.Author)
