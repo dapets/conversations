@@ -6,6 +6,7 @@ using backend.Utils;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,7 @@ builder.Services.AddIdentityCore<ApplicationUser>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<UserIdToConnectionIds>();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -94,8 +96,11 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 .RequireAuthorization();
 
 app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDto>>>
-    ([FromBody] AddChatWithUserDto body, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
+    ([FromBody] AddChatWithUserDto body, IHubContext<ChatHub> hubContext,
+    UserIdToConnectionIds userIdToConnectionIds,
+     ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
+
     var loggedInUserTask = utils.GetUserAsync(claimsPrincipal);
 
     //Can't do that because string.Equals would need to be evaluated on the client.
@@ -135,6 +140,23 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
 
     await db.Chats.AddAsync(newChat);
     await db.SaveChangesAsync();
+
+    void addUserIdToSignalRGroup(string userId, string groupId)
+    {
+        if (userIdToConnectionIds.Dict.TryGetValue(userId, out var userConnections))
+        {
+            foreach (var connection in userConnections)
+            {
+                hubContext.Groups.AddToGroupAsync(connection, groupId);
+            }
+        }
+
+    }
+
+    //When clients connect they are added to groups based on the Chats they are in.
+    //When a new Chat is added we need to add the user's connection(s) to the new Chats' group.
+    addUserIdToSignalRGroup(loggedInUser.Id, newChat.Id.ToString());
+    addUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString());
 
     var resultDto = new ChatRoomCreatedDto(newChat.Id, newChat.Members.Select(member => member.GetDto()));
 

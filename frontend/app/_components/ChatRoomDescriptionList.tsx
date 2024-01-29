@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ChatRoomListEntity, UserEntity } from "utils/dbEntities";
 import { getActiveChatRoomId } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
+import { useAddedRooms } from "@providers/AddedChatRoomsContext";
 
 export default function ChatRoomDescriptionList({
   initalChatRooms,
@@ -18,6 +19,7 @@ export default function ChatRoomDescriptionList({
   const conn = useSignalR();
   const pathname = usePathname();
   const [chatRooms, setChatRooms] = useState(initalChatRooms);
+  const addedChatRooms = useAddedRooms();
 
   const activeChatRoomId = getActiveChatRoomId(pathname);
   const activeRoom = chatRooms.find((r) => r.id === activeChatRoomId);
@@ -29,18 +31,19 @@ export default function ChatRoomDescriptionList({
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
       const roomIdx = chatRooms.findIndex((r) => r.id === chatRoomId);
-      let roomForMessage = chatRooms[roomIdx];
-      if (!roomForMessage)
+      let roomMessageWasSentIn = chatRooms[roomIdx];
+      if (!roomMessageWasSentIn) {
         throw Error(
           `No room with chatRoomId ${chatRoomId} of message ${message} exists`,
         );
-      if (
-        roomForMessage.id !== activeChatRoomId &&
-        author.id !== loggedInUserId
-      ) {
-        roomForMessage.isUnread = true;
       }
-      roomForMessage.lastMessage = {
+
+      const isRoomActiveRoom = roomMessageWasSentIn.id === activeChatRoomId;
+      const isAuthorLoggedInUser = author.id === loggedInUserId;
+      if (!isRoomActiveRoom && !isAuthorLoggedInUser) {
+        roomMessageWasSentIn.isUnread = true;
+      }
+      roomMessageWasSentIn.lastMessage = {
         author,
         message,
         sentOn: new Date(),
@@ -49,7 +52,7 @@ export default function ChatRoomDescriptionList({
 
       //move rooms with new messages to the top
       chatRooms.splice(roomIdx, 1);
-      setChatRooms([roomForMessage, ...chatRooms]);
+      setChatRooms([roomMessageWasSentIn, ...chatRooms]);
 
       //already updating our current chat in RealTimeHistory
       if (activeChatRoomId !== chatRoomId) {
@@ -65,9 +68,10 @@ export default function ChatRoomDescriptionList({
     return () => conn.off("ReceiveMessage", handleIncomingMessage);
   }, [conn, handleIncomingMessage]);
 
+  const allChatRooms = [...addedChatRooms, ...chatRooms];
   return (
     <ul className="space-y-3">
-      {chatRooms.map((chatRoom) => (
+      {allChatRooms.map((chatRoom) => (
         <li key={chatRoom.id}>
           <ChatRoomDescription
             chatRoom={chatRoom}

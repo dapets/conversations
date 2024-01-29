@@ -1,4 +1,5 @@
-﻿using backend.DTOs;
+﻿using System.Collections.Concurrent;
+using backend.DTOs;
 using backend.Entities;
 using backend.Utils;
 using CommunityToolkit.Diagnostics;
@@ -14,8 +15,11 @@ public interface IChatClient
 public class ChatHub(ILogger<ChatHub> logger,
     IdentityUtils identityUtils,
     ApplicationDbContext applicationDbContext,
+    UserIdToConnectionIds userIdToConnectionIds,
     ApplicationDbContext dbContext) : Hub<IChatClient>
 {
+    private readonly UserIdToConnectionIds userIdToConnectionIds = userIdToConnectionIds;
+
     private readonly IdentityUtils identityUtils = identityUtils;
 
     private readonly ApplicationDbContext applicationDbContext = applicationDbContext;
@@ -51,6 +55,43 @@ public class ChatHub(ILogger<ChatHub> logger,
         return newHistory;
     }
 
+    private void AddConnectionToDict(ApplicationUser user)
+    {
+        if (userIdToConnectionIds.Dict.TryGetValue(user.Id, out List<string>? value))
+        {
+            if (value is null) throw new InvalidOperationException($"Key {user.Id} in {nameof(userIdToConnectionIds)} was present but value was null.");
+
+            value.Add(Context.ConnectionId);
+            userIdToConnectionIds.Dict[user.Id] = value;
+        }
+        else
+        {
+            userIdToConnectionIds.Dict[user.Id] = [Context.ConnectionId];
+        }
+    }
+
+    private void RemoveConnectionFromDict(ApplicationUser user)
+    {
+        if (userIdToConnectionIds.Dict.TryGetValue(user.Id, out List<string>? value))
+        {
+            if (value is null) throw new InvalidOperationException($"Key {user.Id} in {nameof(userIdToConnectionIds)} was present but value was null.");
+
+            value.Remove(Context.ConnectionId);
+            if (value.Count == 0)
+            {
+                userIdToConnectionIds.Dict.Remove(user.Id, out _);
+            }
+            else
+            {
+                userIdToConnectionIds.Dict[user.Id] = value;
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException($"Key {user.Id} in {nameof(userIdToConnectionIds)} was not present while disconnecting the connectionId {Context.ConnectionId}");
+        }
+    }
+
     public async override Task OnConnectedAsync()
     {
         logger.LogInformation("User with id {username}, email {Email} and connection id {ConnectionId} connected",
@@ -65,15 +106,20 @@ public class ChatHub(ILogger<ChatHub> logger,
             .ToList();
 
         await Task.WhenAll(chatsIds.Select(id => Groups.AddToGroupAsync(Context.ConnectionId, id.ToString())));
+        AddConnectionToDict(user);
 
         await base.OnConnectedAsync();
     }
 
-    public override Task OnDisconnectedAsync(Exception? exception)
+    public async override Task OnDisconnectedAsync(Exception? exception)
     {
         logger.LogInformation("User with id {UserId}, email {Email} and connection id {ConnectionId} disconnected",
             Context.UserIdentifier, Context.User?.Identity?.Name, Context.ConnectionId);
-        return base.OnDisconnectedAsync(exception);
+
+        var user = await identityUtils.GetUserAsync(Context.User);
+        RemoveConnectionFromDict(user);
+
+        await base.OnDisconnectedAsync(exception);
     }
 
     public async Task SendMessage(string message, int chatsId)
