@@ -10,7 +10,7 @@ public class HasFinishedRegistrationHandler(ILogger<HasFinishedRegistrationHandl
 
   protected async override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasFinishedRegistrationRequirement requirement)
   {
-    if (context.User is null)
+    if (context.User is null || context.User.Identity?.IsAuthenticated == false)
     {
       return;
     }
