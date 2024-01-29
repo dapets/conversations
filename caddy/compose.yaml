@@ -1,9 +1,0 @@
-services:
-  caddy:
-    build: .
-    ports:
-      - 80:80
-      - 443:443
-    develop:
-      watch:
-        - action: rebuild

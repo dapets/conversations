@@ -1,4 +1,10 @@
-http:// {
+{
+  auto_https off
+}
+
+:80 {
+  encode zstd gzip
+
   reverse_proxy * frontend:3000
   reverse_proxy /chatHub* backend:3001
 }
