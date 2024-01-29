@@ -1,5 +1,5 @@
 import { ChatMessage } from "app/_components/ChatMessage";
-import { sampleChatHistory } from "sampleData";
+import { sampleChatHistory } from "utils/sampleData";
 
 export default function ChatHistory({
   params,

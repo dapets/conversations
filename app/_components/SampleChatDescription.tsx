@@ -2,7 +2,7 @@
 
 import { ChatDescription } from "@components/ChatDescription";
 import { usePathname } from "next/navigation";
-import { sampleUsers } from "sampleData";
+import { sampleUsers } from "utils/sampleData";
 
 export default function SampleDataChatList() {
   const pathname = usePathname();
