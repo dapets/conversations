@@ -1,9 +1,8 @@
 import React from "react";
 import { MessageInput } from "@components/MessageInput";
-import { getChatHistoryById, getLoggedInUser } from "app/dataFetchers";
 import { TypographyH2 } from "@shadcn/TypographyH1";
-import { getOtherChatUser, getUserDisplayName } from "utils/utils";
 import { ScrollArea } from "@shadcn/ScrollArea";
+import { messageScrollContainerId } from "utils/constants";
 
 export default async function ClientLayout({
   children,
@@ -16,7 +15,11 @@ export default async function ClientLayout({
   return (
     <>
       <TypographyH2>{heading}</TypographyH2>
-      <ScrollArea className="mr-2 pr-4" type="always">
+      <ScrollArea
+        viewportId={messageScrollContainerId}
+        className="mr-2 pr-4"
+        type="always"
+      >
         {children}
       </ScrollArea>
       <MessageInput className="pr-2" />

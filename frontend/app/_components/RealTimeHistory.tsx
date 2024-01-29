@@ -9,6 +9,9 @@ import {
 } from "react";
 import { ChatRoomEntity, HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
+import { messageScrollContainerId } from "utils/constants";
+
+const intentionalUserScrollHeight = 1000;
 
 export function RealtimeHistory({
   activeChatRoom,
@@ -48,12 +51,31 @@ export function RealtimeHistory({
 
   //using useEffect leads to visual glitches when a lot of messages arrive
   useLayoutEffect(() => {
+    let isUserManuallyScrolledUp = false;
     const scrollToElement = document.querySelector("#" + scrollToId);
+    const scrollContainer = document.querySelector(
+      "#" + messageScrollContainerId,
+    );
+    if (scrollContainer) {
+      const scrolledHeightFromBottom =
+        scrollContainer?.scrollHeight - scrollContainer?.scrollTop;
+      if (scrolledHeightFromBottom > intentionalUserScrollHeight) {
+        isUserManuallyScrolledUp = true;
+      }
+      console.log("is scrolled up", isUserManuallyScrolledUp);
+    } else {
+      console.error(
+        "Couldn't find scroll container. with id",
+        messageScrollContainerId,
+      );
+    }
     if (!scrollToElement) {
-      console.info("New chat message but no element to scroll to.");
+      console.error("New chat message but no element to scroll to.");
       return;
     }
-    scrollToElement.scrollIntoView();
+    if (!isUserManuallyScrolledUp) {
+      scrollToElement.scrollIntoView();
+    }
   }, [scrollToId, realtimeHistory]);
 
   return <>{realtimeHistory.map((h) => renderMessage(h))}</>;
