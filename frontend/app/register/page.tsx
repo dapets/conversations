@@ -15,22 +15,22 @@ export default function RegisterPage() {
           <>
             <div className="flex gap-2">
               <div className="grid gap-2">
-                <Label htmlFor="test">First name</Label>
+                <Label htmlFor="first-name">First name</Label>
                 <Input
                   required
-                  id="test"
-                  name="test"
+                  id="first-name"
+                  name="first-name"
                   type="text"
                   autoComplete="given-name"
                   placeholder="First name"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="test">Last name</Label>
+                <Label htmlFor="last-name">Last name</Label>
                 <Input
                   required
-                  id="test"
-                  name="test"
+                  id="last-name"
+                  name="last-name"
                   type="text"
                   autoComplete="family-name"
                   placeholder="Last name"
