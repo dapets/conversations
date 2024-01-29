@@ -2,6 +2,8 @@ using System.Security.Claims;
 using backend.Entities;
 using backend.Hubs;
 using backend.Utils;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IdentityUtils>();
+builder.Services.AddIdentityCore<ApplicationUser>();
+builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
 builder.Services.AddSignalR();
 
@@ -51,6 +55,13 @@ else
 {
     app.UseHsts();
 }
+
+app.MapPost("/logout", async ([FromServices] SignInManager<ApplicationUser> signInManager) =>
+{
+    await signInManager.SignOutAsync();
+    return Results.Ok();
+})
+.RequireAuthorization();
 
 app.MapHub<ChatHub>("/chatHub")
     .RequireAuthorization();

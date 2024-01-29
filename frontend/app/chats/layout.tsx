@@ -1,3 +1,4 @@
+import { LogoutButton } from "@components/LogoutButton";
 import { ScrollArea } from "@shadcn/ScrollArea";
 import { TypographyH2 } from "@shadcn/TypographyH1";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
@@ -35,12 +36,7 @@ export default async function ClientLayout({
           <p className="grid-in-logged-in-status text-sm text-muted-foreground">
             Logged in
           </p>
-          <Button
-            className="grid-in-log-out justify-self-end font-semibold w-1/2"
-            variant="ghost"
-          >
-            Log out
-          </Button>
+          <LogoutButton className="grid-in-log-out justify-self-end w-1/2" />
         </div>
         <TypographyH2 className="mb-4">Messages</TypographyH2>
         <ScrollArea type="always" data-state="visible">
