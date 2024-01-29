@@ -10,7 +10,7 @@ import {
 } from "@shadcn/tooltip";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { scrollToId } from "utils/constants";
+import { addChatDialogQueryParam, scrollToId } from "utils/constants";
 
 export function AddChatButton({ className }: { className?: string }) {
   const router = useRouter();
@@ -20,7 +20,12 @@ export function AddChatButton({ className }: { className?: string }) {
         <TooltipTrigger asChild>
           <Button
             onClick={async () => {
-              router.push("?addUser=true" + "#" + scrollToId);
+              router.push(
+                "?" +
+                  new URLSearchParams({ [addChatDialogQueryParam]: "true" }) +
+                  "#" +
+                  scrollToId,
+              );
             }}
             className={(cn("flex place-content-center"), className)}
             variant="ghost"
