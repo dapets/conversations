@@ -68,6 +68,7 @@ export function ChatRoomDescription({
         </TypographyLarge>
         {chatRoom.lastMessage && (
           <AutoUpdatingRelativeTime
+            key={chatRoom.lastMessage?.sentOn}
             date={chatRoom.lastMessage.sentOn}
             className="text-right text-sm grid-in-last-message-date"
           />
