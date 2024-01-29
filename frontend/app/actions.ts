@@ -48,7 +48,7 @@ export async function login(
       value: parsedCookie[aspnetAuthCookieName],
       expires: new Date(parsedCookie.expires),
       path: parsedCookie.path,
-      sameSite: "strict",
+      sameSite: "lax",
     });
   }
 
