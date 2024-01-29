@@ -37,6 +37,12 @@ export default function ChatRoomDescriptionList({
 
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
+      if (!setChatRooms) {
+        throw new Error("setChatRooms was null in handleIncomingMessage");
+      }
+      if (!chatRooms) {
+        throw new Error("chatRooms was undefined in handleIncomingMessage");
+      }
       const roomIdx = chatRooms.findIndex((r) => r.id === chatRoomId);
       let roomMessageWasSentIn = chatRooms[roomIdx];
       if (!roomMessageWasSentIn) {
