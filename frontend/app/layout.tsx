@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { GeistSans } from "geist/font";
+import { GeistSans } from "geist/font/sans";
 import SignalRProvider from "@providers/SignalRProvider";
 
 export const metadata: Metadata = {
