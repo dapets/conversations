@@ -27,6 +27,16 @@ export type ChatRoomCreatedDto = {
   members: UserEntity[];
 };
 
+export type RegisterRequest = {
+  password: string;
+  email: string;
+};
+
+export type RegisterResponse = {
+  status: number;
+  errors: Record<string, string[]>;
+};
+
 export type ProblemDetail = {
   status: number;
   detail: string;
