@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetAddedRooms } from "@providers/AddedChatRoomsContext";
+import { useAddSingleRoom } from "@providers/AddedChatRoomsContext";
 import { Button } from "@shadcn/button";
 import {
   CardContent,
@@ -13,10 +13,12 @@ import { Dialog, DialogContent } from "@shadcn/dialog";
 import { Input } from "@shadcn/input";
 import { Label } from "@shadcn/label";
 import { addChatWithUser } from "app/actions";
+import { Loader2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { addChatDialogQueryParam, scrollToId } from "utils/constants";
+import { ChatRoomListEntity, ProblemDetail } from "utils/dbEntities";
 
 function AddChatDialogSubmitButton({ disabled }: { disabled?: boolean }) {
   const status = useFormStatus();
@@ -28,7 +30,12 @@ function AddChatDialogSubmitButton({ disabled }: { disabled?: boolean }) {
       </Button>
     );
   } else {
-    return <Button disabled>Adding user...</Button>;
+    return (
+      <Button disabled type="button">
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        Adding user...
+      </Button>
+    );
   }
 }
 
@@ -39,14 +46,20 @@ export function AddChatDialog() {
   const router = useRouter();
   const location = usePathname();
 
-  function discardAndCloseDialog() {
+  const discardAndCloseDialog = useCallback(() => {
     router.push(location + "#" + scrollToId);
-  }
+  }, [location, router]);
 
-  const [addChatDialogState, addChatDialogAction] = useFormState(
-    addChatWithUser,
-    null,
-  );
+  const addSingleRoom = useAddSingleRoom();
+  const [addChatFormState, addChatAction] = useFormState(addChatWithUser, null);
+
+  let formProblem: ProblemDetail | null = null;
+  let newChatRoom: ChatRoomListEntity | null = null;
+  if (addChatFormState?.ok === false) {
+    formProblem = addChatFormState?.result as ProblemDetail;
+  } else if (addChatFormState?.ok === true) {
+    newChatRoom = addChatFormState.result as ChatRoomListEntity;
+  }
 
   //hack to only render the dialog once it is properly mounted
   //see: https://github.com/radix-ui/primitives/issues/1386
@@ -55,13 +68,12 @@ export function AddChatDialog() {
   useEffect(() => setIsMounted(true), []);
 
   const [isFormValid, setIsFormValid] = useState(false);
-  const setAddedRooms = useSetAddedRooms();
 
   return (
     <Dialog open={isMounted && isOpen} onOpenChange={discardAndCloseDialog}>
       <DialogContent className="max-w-md p-6">
         <form
-          action={addChatDialogAction}
+          action={addChatAction}
           onChange={(e) => setIsFormValid(e.currentTarget.checkValidity())}
           className="grid gap-4"
         >
@@ -85,6 +97,11 @@ export function AddChatDialog() {
               type="email"
               placeholder="user@example.com"
             />
+            {formProblem && (
+              <p className="leading-7 text-destructive">
+                {formProblem.detail ?? "Unkown error. Please try again."}
+              </p>
+            )}
           </CardContent>
           <CardFooter className="mt-2 justify-between p-0">
             <Button
