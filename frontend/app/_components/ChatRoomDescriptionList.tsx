@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState } from "react";
 import { ChatRoomListEntity, UserEntity } from "utils/projectTypes";
 import { getActiveChatRoomId } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
+import useOpenAddChatDialog from "app/_hooks/useOpenAddChatDialog";
+import { Button } from "@shadcn/button";
 
 export default function ChatRoomDescriptionList({
   loggedInUserId,
@@ -19,6 +21,7 @@ export default function ChatRoomDescriptionList({
   const pathname = usePathname();
   const [chatRooms, setChatRooms] =
     useState<ChatRoomListEntity[]>(initialChatRooms);
+  const openAddChatDialog = useOpenAddChatDialog();
 
   const activeChatRoomId = getActiveChatRoomId(pathname);
   const activeRoom = chatRooms.find((r) => r.id === activeChatRoomId);
@@ -42,8 +45,10 @@ export default function ChatRoomDescriptionList({
 
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
-      const roomIdx = chatRooms.findIndex((r) => r.id === chatRoomId);
-      let roomMessageWasSentIn = chatRooms[roomIdx];
+      const roomMessageWasSentInIdx = chatRooms.findIndex(
+        (r) => r.id === chatRoomId,
+      );
+      let roomMessageWasSentIn = chatRooms[roomMessageWasSentInIdx];
       if (!roomMessageWasSentIn) {
         throw Error(
           `No room with chatRoomId ${chatRoomId} of message ${message} exists`,
@@ -63,7 +68,7 @@ export default function ChatRoomDescriptionList({
       };
 
       //move rooms with new messages to the top
-      chatRooms.splice(roomIdx, 1);
+      chatRooms.splice(roomMessageWasSentInIdx, 1);
       setChatRooms([roomMessageWasSentIn, ...chatRooms]);
 
       //already updating our current chat in RealTimeHistory
@@ -83,6 +88,21 @@ export default function ChatRoomDescriptionList({
       conn.off("AddChatRoom", handleAddNewChatRoom);
     };
   }, [conn, handleIncomingMessage, handleAddNewChatRoom]);
+
+  if (chatRooms.length === 0) {
+    return (
+      <>
+        <p className="text-center">
+          You haven&apos;t chatted with anyone yet.
+          <br />
+          You might want to:
+        </p>
+        <Button className="mt-4 w-full" onClick={openAddChatDialog}>
+          Add your first chat
+        </Button>
+      </>
+    );
+  }
 
   return (
     <ul className="space-y-3">
