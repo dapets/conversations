@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { GeistSans } from "geist/font/sans";
 import SignalRProvider from "@providers/SignalRProvider";
 
 export const metadata: Metadata = {
@@ -15,7 +14,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={GeistSans.className}>
+      <body>
         <SignalRProvider>{children}</SignalRProvider>
       </body>
     </html>
