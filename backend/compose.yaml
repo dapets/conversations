@@ -1,0 +1,5 @@
+services:
+  backend:
+    build: .
+    ports:
+      - 3001:3001
