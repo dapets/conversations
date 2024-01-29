@@ -10,3 +10,13 @@ export type HistoryEntity = {
   message: string;
   author: UserEntity;
 };
+
+export type ChatRoomEntity = {
+  id: number;
+  members: UserEntity[];
+  history: HistoryEntity[];
+};
+
+export type ChatRoomListEntity = Exclude<ChatRoomEntity, "history"> & {
+  lastMessage?: HistoryEntity;
+};

@@ -53,9 +53,10 @@ else
 app.MapHub<ChatHub>("/chatHub")
     .RequireAuthorization();
 
-app.MapGet("/whoami", (ClaimsPrincipal claimsPrincipal, IdentityUtils utils) =>
+app.MapGet("/whoami", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils) =>
 {
-    return utils.GetUserAsync(claimsPrincipal);
+    var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
+    return loggedInUser.GetDto();
 })
 .RequireAuthorization();
 
@@ -65,39 +66,31 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
     return db
     .Chats
     .Include(c => c.Members)
+    .Include(c => c.History)
     .Where(c => c.Members.Contains(loggedInUser))
-    .Select(c => c.Members)
+    .Select(chat => chat.GetDto())
     .AsAsyncEnumerable();
-}
-)
+})
 .RequireAuthorization();
 
-app.MapGet("/chats/{id}/history", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, string id, ApplicationDbContext db) =>
+app.MapGet("/chats/{chatId}", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, int chatId, ApplicationDbContext db) =>
 {
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
-    var commonChatHistory = await db.Chats
-        .Where(chats => chats.Members.Any(m => m.Id == id))
-        .Where(chats => chats.Members.Contains(loggedInUser))
+    var chat = await db.Chats
         .Include(chats => chats.History)
         .ThenInclude(history => history.Author)
-        .SelectMany(chats => chats.History)
-        .OrderBy(history => history.SentOn)
-        //We are creating a dto to avoid cyclic references when serializing
-        .Select(history => new
+        .ThenInclude(history => history.Chats)
+        .Include(chats => chats.Members)
+        //Chat.GetDto() includes lastMessage, but we need the full history here
+        .Select(chat => new
         {
-            history.Id,
-            history.Message,
-            history.SentOn,
-            author = new
-            {
-                id = history.Author.Id,
-                history.Author.FirstName,
-                history.Author.LastName,
-            }
+            id = chat.Id,
+            members = chat.Members.Select(m => m.GetDto()),
+            history = chat.History.Select(h => h.GetDto()),
         })
-        .ToListAsync();
+        .FirstAsync(c => c.id == chatId);
 
-    return commonChatHistory;
+    return chat;
 })
 .RequireAuthorization();
 

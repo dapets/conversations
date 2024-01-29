@@ -1,6 +1,10 @@
 "use server";
 
-import { HistoryEntity, UserEntity } from "utils/dbEntities";
+import {
+  ChatRoomEntity,
+  ChatRoomListEntity,
+  UserEntity,
+} from "utils/dbEntities";
 import { cookies } from "next/headers";
 import { parse as parseCookie, serialize as serializeCookie } from "cookie";
 import { redirect } from "next/navigation";
@@ -89,7 +93,7 @@ export async function login(loginRequest: FormData) {
   if (response.ok) redirect("/chats");
 }
 
-export async function getChatList() {
+export async function getChatRoomsList() {
   const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/chats", {
     cache: "no-store",
   });
@@ -97,15 +101,19 @@ export async function getChatList() {
   if (!result.ok) return undefined;
 
   const text = await result.text();
-  return JSON.parse(text) as UserEntity[][];
+  return JSON.parse(text) as ChatRoomListEntity[];
 }
 
-export async function getChatHistoryWithId(userId: string) {
-  const result = await fetchWithHandleAuth(
-    `${process.env.BACKEND_URL}/chats/${userId}/history`
+export async function getChatHistoryWithId(chatRoomId: number) {
+  const response = await fetchWithHandleAuth(
+    `${process.env.BACKEND_URL}/chats/${chatRoomId}`
   );
 
-  return (await result.json()) as HistoryEntity[];
+  if (!response.ok) {
+    throw new Error("Failed fetching history");
+  }
+
+  return (await response.json()) as ChatRoomEntity;
 }
 
 export async function getLoggedInUser() {
