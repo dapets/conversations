@@ -6,7 +6,7 @@ public partial class Chats : IGetDto<ChatRoomDto>
 {
     public int Id { get; set; }
 
-    public required ICollection<History> History { get; set; } = new List<History>();
+    public ICollection<History> History { get; set; } = new List<History>();
 
     public required ICollection<ApplicationUser> Members { get; set; } = new List<ApplicationUser>();
 
