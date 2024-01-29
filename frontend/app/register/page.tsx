@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <div className="grid h-[100svh] place-content-center">
+    <div className="grid place-content-center">
       <GenericForm
         title="Sign up"
         description="Enter your information below to sign up using a new account."

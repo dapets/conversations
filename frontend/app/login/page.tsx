@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="grid h-[100svh] place-content-center">
+    <div className="grid place-content-center">
       <GenericForm
         title="Log in"
         description="Enter your information below to log into your account."
