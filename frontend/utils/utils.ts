@@ -54,3 +54,18 @@ export function handleIsChatRoomSelected(isChatRoomSelected: boolean) {
   main.dataset[isChatRoomSelectedData] = isChatRoomSelected.toString();
   nav.dataset[isChatRoomSelectedData] = (!isChatRoomSelected).toString();
 }
+
+export function getSignalRUrl() {
+  if (process.env.NODE_ENV === "production") {
+    return window.location.origin + "/chatHub";
+  } else {
+    return (
+      window.location.protocol +
+      "//" +
+      window.location.hostname +
+      ":" +
+      process.env.NEXT_PUBLIC_BACKEND_PORT +
+      "/chatHub"
+    );
+  }
+}

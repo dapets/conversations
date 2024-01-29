@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { createContext, useContext, useEffect } from "react";
 import { hasLoginChangedQueryParam } from "utils/constants";
 import { UserEntity } from "utils/projectTypes";
+import { getSignalRUrl } from "utils/utils";
 
 type HubMethodNames = {
   ReceiveMessage: (
@@ -40,15 +41,18 @@ type ChatClientHubConnection = Omit<HubConnection, "on" | "send" | "invoke"> & {
   ): void;
 } & ClientMethodNames;
 
-const connection = new HubConnectionBuilder()
-  .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
-  .withAutomaticReconnect()
-  .configureLogging(
-    process.env.NEXT_PUBLIC_ENV === "production"
-      ? LogLevel.Warning
-      : LogLevel.Information,
-  )
-  .build();
+let connection: any;
+if (typeof window !== "undefined") {
+  connection = new HubConnectionBuilder()
+    .withUrl(getSignalRUrl())
+    .withAutomaticReconnect()
+    .configureLogging(
+      process.env.NEXT_PUBLIC_ENV === "production"
+        ? LogLevel.Warning
+        : LogLevel.Information,
+    )
+    .build();
+}
 
 export const SignalRConnectionContext =
   createContext<ChatClientHubConnection>(connection);
