@@ -1,23 +1,14 @@
 "use client";
 
-import { DialogClose, DialogTrigger } from "@radix-ui/react-dialog";
 import { Button } from "@shadcn/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@shadcn/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@shadcn/dialog";
+import { Dialog, DialogContent } from "@shadcn/dialog";
 import { Input } from "@shadcn/input";
 import { Label } from "@shadcn/label";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
