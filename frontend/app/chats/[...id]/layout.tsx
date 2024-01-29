@@ -17,9 +17,7 @@ export default async function ClientLayout({
   const heading = decodeURIComponent(params.id[1] ?? "Unknown user");
   return (
     <>
-      <div className="flex items-center">
-        <TypographyH2 className="mx-auto">{heading}</TypographyH2>
-      </div>
+      <TypographyH2 className="mx-auto lg:mx-0">{heading}</TypographyH2>
       <Button
         asChild
         className="absolute left-2 top-2 block lg:hidden"
