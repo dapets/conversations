@@ -8,6 +8,7 @@ import {
   getUserInitials,
 } from "utils/utils";
 import { TypographyLarge } from "@shadcn/TypographyLarge";
+import { cn } from "@/lib/utils";
 
 export function ChatRoomDescription({
   chatRoom,
@@ -26,19 +27,22 @@ export function ChatRoomDescription({
   const encodedHref =
     "/chats/" + chatRoom.id + "/" + encodeURIComponent(otherChatUserFullName);
 
+  console.log(isActive);
   return (
     <Link href={encodedHref}>
       {/* Padding behaves weird if I style the <Link> directly, don't know why*/}
       <div
-        data-isactive={isActive}
         //tailwind doesn't really support grid-template-areas but specifying col-start- and row-start- got pretty messy.
         //Because of that I'm just gonna use the custom css class `chat-room-description-layout` defined in ChatRoomDescription.css
-        className={
+        className={cn(
           "grid grid-areas-chat-room-description grid-cols-chat-room-description " +
-          "p-2 rounded-lg shadow " +
-          "data-[isactive=true]:bg-primary data-[isactive=true]:text-primary-foreground " +
-          "hover:bg-primary hover:text-primary-foreground"
-        }
+            "p-2 rounded-lg shadow " +
+            "hover:bg-primary hover:text-primary-foreground hover:shadow-md",
+
+          {
+            " bg-primary text-primary-foreground shadow-md ": isActive,
+          }
+        )}
       >
         {isUnread && (
           <span

@@ -24,8 +24,8 @@ export default async function ClientLayout({
 
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
-      <nav className="hidden bg-background lg:flex flex-col basis-1/3 max-w-sm shrink-0 p-2 *:pr-4">
-        <div className="grid items-center justify-around border rounded-lg gap-x-4 pt-2 pl-2 pb-2 mb-2 grid-areas-logged-in-statusbar grid-cols-logged-in-statusbar">
+      <nav className="hidden bg-background lg:flex flex-col basis-1/3 max-w-sm shrink-0 ml-2 p-2 *:pr-6">
+        <div className="grid items-center rounded-lg gap-x-4 pt-2 pl-2 pb-2 mb-2 grid-areas-logged-in-statusbar grid-cols-logged-in-statusbar">
           <Avatar className="grid-in-avatar">
             <AvatarFallback>{getUserInitials(loggedInUser)}</AvatarFallback>
           </Avatar>
@@ -35,7 +35,10 @@ export default async function ClientLayout({
           <p className="grid-in-logged-in-status text-sm text-muted-foreground">
             Logged in
           </p>
-          <Button className="grid-in-log-out w-1/2" variant="ghost">
+          <Button
+            className="grid-in-log-out justify-self-end font-semibold w-1/2"
+            variant="ghost"
+          >
             Log out
           </Button>
         </div>
@@ -44,7 +47,7 @@ export default async function ClientLayout({
           {chatList}
         </ScrollArea>
       </nav>
-      <main className="flex flex-col lg:ml-0 ml-2 h-full justify-between py-2 w-full space-y-4">
+      <main className="flex flex-col lg:ml-2 ml-2 h-full justify-between py-2 w-full space-y-4">
         {children}
       </main>
     </div>
