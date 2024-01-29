@@ -11,8 +11,8 @@ using backend.Entities;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231205101546_AddIdentityDbContext")]
-    partial class AddIdentityDbContext
+    [Migration("20231220202859_ModelDivergedFromDb")]
+    partial class ModelDivergedFromDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
-            modelBuilder.Entity("ChatsUser", b =>
+            modelBuilder.Entity("ApplicationUserChats", b =>
                 {
                     b.Property<int>("ChatsId")
                         .HasColumnType("INTEGER");
@@ -32,7 +32,7 @@ namespace backend.Migrations
 
                     b.HasIndex("MembersId");
 
-                    b.ToTable("ChatsUser");
+                    b.ToTable("ApplicationUserChats");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -163,18 +163,7 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("backend.Entities.Chats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("backend.Entities.User", b =>
+            modelBuilder.Entity("backend.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -246,6 +235,17 @@ namespace backend.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Entities.Chats", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chats");
+                });
+
             modelBuilder.Entity("backend.History", b =>
                 {
                     b.Property<int>("Id")
@@ -274,7 +274,7 @@ namespace backend.Migrations
                     b.ToTable("History");
                 });
 
-            modelBuilder.Entity("ChatsUser", b =>
+            modelBuilder.Entity("ApplicationUserChats", b =>
                 {
                     b.HasOne("backend.Entities.Chats", null)
                         .WithMany()
@@ -282,7 +282,7 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Entities.User", null)
+                    b.HasOne("backend.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("MembersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -300,7 +300,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("backend.Entities.User", null)
+                    b.HasOne("backend.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -309,7 +309,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("backend.Entities.User", null)
+                    b.HasOne("backend.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -324,7 +324,7 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Entities.User", null)
+                    b.HasOne("backend.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -333,7 +333,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("backend.Entities.User", null)
+                    b.HasOne("backend.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -342,7 +342,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.History", b =>
                 {
-                    b.HasOne("backend.Entities.User", "Author")
+                    b.HasOne("backend.Entities.ApplicationUser", "Author")
                         .WithMany("SentMessages")
                         .HasForeignKey("AuthorId");
 
@@ -357,14 +357,14 @@ namespace backend.Migrations
                     b.Navigation("Chats");
                 });
 
+            modelBuilder.Entity("backend.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("SentMessages");
+                });
+
             modelBuilder.Entity("backend.Entities.Chats", b =>
                 {
                     b.Navigation("History");
-                });
-
-            modelBuilder.Entity("backend.Entities.User", b =>
-                {
-                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }
