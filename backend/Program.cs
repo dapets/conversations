@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -23,9 +22,12 @@ builder.Services.AddCors(config =>
 {
     config.AddDefaultPolicy(configurePolicy =>
     {
-        configurePolicy.SetIsOriginAllowed(origin => true);
-        configurePolicy.AllowCredentials();
-        configurePolicy.AllowAnyHeader();
+        if (builder.Environment.IsDevelopment())
+        {
+            configurePolicy.SetIsOriginAllowed(origin => true);
+            configurePolicy.AllowCredentials();
+            configurePolicy.AllowAnyHeader();
+        }
     });
 });
 
