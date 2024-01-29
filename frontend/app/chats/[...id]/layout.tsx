@@ -17,6 +17,7 @@ export default async function ClientLayout({
       <TypographyH2>{heading}</TypographyH2>
       <ScrollArea
         viewportId={messageScrollContainerId}
+        reverse
         className="mr-2 pr-4"
         type="always"
       >

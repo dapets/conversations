@@ -9,16 +9,26 @@ const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
     viewportId?: string;
+    reverse?: boolean;
   }
->(({ className, viewportId, children, ...props }, ref) => (
+>(({ className, viewportId, reverse, children, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
-    className={cn("relative overflow-hidden", className)}
+    className={cn(
+      "relative overflow-hidden",
+      {
+        "flex flex-col": reverse,
+      },
+      className,
+    )}
     {...props}
   >
+    {/* ScrollArea doesn't support flex-col-reverse yet: https://github.com/radix-ui/primitives/pull/2199
+        For now we use an element with flex-grow to force {children} to the bottom */}
+    {reverse && <span className="flex-grow" />}
     <ScrollAreaPrimitive.Viewport
       id={viewportId}
-      className="h-full w-full rounded-[inherit]"
+      className={cn("h-full w-full", { "h-min": reverse })}
     >
       {children}
     </ScrollAreaPrimitive.Viewport>
