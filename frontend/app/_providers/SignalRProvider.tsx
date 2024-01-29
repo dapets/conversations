@@ -69,7 +69,7 @@ export default function SignalRProvider({
 
   useEffect(() => {
     let localConn = new HubConnectionBuilder()
-      .withUrl("http://localhost:3001" + "/chatHub")
+      .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
       .withAutomaticReconnect()
       .build();
     localConn
