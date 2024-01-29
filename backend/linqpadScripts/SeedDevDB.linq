@@ -42,11 +42,6 @@ async void Main()
 		var completeRegistrationRequest = new CompleteRegistrationRequest(newUserData.FirstName, newUserData.LastName);
 		await httpClient.PostAsJsonAsync("/complete-registration", completeRegistrationRequest);
 		var userResponse = await httpClient.GetFromJsonAsync<SmallUser>("/whoami");
-		
-		var user = AspNetUsers.First(u => u.Id == userResponse.Id);
-		user.FirstName = newUserData.FirstName;
-		user.LastName = newUserData.LastName;
-		AspNetUsers.Update(user);
 	}
 
 	SubmitChanges();
