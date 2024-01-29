@@ -32,7 +32,7 @@ export default function ChatRoomDescriptionList({
       let roomForMessage = chatRooms[roomIdx];
       if (!roomForMessage)
         throw Error(
-          `No room with chatRoomId ${chatRoomId} of message ${message} exists`
+          `No room with chatRoomId ${chatRoomId} of message ${message} exists`,
         );
       if (
         roomForMessage.id !== activeChatRoomId &&
@@ -56,7 +56,7 @@ export default function ChatRoomDescriptionList({
         revalidateChatHistory(chatRoomId);
       }
     },
-    [chatRooms, setChatRooms, activeChatRoomId, loggedInUserId]
+    [chatRooms, setChatRooms, activeChatRoomId, loggedInUserId],
   );
 
   useEffect(() => {

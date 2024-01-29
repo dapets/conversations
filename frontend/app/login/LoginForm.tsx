@@ -26,7 +26,7 @@ function SubmitLogin({
     return (
       <Button
         disabled={isSubmitButtonDisabled}
-        className="w-full disabled"
+        className="disabled w-full"
         type="submit"
       >
         Login
@@ -52,7 +52,7 @@ export default function LoginForm({
 }: {
   login: (
     result: LoginFormResult,
-    loginRequest: FormData
+    loginRequest: FormData,
   ) => Promise<LoginFormResult>;
 }) {
   const [loginState, loginAction] = useFormState(login, { success: true });
@@ -72,7 +72,7 @@ export default function LoginForm({
             Enter your information below to log into your account.
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-6 pt-0 grid gap-4">
+        <CardContent className="grid gap-4 p-6 pt-0">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input

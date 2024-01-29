@@ -30,7 +30,7 @@ import "server-only";
  */
 export async function fetchWithAuth(
   requestInfo: RequestInfo,
-  init?: RequestInit
+  init?: RequestInit,
 ) {
   let request: Request;
   if (typeof requestInfo === "string" || requestInfo instanceof String) {
@@ -45,8 +45,8 @@ export async function fetchWithAuth(
       cookieHeaderName,
       serializeCookie(
         browserAspnetAuthCookie.name,
-        browserAspnetAuthCookie.value
-      )
+        browserAspnetAuthCookie.value,
+      ),
     );
   }
 
@@ -69,7 +69,7 @@ export async function getChatRoomsList() {
 
 export async function getChatHistoryById(chatRoomId: number) {
   const result = await fetchWithAuth(
-    `${process.env.BACKEND_URL}/chats/${chatRoomId}`
+    `${process.env.BACKEND_URL}/chats/${chatRoomId}`,
   );
 
   if (!result.ok) {

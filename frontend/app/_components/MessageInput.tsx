@@ -19,20 +19,20 @@ export function MessageInput({ className }: { className: string }) {
   return (
     <form
       className={cn(
-        "w-full flex items-center justify-between space-x-4",
-        className
+        "flex w-full items-center justify-between space-x-4",
+        className,
       )}
       onSubmit={(e) => {
         const form = e.target as HTMLElementTagNameMap["form"];
         const sendInput = form.elements.namedItem(
-          messageInputName
+          messageInputName,
         ) as HTMLElementTagNameMap["input"];
 
         if (sendInput.value.length > 0) {
           signalRContext?.send(
             "SendMessage",
             sendInput.value,
-            activeChatRoomId
+            activeChatRoomId,
           );
         }
         sendInput.value = "";
@@ -42,14 +42,14 @@ export function MessageInput({ className }: { className: string }) {
       <input
         name={messageInputName}
         //all these focus-visible: can't be omitted or combined because firefox
-        className="flex-grow rounded-lg p-2 focus-visible:outline focus:outline-2 focus-visible:outline-primary focus-visible:border-transparent border-secondary border-2"
+        className="flex-grow rounded-lg border-2 border-secondary p-2 focus:outline-2 focus-visible:border-transparent focus-visible:outline focus-visible:outline-primary"
         type="text"
         maxLength={maxMessageLength}
         placeholder="Type a message..."
         autoComplete="off"
       />
-      <Button type="submit" className="w-10 h-10 flex">
-        <Send className="w-4 h-4 flex-shrink-0 m-auto" />
+      <Button type="submit" className="flex h-10 w-10">
+        <Send className="m-auto h-4 w-4 flex-shrink-0" />
       </Button>
     </form>
   );

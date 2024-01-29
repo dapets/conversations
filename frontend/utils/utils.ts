@@ -10,10 +10,10 @@ export function getActiveChatRoomId(pathname: string) {
 /** Currently assuming we only have chat rooms with two (logged in + additional) member*/
 export function getOtherChatUser(
   chatRoomMembers: UserEntity[],
-  loggedInUserId: string
+  loggedInUserId: string,
 ) {
   const otherChatUser = chatRoomMembers.filter(
-    (member) => member.id !== loggedInUserId ?? Number.NaN
+    (member) => member.id !== loggedInUserId ?? Number.NaN,
   )[0];
 
   return otherChatUser;

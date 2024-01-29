@@ -11,7 +11,7 @@ export function TypographyH2({
     <h3
       className={cn(
         "scroll-m-20 text-2xl font-semibold tracking-tight",
-        className
+        className,
       )}
     >
       {children}

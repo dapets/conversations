@@ -18,10 +18,10 @@ export function Message({
   return (
     <section
       className={cn(
-        "grid grid-areas-message items-center gap-y-1 gap-x-2 p-2 w-fit max-w-[70%] rounded-lg",
+        "grid w-fit max-w-[70%] items-center gap-x-2 gap-y-1 rounded-lg p-2 grid-areas-message",
         {
           "ml-auto justify-items-end": isAuthor,
-        }
+        },
       )}
     >
       <Avatar
@@ -29,13 +29,13 @@ export function Message({
       >
         <AvatarFallback>{getUserInitials(author)}</AvatarFallback>
       </Avatar>
-      <p className="grid-in-author text-sm font-semibold">
+      <p className="text-sm font-semibold grid-in-author">
         {getUserDisplayName(author)}
       </p>
-      <p className="grid-in-message leading-7 px-2 w-fit rounded-md [overflow-wrap:anywhere] bg-accent">
+      <p className="w-fit rounded-md bg-accent px-2 leading-7 grid-in-message [overflow-wrap:anywhere]">
         {message}
       </p>
-      <time className="grid-in-last-message-date text-xs text-gray-500">
+      <time className="text-xs text-gray-500 grid-in-last-message-date">
         {getRelativeLocalTimeStrFromUtcDate(sentOn)}
       </time>
     </section>

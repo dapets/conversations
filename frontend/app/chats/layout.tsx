@@ -25,25 +25,25 @@ export default async function ClientLayout({
 
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
-      <nav className="hidden bg-background lg:flex flex-col basis-1/3 max-w-sm shrink-0 ml-2 p-2 *:pr-6">
-        <div className="grid justify-around shadow border border-blue-100 shadow-blue-100 items-center rounded-lg pt-2 pl-2 pb-2 mb-2 mr-6 grid-areas-logged-in-statusbar grid-cols-logged-in-statusbar">
+      <nav className="ml-2 hidden max-w-sm shrink-0 basis-1/3 flex-col bg-background p-2 *:pr-6 lg:flex">
+        <div className="mb-2 mr-6 grid grid-cols-logged-in-statusbar items-center justify-around rounded-lg border border-blue-100 pb-2 pl-2 pt-2 shadow shadow-blue-100 grid-areas-logged-in-statusbar">
           <Avatar className="grid-in-avatar">
             <AvatarFallback>{getUserInitials(loggedInUser)}</AvatarFallback>
           </Avatar>
           <TypographyLarge className="grid-in-logged-in-user-name">
             {getUserDisplayName(loggedInUser)}
           </TypographyLarge>
-          <p className="grid-in-logged-in-status text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground grid-in-logged-in-status">
             Logged in
           </p>
-          <LogoutButton className="grid-in-log-out justify-self-end " />
+          <LogoutButton className="justify-self-end grid-in-log-out " />
         </div>
         <TypographyH2 className="mb-4">Messages</TypographyH2>
         <ScrollArea type="always" data-state="visible">
           {chatList}
         </ScrollArea>
       </nav>
-      <main className="flex flex-col lg:ml-2 ml-2 h-full justify-between py-2 w-full space-y-4">
+      <main className="ml-2 flex h-full w-full flex-col justify-between space-y-4 py-2 lg:ml-2">
         {children}
       </main>
     </div>

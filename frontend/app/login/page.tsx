@@ -28,7 +28,7 @@ async function login(loginRequest: FormData) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(loginData),
-    }
+    },
   );
 
   const serverCookies = response.headers.getSetCookie();
@@ -51,7 +51,7 @@ async function login(loginRequest: FormData) {
 
 export default function LoginPage() {
   return (
-    <div className="grid place-content-center h-[100svh]">
+    <div className="grid h-[100svh] place-content-center">
       <LoginForm
         login={async (_, formData) => {
           "use server";

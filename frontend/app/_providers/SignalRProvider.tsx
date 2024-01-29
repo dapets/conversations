@@ -14,7 +14,7 @@ type HubMethodNames = {
   ReceiveMessage: (
     chatRoomId: number,
     author: UserEntity,
-    message: string
+    message: string,
   ) => void;
 };
 
@@ -22,19 +22,19 @@ type ClientMethodNames = {
   send: (
     methodName: "SendMessage",
     message: string,
-    chatRoomId: number
+    chatRoomId: number,
   ) => Promise<void> | void;
   invoke: (
     methodName: "SendMessage",
     message: string,
-    chatRoomId: number
+    chatRoomId: number,
   ) => Promise<void> | void;
 };
 
 type ChatClientHubConnection = Omit<HubConnection, "on" | "send" | "invoke"> & {
   on<T extends keyof HubMethodNames>(
     methodName: T,
-    newMethod: HubMethodNames[T]
+    newMethod: HubMethodNames[T],
   ): void;
 } & ClientMethodNames;
 
@@ -47,7 +47,7 @@ export default function SignalRProvider({
   children: React.ReactNode;
 }) {
   const [connection, setConnection] = useState<ChatClientHubConnection | null>(
-    null
+    null,
   );
   const params = useSearchParams();
   const shouldRestartSignalR = params.get(hasLoginChangedQueryParam) === "true";
@@ -79,7 +79,7 @@ export default function SignalRProvider({
         if (reason instanceof Error) {
           console.info(
             "Connection was aborted while trying to connect to the server." +
-              "This usually happens in development mode."
+              "This usually happens in development mode.",
           );
         } else {
           console.error(reason);

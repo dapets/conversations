@@ -34,25 +34,25 @@ export function ChatRoomDescription({
         //tailwind doesn't really support grid-template-areas but specifying col-start- and row-start- got pretty messy.
         //Because of that I'm just gonna use the custom css class `chat-room-description-layout` defined in ChatRoomDescription.css
         className={cn(
-          "grid grid-areas-chat-room-description grid-cols-chat-room-description " +
-            "p-2 rounded-lg " +
+          "grid grid-cols-chat-room-description grid-areas-chat-room-description " +
+            "rounded-lg p-2 " +
             "hover:bg-primary hover:text-primary-foreground ",
 
           {
             "bg-primary text-primary-foreground ": isActive,
-          }
+          },
         )}
       >
         {isUnread && (
           <span
             className={
-              "grid-in-unread-notifier self-center " +
+              "self-center grid-in-unread-notifier " +
               "h-3 w-3 " +
               "rounded-full bg-sky-500"
             }
           />
         )}
-        <Avatar className="text-black [grid-area:avatar] place-self-center mr-2">
+        <Avatar className="mr-2 place-self-center text-black [grid-area:avatar]">
           <AvatarFallback>{getUserInitials(otherChatUser)}</AvatarFallback>
         </Avatar>
         <TypographyLarge className="truncate [grid-area:username]">
@@ -61,12 +61,12 @@ export function ChatRoomDescription({
         {chatRoom.lastMessage && (
           <time
             suppressHydrationWarning
-            className="text-sm text-right grid-in-last-message-date"
+            className="text-right text-sm grid-in-last-message-date"
           >
             {getRelativeLocalTimeStrFromUtcDate(chatRoom.lastMessage?.sentOn)}
           </time>
         )}
-        <p className="truncate font-normal text-left grid-in-last-message">
+        <p className="truncate text-left font-normal grid-in-last-message">
           {chatRoom.lastMessage?.message ?? "No messages yet."}
         </p>
       </div>

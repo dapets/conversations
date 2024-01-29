@@ -35,7 +35,7 @@ export function RealtimeHistory({
         },
       ]);
     },
-    [setRealtimeHistory, activeChatRoom]
+    [setRealtimeHistory, activeChatRoom],
   );
 
   useEffect(() => {

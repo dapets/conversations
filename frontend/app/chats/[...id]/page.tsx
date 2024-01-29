@@ -43,7 +43,7 @@ export default async function ChatHistory({
         />
       </ul>
       {/* we're using this element to scroll to the latest chat message */}
-      <span className="w-0 h-0" id={scrollToId} />
+      <span className="h-0 w-0" id={scrollToId} />
     </>
   );
 }
