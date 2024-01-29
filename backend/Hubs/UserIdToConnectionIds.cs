@@ -7,7 +7,7 @@ namespace backend.Hubs;
 /// <summary>
 /// When clients connect, they are added to signalR groups based on the Chats they are in. <br />
 /// When a new Chat is added, we need to add the user's connection(s) to the new Chats' signalR group. <br />
-/// This class provides functionality to make it easier to handle these groups and connections.
+/// For this reason, this class provides a dictionary that maps <c>ApplicationUser</c>s to their SignalR connectionId's.
 /// </summary>
 /// <param name="hubContext"></param>
 public class UserIdToConnectionIds(IHubContext<ChatHub> hubContext)
