@@ -52,16 +52,18 @@ export default function SignalRProvider({
     null,
   );
   const params = useSearchParams();
-  //this is how the signalR connection is restarted on login/logout
-  //I couldn't really find a better way to tell signalR that the cookies changed.
-  //This means that every time the `hasLoginChangedQueryParam` is set to true we restart the connection.
+  /**
+   * This is how the signalR connection is restarted on login/logout.
+   * I couldn't really find a better way to tell signalR that the cookies changed.
+   * This means that every time the `hasLoginChangedQueryParam` is set to true we restart the connection.
+   */
   const shouldRestartSignalR = params.get(hasLoginChangedQueryParam) === "true";
   if (shouldRestartSignalR) {
     restartSignalR();
   }
 
+  /** Not handling HubConnectionState.Connecting and Disconnecting. Surely that will never happen.*/
   async function restartSignalR() {
-    //not handling HubConnectionState.Connecting and Disconnecting. Surely that will never happen.
     switch (connection?.state) {
       case HubConnectionState.Connected:
         await connection.stop();
