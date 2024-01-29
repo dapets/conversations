@@ -160,9 +160,13 @@ export async function logout() {
     method: "POST",
   });
   if (result.ok) {
-    //if we use delete the browser throws a warning about misusing SamesSite.
-    //We can't specify SameSite=Strict when using cookies().delete().
-    cookies().set(aspnetAuthCookieName, "", { sameSite: "strict" });
+    //The sameSite strict doesn't seem to work here (a bug?).
+    //The attribute is not being set and browsers still throw a warning.
+    //I'm just gonna leave it like it is i guess :shrug:
+    cookies().delete({
+      sameSite: "strict",
+      name: aspnetAuthCookieName,
+    });
     redirectWithLoginChanged("/login");
   }
 
