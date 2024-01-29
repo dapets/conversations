@@ -1,6 +1,6 @@
 import { Message } from "@components/Message";
 import { scrollToId } from "utils/constants";
-import { getChatHistoryWithId, getLoggedInUser } from "app/dataFetchers";
+import { getChatHistoryById, getLoggedInUser } from "app/dataFetchers";
 import { RealTimeHistoryWithServerSideProps } from "./RealTimeHistoryWithServerSideProps";
 
 export default async function ChatHistory({
@@ -12,7 +12,7 @@ export default async function ChatHistory({
 
   const chatRoomId = +decodeURIComponent(params.id[0]);
 
-  const chatRoomData = getChatHistoryWithId(chatRoomId);
+  const chatRoomData = getChatHistoryById(chatRoomId);
   const loggedInUserIdData = getLoggedInUser();
   const [loggedInUser, chatRoom] = await Promise.all([
     loggedInUserIdData,

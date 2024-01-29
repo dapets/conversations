@@ -67,7 +67,7 @@ export async function getChatRoomsList() {
   return JSON.parse(text) as ChatRoomListEntity[];
 }
 
-export async function getChatHistoryWithId(chatRoomId: number) {
+export async function getChatHistoryById(chatRoomId: number) {
   const result = await fetchWithAuth(
     `${process.env.BACKEND_URL}/chats/${chatRoomId}`
   );
