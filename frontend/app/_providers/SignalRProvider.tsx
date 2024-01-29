@@ -2,17 +2,30 @@
 
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { createContext, useEffect, useState } from "react";
+import { UserEntity } from "utils/dbEntities";
 
-export const SignalRConnectionContext = createContext<HubConnection | null>(
-  null
-);
+type HubMethodNames = {
+  ReceiveMessage: (author: UserEntity, message: string) => void;
+};
+
+type ChatClientHubConnection = Omit<HubConnection, "on"> & {
+  on<T extends keyof HubMethodNames>(
+    methodName: T,
+    newMethod: HubMethodNames[T]
+  ): void;
+};
+
+export const SignalRConnectionContext =
+  createContext<ChatClientHubConnection | null>(null);
 
 export default function ThemeProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [connection, setConnection] = useState<ChatClientHubConnection | null>(
+    null
+  );
   const [oldCookie, setOldCookie] = useState("");
 
   useEffect(() => {
