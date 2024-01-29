@@ -1,7 +1,5 @@
 import React from "react";
-import { Send } from "lucide-react";
 import { MessageInput } from "@components/MessageInput";
-import { Button } from "@shadcn/button";
 
 export default function ClientLayout({
   children,
@@ -11,12 +9,7 @@ export default function ClientLayout({
   return (
     <main className="flex flex-col justify-between p-4 w-full space-y-4">
       {children}
-      <div className="w-full flex items-center justify-between space-x-4">
-        <MessageInput className="w-full" />
-        <Button type="submit" className="w-10 h-10 flex">
-          <Send className="w-4 h-4 m-auto" />
-        </Button>
-      </div>
+      <MessageInput />
     </main>
   );
 }
