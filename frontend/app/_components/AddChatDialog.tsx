@@ -1,6 +1,5 @@
 "use client";
 
-import { useSetChatRooms } from "@providers/AddedChatRoomsContext";
 import { Button } from "@shadcn/button";
 import {
   CardContent,
