@@ -93,6 +93,51 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 })
 .RequireAuthorization();
 
+app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDto>>>
+    ([FromBody] AddChatWithUserDto body, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
+{
+    var loggedInUserTask = utils.GetUserAsync(claimsPrincipal);
+    var userToAddTask = db.Users.FirstOrDefaultAsync(u => u.Email == body.Email);
+
+    await Task.WhenAll(loggedInUserTask, userToAddTask!);
+
+    var loggedInUser = await loggedInUserTask;
+    var userToAdd = await userToAddTask;
+
+    if (userToAdd is null)
+    {
+        return HttpHelpers.ProduceBadRequestProblem($"No user with email '{body.Email}' found");
+    }
+    if (loggedInUser.Id == userToAdd.Id)
+    {
+        return HttpHelpers.ProduceBadRequestProblem($"User {loggedInUser.Email} can't be in a room with himself.");
+    }
+
+    var haveCommonChats = await db.Chats
+        .Where(chat => chat.Members.Any(member => member.Id == loggedInUser.Id))
+        .Where(chat => chat.Members.Any(member => member.Id == userToAdd.Id))
+        .AnyAsync();
+
+    if (haveCommonChats)
+    {
+        return HttpHelpers.ProduceBadRequestProblem($"User {loggedInUser.Email} is already in a chat room with {userToAdd.Email}");
+    }
+
+    var newChat = new Chats()
+    {
+        Members = [userToAdd, loggedInUser],
+        History = null!
+    };
+
+    await db.Chats.AddAsync(newChat);
+    await db.SaveChangesAsync();
+
+    var resultDto = new ChatRoomCreatedDto(newChat.Id, newChat.Members.Select(member => member.GetDto()));
+
+    return TypedResults.Ok(resultDto);
+})
+.RequireAuthorization();
+
 app.MapGet("/chats/{chatId}", async Task<Results<NotFound, Ok<ChatRoomWithHistoryDto>>>
     (int chatId, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {

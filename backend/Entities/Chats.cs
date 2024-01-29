@@ -1,6 +1,6 @@
 ﻿namespace backend.Entities;
 
-public record ChatRoomDto(int Id, IEnumerable<ApplicationUserDto> Members, HistoryDto LastMessage);
+public record ChatRoomDto(int Id, IEnumerable<ApplicationUserDto> Members, HistoryDto? LastMessage);
 
 public partial class Chats : IGetDto<ChatRoomDto>
 {
@@ -10,12 +10,18 @@ public partial class Chats : IGetDto<ChatRoomDto>
 
     public required ICollection<ApplicationUser> Members { get; set; } = new List<ApplicationUser>();
 
-    public ChatRoomDto GetDto() => new(
-        Id,
-        Members.Select(m => m.GetDto()),
-        History
+    public ChatRoomDto GetDto()
+    {
+        var lastMessage = History
             .OrderBy(h => h.SentOn)
-            .Last()
-            .GetDto()
-    );
+            .LastOrDefault();
+
+        HistoryDto? lastMessageDto = null;
+        if (lastMessage is not null)
+        {
+            lastMessageDto = lastMessage.GetDto();
+        }
+
+        return new(Id, Members.Select(m => m.GetDto()), lastMessageDto);
+    }
 }
