@@ -17,4 +17,13 @@ public partial class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Chats> Chats { get; set; }
 
     public DbSet<History> History { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<User>()
+            .Property(u => u.UserName)
+            .HasComputedColumnSql("[FirstName] || ' ' || [LastName]");
+
+        base.OnModelCreating(builder);
+    }
 }
