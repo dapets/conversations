@@ -2,7 +2,9 @@
 
 namespace backend;
 
-public class History
+public record HistoryDto(int Id, ApplicationUserDto Author, int ChatId, DateTime SentOn, string Message);
+
+public class History : IGetDto<HistoryDto>
 {
     public int Id { get; set; }
 
@@ -13,4 +15,6 @@ public class History
     public required DateTime SentOn { get; set; }
 
     public required string Message { get; set; } = string.Empty;
+
+    public HistoryDto GetDto() => new(Id, Author.GetDto(), Chats.Id, SentOn, Message);
 }

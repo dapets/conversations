@@ -2,7 +2,9 @@
 
 namespace backend.Entities;
 
-public class ApplicationUser : IdentityUser
+public record ApplicationUserDto(string Id, string FirstName, string LastName);
+
+public class ApplicationUser : IdentityUser, IGetDto<ApplicationUserDto>
 {
     [PersonalData]
     public string FirstName { get; set; } = string.Empty;
@@ -15,4 +17,6 @@ public class ApplicationUser : IdentityUser
 
     [PersonalData]
     public ICollection<Chats> Chats { get; set; } = new List<Chats>();
+
+    public ApplicationUserDto GetDto() => new(Id, FirstName, LastName);
 }
