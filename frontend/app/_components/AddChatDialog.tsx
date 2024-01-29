@@ -38,7 +38,7 @@ export function AddChatDialog() {
   useEffect(() => setIsMounted(true), []);
 
   function discardAndCloseDialog() {
-    router.push(location);
+    router.push(location + "#" + scrollToId);
   }
 
   return (
