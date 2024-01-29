@@ -98,7 +98,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDto>>>
     ([FromBody] AddChatWithUserDto body, IHubContext<ChatHub> hubContext,
     UserIdToConnectionIds userIdToConnectionIds,
-     ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
+    ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
 
     var loggedInUserTask = utils.GetUserAsync(claimsPrincipal);
