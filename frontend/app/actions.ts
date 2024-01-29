@@ -1,6 +1,65 @@
 "use server";
 
 import { HistoryEntity, UserEntity } from "utils/dbEntities";
+import { cookies } from "next/headers";
+import { parse as parseCookie, serialize as serializeCookie } from "cookie";
+
+const aspnetAuthCookieName = ".AspNetCore.Identity.Application";
+const cookieHeaderName = "Cookie";
+
+/** Cookie flow
+ *
+ * Obtaining auth information
+ *1. POST /login
+ *
+ *2. cookies() is emtpy, request.headers['Cookie'] is empty
+ *
+ *3. Request resolves, response.headers.getSetCookie() contains auth information
+ *
+ *4. Set browser cookies via cookies().set() to response.getSetCookie() (some parsing involved)
+ *
+ * The browser now has the (auth) cookies the backend api returned.
+ *
+ * On every subsequent request we 'forward' the browser (auth) cookies to nextjs' fetch.
+ */
+async function fetchWithHandleAuth(
+  requestInfo: RequestInfo,
+  init?: RequestInit
+) {
+  let request: Request;
+  if (typeof requestInfo === "string" || requestInfo instanceof String) {
+    request = new Request(requestInfo);
+  } else {
+    request = requestInfo;
+  }
+
+  const browserAspnetAuthCookie = cookies().get(aspnetAuthCookieName);
+  if (browserAspnetAuthCookie) {
+    request.headers.set(
+      cookieHeaderName,
+      serializeCookie(
+        browserAspnetAuthCookie.name,
+        browserAspnetAuthCookie.value
+      )
+    );
+  }
+
+  var response = await fetch(request, init);
+
+  var serverCookies = response.headers.getSetCookie();
+  for (const serverCookie of serverCookies) {
+    const parsedCookie = parseCookie(serverCookie);
+    if (!parsedCookie[aspnetAuthCookieName]) continue;
+
+    cookies().set({
+      name: aspnetAuthCookieName,
+      value: parsedCookie[aspnetAuthCookieName],
+      expires: new Date(parsedCookie.expires),
+      path: parsedCookie.path,
+    });
+  }
+  return response;
+}
 
 export async function login(loginRequest: FormData) {
   const loginData = {
@@ -8,7 +67,7 @@ export async function login(loginRequest: FormData) {
     password: loginRequest.get("password"),
   };
 
-  const response = await fetch(
+  const response = await fetchWithHandleAuth(
     process.env.BACKEND_URL +
       "/login?" +
       new URLSearchParams({ useCookies: "true" }),
@@ -25,7 +84,7 @@ export async function login(loginRequest: FormData) {
 }
 
 export async function getChatList() {
-  const result = await fetch(process.env.BACKEND_URL + "/chats", {
+  const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/chats", {
     cache: "no-store",
   });
 
@@ -36,12 +95,14 @@ export async function getChatList() {
 }
 
 export async function getChatHistoryWithId(userId: number) {
-  const result = await fetch(process.env.BACKEND_URL + "/chats/" + userId);
+  const result = await fetchWithHandleAuth(
+    process.env.BACKEND_URL + "/chats/" + userId
+  );
   return JSON.parse(await result.text()) as HistoryEntity[];
 }
 
 export async function getLoggedInUser() {
-  const result = await fetch(process.env.BACKEND_URL + "/whoami");
+  const result = await fetchWithHandleAuth(process.env.BACKEND_URL + "/whoami");
 
   return JSON.parse(await result.text()) as UserEntity;
 }
