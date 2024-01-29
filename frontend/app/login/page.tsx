@@ -3,13 +3,12 @@
 import LoginForm from "@components/LoginForm";
 import { LoggedInUserContext } from "@providers/LoggedInUserProvider";
 import { getLoggedInUser, login } from "app/actions";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useContext } from "react";
 
 const doNothing = () => {};
 
 export default function LoginPage() {
-  const router = useRouter();
   const loggedInUserContext = useContext(LoggedInUserContext);
   let setLoggedInUser = loggedInUserContext?.setLoggedInUser ?? doNothing;
 
@@ -22,7 +21,7 @@ export default function LoginPage() {
           setLoggedInUser(loggedInUser);
         }
         if (loginSuccess) {
-          router.push("/chats");
+          redirect("/login");
         }
       }}
     />
