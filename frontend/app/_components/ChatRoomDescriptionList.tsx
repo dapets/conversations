@@ -59,7 +59,7 @@ export default function ChatRoomDescriptionList({
       roomMessageWasSentIn.lastMessage = {
         author,
         message,
-        sentOn: new Date(),
+        sentOn: new Date().toISOString(),
         id: Math.random(),
       };
 

@@ -8,7 +8,7 @@ export function AutoUpdatingRelativeTime({
   date,
 }: {
   className?: string;
-  date: Date;
+  date: string;
 }) {
   const [localTime, setLocalTime] = useState(
     getRelativeLocalTimeStrFromUtcDate(date),
@@ -37,11 +37,7 @@ export function AutoUpdatingRelativeTime({
   }, [date]);
 
   return (
-    <time
-      suppressHydrationWarning
-      dateTime={date.toISOString()}
-      className={className}
-    >
+    <time dateTime={date} suppressHydrationWarning className={className}>
       {localTime}
     </time>
   );

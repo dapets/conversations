@@ -6,7 +6,7 @@ export type UserEntity = {
 
 export type HistoryEntity = {
   id: number;
-  sentOn: Date;
+  sentOn: string;
   message: string;
   author: UserEntity;
 };

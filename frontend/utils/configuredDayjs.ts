@@ -11,6 +11,6 @@ dayjs.extend(UTC);
  *
  * Kind of overkill at this stage so we don't.
  */
-export const getRelativeLocalTimeStrFromUtcDate = (date: Date) =>
+export const getRelativeLocalTimeStrFromUtcDate = (date: Date | string) =>
   configuredDayjs().to(configuredDayjs.utc(date).local());
 export const configuredDayjs = dayjs;
