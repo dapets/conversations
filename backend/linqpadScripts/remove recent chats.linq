@@ -17,7 +17,7 @@
 
 Chats.Dump();
 new Button("Remove last", (_) => {
-SubmitChanges();
 	var latestChat = Chats.OrderBy(c => c.Id).Last().Dump();
 	Chats.Remove(latestChat);
+	SubmitChanges();
 }).Dump();
