@@ -12,11 +12,15 @@ export default async function ChatHistory({
 
   const chatRoomId = +decodeURIComponent(params.id[0]);
 
-  const chatRoom = await getChatHistoryWithId(chatRoomId);
+  const chatRoomData = getChatHistoryWithId(chatRoomId);
+  const loggedInUserIdData = getLoggedInUser();
+  const [loggedInUser, chatRoom] = await Promise.all([
+    loggedInUserIdData,
+    chatRoomData,
+  ]);
+
   const chatHistory = chatRoom.history;
-  const loggedInUserId = (await getLoggedInUser())?.id;
-  if (!loggedInUserId)
-    throw Error("Tried to render chat history while logged in user was null");
+  const loggedInUserId = loggedInUser.id;
 
   return (
     <section className="overflow-y-auto p-4 pl-0 pr-14">

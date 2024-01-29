@@ -4,8 +4,13 @@ import { getChatRoomsList, getLoggedInUser } from "app/dataFetchers";
 import { ChatListWithServerSideProps } from "./ChatListWithServerSideProps";
 
 export default async function ChatDescriptionListPage() {
-  const chatRooms = await getChatRoomsList();
-  const loggedInUser = await getLoggedInUser();
+  const chatRoomsData = getChatRoomsList();
+  const loggedInUserData = getLoggedInUser();
+
+  const [chatRooms, loggedInUser] = await Promise.all([
+    chatRoomsData,
+    loggedInUserData,
+  ]);
   if (!chatRooms) throw Error("Fetching chat list failed");
   if (!loggedInUser) throw Error("Fetching logged in user failed");
 
