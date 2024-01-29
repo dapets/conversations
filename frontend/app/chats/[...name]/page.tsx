@@ -1,10 +1,5 @@
 import { PastHistory } from "@components/PastHistory";
-import { HistoryEntity } from "utils/types/dbEntities";
-
-async function getChatHistoryWithId(userId: number) {
-  const result = await fetch(process.env.BACKEND_URL + "/chats/" + userId);
-  return JSON.parse(await result.text()) as HistoryEntity[];
-}
+import { getChatHistoryWithId } from "utils/dataFetchers";
 
 export default async function ChatHistory({
   params,

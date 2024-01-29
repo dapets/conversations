@@ -6,8 +6,10 @@ import { UserEntity } from "utils/types/dbEntities";
 
 export default function DescriptionList({
   chatList,
+  lastMessage,
 }: {
   chatList: UserEntity[][];
+  lastMessage?: string;
 }) {
   const pathname = usePathname();
 
