@@ -2,9 +2,13 @@
 
 import { Description } from "@components/Description";
 import { usePathname } from "next/navigation";
-import { User } from "utils/types/dbEntities";
+import { UserEntity } from "utils/types/dbEntities";
 
-export default function DescriptionList({ chatList }: { chatList: User[][] }) {
+export default function DescriptionList({
+  chatList,
+}: {
+  chatList: UserEntity[][];
+}) {
   const pathname = usePathname();
 
   const segments = pathname.split("/");

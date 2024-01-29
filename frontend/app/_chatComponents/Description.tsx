@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { User } from "utils/types/dbEntities";
+import { UserEntity } from "utils/types/dbEntities";
 
 export function Description({
   user,
   isActive,
   lastMessage,
 }: {
-  user: User;
+  user: UserEntity;
   isActive: boolean;
   lastMessage?: string;
 }) {

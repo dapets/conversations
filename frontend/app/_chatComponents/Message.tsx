@@ -1,17 +1,17 @@
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import AdvancedFormat from "dayjs/plugin/relativeTime";
-import { History, User } from "utils/types/dbEntities";
+import { HistoryEntity, UserEntity } from "utils/types/dbEntities";
 
 dayjs.extend(AdvancedFormat);
 
 async function getSelf() {
   const result = await fetch(process.env.BACKEND_URL + "/whoami");
 
-  return JSON.parse(await result.text()) as User;
+  return JSON.parse(await result.text()) as UserEntity;
 }
 
-export async function Message(props: { history: History }) {
+export async function Message(props: { history: HistoryEntity }) {
   const { author, sentOn, message } = props.history;
 
   const iAm = await getSelf();

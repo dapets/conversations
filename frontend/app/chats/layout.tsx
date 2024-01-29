@@ -1,13 +1,13 @@
 import DescriptionList from "@components/DescriptionList";
 import React from "react";
-import { User } from "utils/types/dbEntities";
+import { UserEntity } from "utils/types/dbEntities";
 
 async function getChatList() {
   const result = await fetch(process.env.BACKEND_URL + "/chats", {
     cache: "no-store",
   });
   const text = await result.text();
-  return JSON.parse(text) as User[][];
+  return JSON.parse(text) as UserEntity[][];
 }
 
 export default async function ClientLayout({
