@@ -19,6 +19,10 @@ var loggedInUserId = 177;
 
 var app = builder.Build();
 
+app.MapGet("/whoami", (DevContext db) =>
+    db.Users.FirstAsync(u => u.Id == loggedInUserId)
+);
+
 app.MapGet("/chats", (DevContext db) => db
     .Chats
     .Include(c => c.Members)
