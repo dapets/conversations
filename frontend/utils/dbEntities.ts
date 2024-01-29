@@ -18,6 +18,16 @@ export type ChatRoomEntity = {
   isUnread?: boolean;
 };
 
-export type ChatRoomListEntity = Exclude<ChatRoomEntity, "history"> & {
+export type ChatRoomListEntity = Omit<ChatRoomEntity, "history"> & {
   lastMessage?: HistoryEntity;
+};
+
+export type ChatRoomCreatedDto = {
+  id: number;
+  members: UserEntity[];
+};
+
+export type ProblemDetail = {
+  status: number;
+  detail: string;
 };
