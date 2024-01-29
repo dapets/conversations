@@ -1,5 +1,5 @@
 export type UserEntity = {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
 };
