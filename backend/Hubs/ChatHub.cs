@@ -82,6 +82,7 @@ public class ChatHub(ILogger<ChatHub> logger,
 
     public async Task SendMessage(string message, int chatsId)
     {
+        Guard.IsNotNullOrEmpty(message);
         Guard.IsNotNull(Context.User);
         var user = await identityUtils.GetUserAsync(Context.User);
 
