@@ -97,7 +97,11 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
     ([FromBody] AddChatWithUserDto body, ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
     var loggedInUserTask = utils.GetUserAsync(claimsPrincipal);
-    var userToAddTask = db.Users.FirstOrDefaultAsync(u => u.Email == body.Email);
+
+    //Can't do that because string.Equals would need to be evaluated on the client.
+#pragma warning disable CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
+    var userToAddTask = db.Users.FirstOrDefaultAsync(user => user.NormalizedEmail == body.Email.ToUpper());
+#pragma warning restore CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
 
     await Task.WhenAll(loggedInUserTask, userToAddTask!);
 
@@ -106,7 +110,7 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
 
     if (userToAdd is null)
     {
-        return HttpHelpers.ProduceBadRequestProblem($"No user with email '{body.Email}' found");
+        return HttpHelpers.ProduceBadRequestProblem($"No user with email \"{body.Email}\" found.");
     }
     if (loggedInUser.Id == userToAdd.Id)
     {
@@ -120,7 +124,7 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
 
     if (haveCommonChats)
     {
-        return HttpHelpers.ProduceBadRequestProblem($"User {loggedInUser.Email} is already in a chat room with {userToAdd.Email}");
+        return HttpHelpers.ProduceBadRequestProblem($"User {loggedInUser.Email} is already in a chat room with {userToAdd.Email}.");
     }
 
     var newChat = new Chats()
