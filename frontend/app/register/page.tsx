@@ -2,7 +2,13 @@ import GenericForm, { EmailPasswordFormFields } from "@components/GenericForm";
 import { Input } from "@shadcn/input";
 import { Label } from "@shadcn/label";
 import { register } from "app/actions";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Sign Up",
+  description: "Sign up a new account",
+};
 
 export default function RegisterPage() {
   return (
