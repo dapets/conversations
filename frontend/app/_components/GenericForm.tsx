@@ -98,7 +98,7 @@ export default function GenericForm<State>({
   formFields: React.ReactNode;
   showSignupHint?: boolean;
 }) {
-  const [actiontate, loginAction] = useFormState(submitAction, { ok: true });
+  const [actionState, loginAction] = useFormState(submitAction, { ok: true });
 
   return (
     <form action={loginAction}>
@@ -109,9 +109,9 @@ export default function GenericForm<State>({
         </CardHeader>
         <CardContent className="grid gap-4 p-6 pt-0">
           {formFields}
-          {!actiontate.ok && (
+          {!actionState.ok && (
             <p className="leading-7 text-destructive">
-              {(actiontate.result as ProblemDetail | undefined)?.detail ??
+              {(actionState.result as ProblemDetail | undefined)?.detail ??
                 "Submission failed"}
             </p>
           )}
