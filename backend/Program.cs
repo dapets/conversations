@@ -141,22 +141,10 @@ app.MapPost("/chats", async Task<Results<ProblemHttpResult, Ok<ChatRoomCreatedDt
     await db.Chats.AddAsync(newChat);
     await db.SaveChangesAsync();
 
-    void addUserIdToSignalRGroup(string userId, string groupId)
-    {
-        if (userIdToConnectionIds.Dict.TryGetValue(userId, out var userConnections))
-        {
-            foreach (var connection in userConnections)
-            {
-                hubContext.Groups.AddToGroupAsync(connection, groupId);
-            }
-        }
-
-    }
-
-    //When clients connect they are added to groups based on the Chats they are in.
-    //When a new Chat is added we need to add the user's connection(s) to the new Chats' group.
-    addUserIdToSignalRGroup(loggedInUser.Id, newChat.Id.ToString());
-    addUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString());
+    await Task.WhenAll(
+        userIdToConnectionIds.AddUserIdToSignalRGroup(loggedInUser.Id, newChat.Id.ToString()),
+        userIdToConnectionIds.AddUserIdToSignalRGroup(userToAdd.Id, newChat.Id.ToString())
+    );
 
     var resultDto = new ChatRoomCreatedDto(newChat.Id, newChat.Members.Select(member => member.GetDto()));
 

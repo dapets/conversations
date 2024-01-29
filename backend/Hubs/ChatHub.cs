@@ -1,8 +1,8 @@
-﻿using System.Collections.Concurrent;
-using backend.DTOs;
+﻿using backend.DTOs;
 using backend.Entities;
 using backend.Utils;
 using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace backend.Hubs;
@@ -12,6 +12,7 @@ public interface IChatClient
     Task ReceiveMessage(int chatsId, AuthorDto author, string message);
 }
 
+[Authorize]
 public class ChatHub(ILogger<ChatHub> logger,
     IdentityUtils identityUtils,
     ApplicationDbContext applicationDbContext,
@@ -55,43 +56,6 @@ public class ChatHub(ILogger<ChatHub> logger,
         return newHistory;
     }
 
-    private void AddConnectionToDict(ApplicationUser user)
-    {
-        if (userIdToConnectionIds.Dict.TryGetValue(user.Id, out List<string>? value))
-        {
-            if (value is null) throw new InvalidOperationException($"Key {user.Id} in {nameof(userIdToConnectionIds)} was present but value was null.");
-
-            value.Add(Context.ConnectionId);
-            userIdToConnectionIds.Dict[user.Id] = value;
-        }
-        else
-        {
-            userIdToConnectionIds.Dict[user.Id] = [Context.ConnectionId];
-        }
-    }
-
-    private void RemoveConnectionFromDict(ApplicationUser user)
-    {
-        if (userIdToConnectionIds.Dict.TryGetValue(user.Id, out List<string>? value))
-        {
-            if (value is null) throw new InvalidOperationException($"Key {user.Id} in {nameof(userIdToConnectionIds)} was present but value was null.");
-
-            value.Remove(Context.ConnectionId);
-            if (value.Count == 0)
-            {
-                userIdToConnectionIds.Dict.Remove(user.Id, out _);
-            }
-            else
-            {
-                userIdToConnectionIds.Dict[user.Id] = value;
-            }
-        }
-        else
-        {
-            throw new InvalidOperationException($"Key {user.Id} in {nameof(userIdToConnectionIds)} was not present while disconnecting the connectionId {Context.ConnectionId}");
-        }
-    }
-
     public async override Task OnConnectedAsync()
     {
         logger.LogInformation("User with id {username}, email {Email} and connection id {ConnectionId} connected",
@@ -106,7 +70,7 @@ public class ChatHub(ILogger<ChatHub> logger,
             .ToList();
 
         await Task.WhenAll(chatsIds.Select(id => Groups.AddToGroupAsync(Context.ConnectionId, id.ToString())));
-        AddConnectionToDict(user);
+        userIdToConnectionIds.AddConnectionToDict(user, Context.ConnectionId);
 
         await base.OnConnectedAsync();
     }
@@ -117,7 +81,7 @@ public class ChatHub(ILogger<ChatHub> logger,
             Context.UserIdentifier, Context.User?.Identity?.Name, Context.ConnectionId);
 
         var user = await identityUtils.GetUserAsync(Context.User);
-        RemoveConnectionFromDict(user);
+        userIdToConnectionIds.RemoveConnectionFromDict(user, Context.ConnectionId);
 
         await base.OnDisconnectedAsync(exception);
     }
