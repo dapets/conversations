@@ -20,19 +20,19 @@ export const sampleChatHistory = {
   from: "Benni",
   messages: [
     {
-      date: new Date().toLocaleTimeString(),
+      date: new Date(),
       message: "Hi :)",
     },
     {
-      date: new Date().toLocaleTimeString(),
+      date: new Date(),
       message: "Morning :)",
     },
     {
-      date: new Date().toLocaleTimeString(),
+      date: new Date(),
       message: "Evening :)",
     },
     {
-      date: new Date().toLocaleTimeString(),
+      date: new Date(),
       message: "Night :)",
     },
   ],

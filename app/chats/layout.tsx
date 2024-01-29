@@ -3,6 +3,7 @@ import React from "react";
 import { sampleUsers, sampleChatHistory } from "../../sampleData";
 import { ChatDescription } from "@components/ChatDescription";
 import { ChatMessage } from "@components/ChatMessage";
+import { MessageInput } from "@components/MessageInput";
 
 export default function ClientLayout({
   children,
@@ -14,7 +15,7 @@ export default function ClientLayout({
   console.log(params);
   return (
     <div className="flex h-screen w-screen">
-      <section className="p-4 border-r">
+      <section className="p-4 bg-zinc-100">
         <ul>
           {sampleUsers.map((u, i) => (
             <li key={i}>
@@ -23,7 +24,7 @@ export default function ClientLayout({
           ))}
         </ul>
       </section>
-      <main className="p-4 ">
+      <main className="flex flex-col justify-between p-4 w-full">
         <ul>
           {sampleChatHistory.messages.map((m, i) => (
             <li key={i} className="mb-2">
@@ -35,6 +36,7 @@ export default function ClientLayout({
             </li>
           ))}
         </ul>
+        <MessageInput />
       </main>
     </div>
   );

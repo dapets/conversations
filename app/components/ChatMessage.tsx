@@ -1,15 +1,24 @@
+"use client";
+
+import dayjs from "dayjs";
+import AdvancedFormat from "dayjs/plugin/relativeTime";
+
+dayjs.extend(AdvancedFormat);
+
 export function ChatMessage(props: {
   author: string;
   message: string;
-  sentOn: string;
+  sentOn: Date;
 }) {
   return (
-    <div>
-      <div className="flex flex-row items-baseline">
-        <h3 className="text-sm font-semibold">{props.author}</h3>
-        <span className="text-xs ml-2 text-slate-900">{props.sentOn}</span>
+    <section>
+      <div className="mb-1 flex items-baseline">
+        <h2 className="text-base font-bold">{props.author}</h2>
+        <span className="ml-4 text-sm text-zinc-600">
+          {dayjs().to(props.sentOn)}
+        </span>
       </div>
-      <p className="font-light">{props.message}</p>
-    </div>
+      <p>{props.message}</p>
+    </section>
   );
 }
