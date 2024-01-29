@@ -1,8 +1,7 @@
 import { ChatDescription } from "@components/ChatDescription";
 import { sampleUsers } from "sampleData";
 
-export default function Description() {
-  console.log("Description called");
+export default function SampleDataChatList() {
   return (
     <ul>
       {sampleUsers.map((u, i) => (
