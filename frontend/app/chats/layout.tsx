@@ -34,7 +34,7 @@ export default async function ClientLayout({
             {getUserDisplayName(loggedInUser)}
           </TypographyLarge>
           <p className="grid-in-logged-in-status text-sm text-muted-foreground">
-            Online
+            Logged in
           </p>
           <LogoutButton className="grid-in-log-out justify-self-end w-1/2" />
         </div>
