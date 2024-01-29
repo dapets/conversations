@@ -14,11 +14,13 @@ export default async function ClientLayout({
   chatList: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen w-screen">
-      <nav className="p-4 overflow-y-auto md:w-64 md:block hidden">
+    <div className="flex h-[100dvh] w-[100dvw]">
+      <nav className="basis-1/5 shrink-0 p-4 overflow-y-auto md:w-64 md:block hidden">
         {chatList}
       </nav>
-      {children}
+      <section className="flex-grow overflow-y-auto p-4 pl-0 pr-0">
+        {children}
+      </section>
     </div>
   );
 }
