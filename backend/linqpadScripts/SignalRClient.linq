@@ -1,15 +1,15 @@
 <Query Kind="Program">
   <Connection>
-    <ID>363b3232-5867-446d-874d-ca41c536f665</ID>
+    <ID>3f392c14-cc24-4e56-a467-a1d88be0f49a</ID>
     <NamingServiceVersion>2</NamingServiceVersion>
     <Persist>true</Persist>
     <Driver Assembly="(internal)" PublicKeyToken="no-strong-name">LINQPad.Drivers.EFCore.DynamicDriver</Driver>
-    <AttachFileName>C:\Users\dave\code\video\backend\dev.db</AttachFileName>
-    <DisplayName>videoDevDB</DisplayName>
+    <AttachFileName>\Users\dave\code\video\backend\prod.db</AttachFileName>
+    <AllowDateOnlyTimeOnly>true</AllowDateOnlyTimeOnly>
     <DriverData>
+      <EFProvider>Microsoft.EntityFrameworkCore.Sqlite</EFProvider>
       <EncryptSqlTraffic>True</EncryptSqlTraffic>
       <PreserveNumeric1>True</PreserveNumeric1>
-      <EFProvider>Microsoft.EntityFrameworkCore.Sqlite</EFProvider>
     </DriverData>
   </Connection>
   <NuGetReference>Microsoft.AspNetCore.SignalR.Client</NuGetReference>
@@ -31,7 +31,7 @@ async Task Main()
 	//var mainUserEmail = AspNetUsers.First().Email;
 	//use second user
 	var mainUserEmail = AspNetUsers.Skip(1).First().Email;
-	var password = "Password0$";
+	var password = "123456";
 
 	var httpClient = new HttpClient();
 	var result = await httpClient.PostAsJsonAsync("http://localhost:3001/login", new LoginRequest(mainUserEmail, password));
