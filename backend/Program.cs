@@ -147,21 +147,36 @@ app.MapGet("/whoami", async (ClaimsPrincipal claimsPrincipal, IdentityUtils util
 })
 .RequireAuthorization("HasFinishedRegistrationAndLastName");
 
-app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
+app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext dbContext) =>
 {
     var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
 
-    return db
-    .Chats
-    .Include(chats => chats.Members)
+    var orderedChats = dbContext.Chats
     .Include(chats => chats.History)
-    .Where(chats => chats.Members.Contains(loggedInUser))
-    .OrderByDescending(chats => chats
-        .History
-        .OrderBy(h => h.SentOn)
-        .Last())
-    .Select(chat => chat.GetDto())
-    .AsAsyncEnumerable();
+    .ThenInclude(history => history.Chats)
+    .Where(chatsDto => chatsDto.Members.Contains(loggedInUser))
+    .Select(chat => new
+    {
+        id = chat.Id,
+        members = chat.Members,
+        lastMessage = chat
+            .History
+            .OrderBy(history => history.SentOn)
+            .Last()
+    })
+    //String sorts the DateTime of kind UTC correctly 
+    //whereas a normal DateTime (DateTime.parse(chatsDto.lastMessage)) does not.
+    .OrderByDescending(chatsDto => chatsDto.lastMessage)
+    .ToList();
+
+    var dtos = orderedChats.Select(chat => new
+    {
+        chat.id,
+        members = chat.members.Select(m => m.GetDto()),
+        lastMessage = chat.lastMessage.GetDto()
+    });
+
+    return dtos;
 })
 .RequireAuthorization("HasFinishedRegistrationAndLastName");
 
