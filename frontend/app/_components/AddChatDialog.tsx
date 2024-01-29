@@ -1,6 +1,6 @@
 "use client";
 
-import { useAddSingleRoom } from "@providers/AddedChatRoomsContext";
+import { useSetChatRooms } from "@providers/AddedChatRoomsContext";
 import { Button } from "@shadcn/button";
 import {
   CardContent,
@@ -48,7 +48,7 @@ export function AddChatDialog() {
     router.push(location + segment);
   }, [location, router]);
 
-  const addSingleRoom = useAddSingleRoom();
+  const setChatRooms = useSetChatRooms();
 
   const [isFormValid, setIsFormValid] = useState(false);
   const [formProblem, setFormProblem] = useState<ProblemDetail | null>(null);
@@ -57,7 +57,10 @@ export function AddChatDialog() {
     const response = await addChatWithUser(formData);
     if (response.ok) {
       const newChatRoom = response.result as ChatRoomListEntity;
-      addSingleRoom(newChatRoom);
+      if (!setChatRooms) {
+        throw new Error("setChatRooms was null in AddChatDialog");
+      }
+      setChatRooms((rooms) => [newChatRoom, ...rooms]);
       discardAndCloseDialog();
     } else {
       setFormProblem(response.result as ProblemDetail);

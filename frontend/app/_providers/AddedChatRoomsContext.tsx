@@ -1,31 +1,38 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 import { ChatRoomListEntity } from "utils/dbEntities";
 
 export type AddedChatRooms = {
   addedRooms: ChatRoomListEntity[];
-  addRoom: (addRoom: ChatRoomListEntity) => void;
+  setAddedRooms: Dispatch<SetStateAction<ChatRoomListEntity[]>>;
 };
 
 export const AddedChatRoomsContext = createContext<AddedChatRooms | null>(null);
 
-export function AddedChatRoomsProvider({
+/**We need this to add chat rooms without re-fetching everything. */
+export function ChatRoomsProvider({
   children,
+  value,
 }: {
   children: React.ReactNode;
+  value?: ChatRoomListEntity[];
 }) {
-  const [addedRooms, setAddedRooms] = useState<ChatRoomListEntity[]>([]);
-  const addRoom = useCallback(
-    (room: ChatRoomListEntity) => setAddedRooms((value) => [room, ...value]),
-    [],
+  const [addedRooms, setAddedRooms] = useState<ChatRoomListEntity[]>(
+    value ?? [],
   );
 
   return (
     <AddedChatRoomsContext.Provider
       value={{
         addedRooms,
-        addRoom,
+        setAddedRooms,
       }}
     >
       {children}
@@ -33,19 +40,16 @@ export function AddedChatRoomsProvider({
   );
 }
 
-function useAddedChatRoomsContext() {
+function useChatRoomsContext() {
   const addedChatRoomsContext = useContext(AddedChatRoomsContext);
-  if (!addedChatRoomsContext) {
-    throw new Error("Tried using AddedChatRoomsContext when it was null");
-  }
 
   return addedChatRoomsContext;
 }
 
-export function useAddedRooms() {
-  return useAddedChatRoomsContext().addedRooms;
+export function useChatRooms() {
+  return useChatRoomsContext()?.addedRooms;
 }
 
-export function useAddSingleRoom() {
-  return useAddedChatRoomsContext().addRoom;
+export function useSetChatRooms() {
+  return useChatRoomsContext()?.setAddedRooms;
 }

@@ -7,24 +7,31 @@ import { useCallback, useEffect, useState } from "react";
 import { ChatRoomListEntity, UserEntity } from "utils/dbEntities";
 import { getActiveChatRoomId } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
-import { useAddedRooms } from "@providers/AddedChatRoomsContext";
+import {
+  useChatRooms,
+  useSetChatRooms,
+} from "@providers/AddedChatRoomsContext";
 
 export default function ChatRoomDescriptionList({
-  initalChatRooms,
   loggedInUserId,
 }: {
-  initalChatRooms: ChatRoomListEntity[];
   loggedInUserId: string;
 }) {
   const conn = useSignalR();
   const pathname = usePathname();
-  const [chatRooms, setChatRooms] = useState(initalChatRooms);
-  const addedChatRooms = useAddedRooms();
+  let chatRooms = useChatRooms();
+  if (!chatRooms) {
+    chatRooms = [];
+  }
+  const setChatRooms = useSetChatRooms();
 
   const activeChatRoomId = getActiveChatRoomId(pathname);
   const activeRoom = chatRooms.find((r) => r.id === activeChatRoomId);
   if (activeRoom?.isUnread) {
     activeRoom.isUnread = false;
+    if (!setChatRooms) {
+      throw new Error("setChatRooms was null in ChatRoomDescriptionList");
+    }
     setChatRooms([...chatRooms]);
   }
 
@@ -68,10 +75,9 @@ export default function ChatRoomDescriptionList({
     return () => conn.off("ReceiveMessage", handleIncomingMessage);
   }, [conn, handleIncomingMessage]);
 
-  const allChatRooms = [...addedChatRooms, ...chatRooms];
   return (
     <ul className="space-y-3">
-      {allChatRooms.map((chatRoom) => (
+      {chatRooms.map((chatRoom) => (
         <li key={chatRoom.id}>
           <ChatRoomDescription
             chatRoom={chatRoom}
