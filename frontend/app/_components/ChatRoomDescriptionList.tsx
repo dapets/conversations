@@ -1,8 +1,8 @@
 "use client";
 
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
-import { usePathname } from "next/navigation";
-import { useCallback, useContext, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   ChatRoomEntity,
   ChatRoomListEntity,
@@ -10,7 +10,7 @@ import {
 } from "utils/dbEntities";
 
 export default function ChatRoomDescriptionList({
-  chatRooms,
+  chatRooms: initalChatRooms,
   renderChatRoomDescription,
 }: {
   chatRooms: ChatRoomListEntity[];
@@ -22,14 +22,24 @@ export default function ChatRoomDescriptionList({
   const conn = useContext(SignalRConnectionContext);
   const pathname = usePathname();
 
+  const [chatRooms, setChatRooms] = useState(initalChatRooms);
+
   const segments = pathname.split("/");
   const activeChatRoomId = +segments[2];
 
   const handleIncomingMessage = useCallback(
-    (chatRoomId: number, author: UserEntity, message: unknown) => {
-      console.log(chatRoomId, author, message);
+    (chatRoomId: number, author: UserEntity, message: string) => {
+      let room = chatRooms.find((r) => r.id === chatRoomId);
+      if (!room) return;
+      (room.lastMessage = {
+        author,
+        message,
+        sentOn: new Date(),
+        id: Math.random(),
+      }),
+        setChatRooms([...chatRooms]);
     },
-    []
+    [chatRooms, setChatRooms]
   );
 
   useEffect(() => {
