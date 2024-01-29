@@ -55,13 +55,13 @@ app.MapHub<ChatHub>("/chatHub")
 
 app.MapGet("/whoami", (ClaimsPrincipal claimsPrincipal, IdentityUtils utils) =>
 {
-    return utils.GetUser(claimsPrincipal);
+    return utils.GetUserAsync(claimsPrincipal);
 })
 .RequireAuthorization();
 
 app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, ApplicationDbContext db) =>
 {
-    var loggedInUser = await utils.GetUser(claimsPrincipal);
+    var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
     return db
     .Chats
     .Include(c => c.Members)
@@ -74,7 +74,7 @@ app.MapGet("/chats", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils
 
 app.MapGet("/chats/{id}/history", async (ClaimsPrincipal claimsPrincipal, IdentityUtils utils, string id, ApplicationDbContext db) =>
 {
-    var loggedInUser = await utils.GetUser(claimsPrincipal);
+    var loggedInUser = await utils.GetUserAsync(claimsPrincipal);
     var commonChatHistory = await db.Chats
         .Where(chats => chats.Members.Any(m => m.Id == id))
         .Where(chats => chats.Members.Contains(loggedInUser))
