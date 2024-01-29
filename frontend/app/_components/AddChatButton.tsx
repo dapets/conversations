@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcn/button";
-import { MessageSquarePlus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export function AddChatButton({ className }: { className?: string }) {
   return (
@@ -11,7 +11,7 @@ export function AddChatButton({ className }: { className?: string }) {
       className={(cn("flex place-content-center"), className)}
       variant="ghost"
     >
-      <MessageSquarePlus className="h-6 w-6" />
+      <Plus className="h-6 w-6" />
     </Button>
   );
 }
