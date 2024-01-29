@@ -13,4 +13,4 @@ services:
     build:
       context: frontend/
     ports:
-      - 80:3001
+      - 80:3000
