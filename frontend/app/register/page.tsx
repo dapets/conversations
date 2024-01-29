@@ -37,7 +37,7 @@ export default function RegisterPage() {
                 />
               </div>
             </div>
-            <EmailPasswordFormFields />
+            <EmailPasswordFormFields passwordAutoCompleteValue="off" />
           </>
         }
       />

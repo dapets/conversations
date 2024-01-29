@@ -25,7 +25,9 @@ export default function LoginPage() {
             redirect("/chats");
           }
         }}
-        formFields={<EmailPasswordFormFields />}
+        formFields={
+          <EmailPasswordFormFields passwordAutoCompleteValue="current-password" />
+        }
       />
     </div>
   );

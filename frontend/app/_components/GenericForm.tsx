@@ -41,7 +41,11 @@ function SubmitForm({ buttonText }: { buttonText: SubmitButtonProps }) {
   }
 }
 
-export function EmailPasswordFormFields() {
+export function EmailPasswordFormFields({
+  passwordAutoCompleteValue,
+}: {
+  passwordAutoCompleteValue?: string;
+}) {
   const [isEmailValid, setIsEmailvalid] = useState(true);
   return (
     <>
@@ -63,7 +67,7 @@ export function EmailPasswordFormFields() {
             setIsEmailvalid(e.currentTarget.reportValidity());
           }}
           id="password"
-          autoComplete="password"
+          autoComplete={passwordAutoCompleteValue}
           name="password"
           type="password"
           minLength={6}
