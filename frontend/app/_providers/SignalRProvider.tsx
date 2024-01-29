@@ -5,7 +5,11 @@ import { createContext, useEffect, useState } from "react";
 import { UserEntity } from "utils/dbEntities";
 
 type HubMethodNames = {
-  ReceiveMessage: (author: UserEntity, message: string) => void;
+  ReceiveMessage: (
+    chatRoomId: number,
+    author: UserEntity,
+    message: string
+  ) => void;
 };
 
 type ChatClientHubConnection = Omit<HubConnection, "on"> & {

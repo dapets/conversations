@@ -8,7 +8,7 @@ namespace backend.Hubs;
 
 public interface IChatClient
 {
-    Task ReceiveMessage(AuthorDto author, string message);
+    Task ReceiveMessage(int chatsId, AuthorDto author, string message);
 }
 
 public class ChatHub(IdentityUtils identityUtils, ApplicationDbContext applicationDbContext) : Hub<IChatClient>
@@ -67,6 +67,6 @@ public class ChatHub(IdentityUtils identityUtils, ApplicationDbContext applicati
     public async Task SendMessage(string message, int chatsId)
     {
         await AddToHistory(message, chatsId);
-        await Clients.Groups(DefaultGroupId).ReceiveMessage(await GetAuthorDto(), message);
+        await Clients.Groups(DefaultGroupId).ReceiveMessage(chatsId, await GetAuthorDto(), message);
     }
 }
