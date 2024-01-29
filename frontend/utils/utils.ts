@@ -7,7 +7,7 @@ import {
   navBarId,
 } from "./constants";
 
-export function getActiveChatRoomId(pathname: string): Number | null {
+export function getActiveChatRoomId(pathname: string): number | null {
   const segments = pathname.split("/");
   const activeChatRoomId = +segments[2];
   if (isNaN(activeChatRoomId)) return null;

@@ -27,7 +27,7 @@ export function MessageInput({ className }: { className: string }) {
           messageInputName,
         ) as HTMLElementTagNameMap["input"];
 
-        if (sendInput.value.length > 0) {
+        if (sendInput.value.length > 0 && activeChatRoomId !== null) {
           signalRContext?.send(
             "SendMessage",
             sendInput.value,
