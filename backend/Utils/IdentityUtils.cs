@@ -2,7 +2,7 @@
 using backend.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace backend;
+namespace backend.Utils;
 
 public class IdentityUtils(UserManager<ApplicationUser> userManager)
 {

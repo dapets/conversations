@@ -1,6 +1,6 @@
 ﻿using backend.DTOs;
 using backend.Entities;
-using Microsoft.AspNetCore.Identity;
+using backend.Utils;
 using Microsoft.AspNetCore.SignalR;
 
 namespace backend.Hubs;
