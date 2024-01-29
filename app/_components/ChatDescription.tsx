@@ -12,7 +12,7 @@ export function ChatDescription(props: {
       {/* Padding behaves weird if I style the <Link> directly, don't know why*/}
       <div
         data-isactive={props.isActive}
-        className="p-2 data-[isactive=true]:bg-accent hover:bg-muted rounded-lg"
+        className="p-2 data-[isactive=true]:bg-secondary hover:bg-secondary rounded-lg"
       >
         <h2 className="text-sm font-bold truncate">{props.username}</h2>
         <p className="text-sm truncate font-light">
