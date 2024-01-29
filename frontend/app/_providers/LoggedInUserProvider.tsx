@@ -9,21 +9,23 @@ import {
 } from "react";
 import { UserEntity } from "utils/dbEntities";
 
-type LoggedInUserContex = {
+type LoggedInUserContexType = {
   loggedInUser: UserEntity;
   setLoggedInUser: Dispatch<SetStateAction<UserEntity | null>>;
 };
 
-export const LoggedInUserContext = createContext<LoggedInUserContex | null>(
+export const LoggedInUserContext = createContext<LoggedInUserContexType | null>(
   null
 );
 
 export function LoggedInUserProvider({
   children,
+  value,
 }: {
+  value: UserEntity | null;
   children: React.ReactNode;
 }) {
-  const [loggedInUser, setLoggedInUser] = useState<UserEntity | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<UserEntity | null>(value);
 
   const contextValue = useMemo(() => {
     if (loggedInUser) {
