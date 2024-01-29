@@ -12,7 +12,7 @@ import {
 import { Label } from "@shadcn/label";
 import { Input } from "@shadcn/input";
 import { useFormState, useFormStatus } from "react-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogIn } from "lucide-react";
 import { useState } from "react";
 
 function SubmitLogin({
@@ -26,10 +26,11 @@ function SubmitLogin({
     return (
       <Button
         disabled={isSubmitButtonDisabled}
-        className="disabled w-full"
+        className="disabled flex w-full items-center"
         type="submit"
       >
-        Login
+        <LogIn className="mr-2 h-4 w-4" />
+        <p>Login</p>
       </Button>
     );
   } else {
