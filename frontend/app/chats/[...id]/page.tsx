@@ -2,6 +2,7 @@ import { Message } from "@components/Message";
 import { scrollToId } from "utils/constants";
 import { getChatHistoryById, getLoggedInUser } from "app/dataFetchers";
 import { RealTimeHistoryWithServerSideProps } from "./RealTimeHistoryWithServerSideProps";
+import { AddChatDialog } from "@components/AddChatDialog";
 
 export default async function ChatHistory({
   params,
@@ -9,7 +10,6 @@ export default async function ChatHistory({
   params: { id: string[] };
 }) {
   if (!params?.id) throw new Error("params or id undefined");
-
   const chatRoomId = +decodeURIComponent(params.id[0]);
 
   const chatRoomData = getChatHistoryById(chatRoomId);
@@ -24,6 +24,7 @@ export default async function ChatHistory({
 
   return (
     <>
+      <AddChatDialog />
       <ul className="flex flex-col space-y-2">
         {chatHistory.length === 0 ? (
           <li>
