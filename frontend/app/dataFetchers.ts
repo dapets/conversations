@@ -32,16 +32,15 @@ export async function fetchWithAuth(
   requestInfo: RequestInfo,
   init?: RequestInit,
 ) {
-  let request: Request;
   if (typeof requestInfo === "string" || requestInfo instanceof String) {
-    request = new Request(requestInfo);
+    requestInfo = new Request(requestInfo);
   } else {
-    request = requestInfo;
+    requestInfo = requestInfo;
   }
 
   const browserAspnetAuthCookie = cookies().get(aspnetAuthCookieName);
   if (browserAspnetAuthCookie) {
-    request.headers.set(
+    requestInfo.headers.set(
       cookieHeaderName,
       serializeCookie(
         browserAspnetAuthCookie.name,
@@ -50,12 +49,12 @@ export async function fetchWithAuth(
     );
   }
 
-  if (request.method === "POST" || request.method === "PUT") {
-    request.headers.append("Content-Type", "application/json");
+  if (init?.method === "POST" || init?.method === "PUT") {
+    requestInfo.headers.append("Content-Type", "application/json");
   }
 
-  const response = await fetch(request, init);
-  if (response.status === 401 && !request.url.includes("/login")) {
+  const response = await fetch(requestInfo, init);
+  if (response.status === 401 && !requestInfo.url.includes("/login")) {
     redirect("/login");
   } else if (response.status === 403) {
     redirect("/register");
