@@ -1,13 +1,17 @@
 services:
   backend:
     image: backend
-    build: backend/
+    build:
+      context: backend/
     ports:
       - 3001:3001
   frontend:
+    # For pre-rendering nextjs pages
+    depends_on:
+      - backend
     image: frontend
     build:
-      context: .
+      context: frontend/
       # we need to use both args and environment to make variables accessible during build time.
       args:
         - BACKEND_URL=${BACKEND_URL}
