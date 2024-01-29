@@ -3,6 +3,7 @@
 import { HistoryEntity, UserEntity } from "utils/dbEntities";
 import { cookies } from "next/headers";
 import { parse as parseCookie, serialize as serializeCookie } from "cookie";
+import { redirect } from "next/navigation";
 
 const aspnetAuthCookieName = ".AspNetCore.Identity.Application";
 const cookieHeaderName = "Cookie";
@@ -45,6 +46,9 @@ async function fetchWithHandleAuth(
   }
 
   const response = await fetch(request, init);
+  if (response.status === 401 && !request.url.includes("/login")) {
+    redirect("/login");
+  }
 
   const serverCookies = response.headers.getSetCookie();
   for (const serverCookie of serverCookies) {
