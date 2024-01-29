@@ -1,14 +1,20 @@
+using backend;
 using backend.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DevContext>();
-// builder.Services.Configure<JsonOptions>(options =>
-// {
-//     options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-// });
+builder.Services.AddSignalR();
+builder.Services.AddCors(config =>
+{
+    config.AddDefaultPolicy(configurePolicy =>
+    {
+        configurePolicy.WithOrigins("http://localhost:3000");
+        configurePolicy.AllowCredentials();
+        configurePolicy.AllowAnyHeader();
+    });
+});
 
 if (builder.Environment.IsDevelopment())
 {
@@ -18,6 +24,10 @@ if (builder.Environment.IsDevelopment())
 var loggedInUserId = 177;
 
 var app = builder.Build();
+
+app.UseCors();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapGet("/whoami", (DevContext db) =>
     db.Users.FirstAsync(u => u.Id == loggedInUserId)
