@@ -1,6 +1,6 @@
 import { scrollToId } from "app/chats/[...name]/page";
 import Link from "next/link";
-import { UserEntity } from "utils/types/dbEntities";
+import { UserEntity } from "utils/dbEntities";
 
 export function ChatDescription({
   user,

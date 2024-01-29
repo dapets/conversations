@@ -2,7 +2,7 @@
 
 import { ChatDescription } from "@components/ChatDescription";
 import { usePathname } from "next/navigation";
-import { UserEntity } from "utils/types/dbEntities";
+import { UserEntity } from "utils/dbEntities";
 
 export default function ChatDescriptionList({
   chatList,

@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { Message } from "./Message";
-import { HistoryEntity, UserEntity } from "utils/types/dbEntities";
+import { HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "./SignalRProvider";
 
 export function RealtimeHistory({
