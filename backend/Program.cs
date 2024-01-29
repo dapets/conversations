@@ -62,6 +62,7 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddSwaggerGen();
 }
 
+builder.Services.AddTransient<SeedDb>();
 builder.Services.Configure<SeedDbOptions>(
     builder.Configuration.GetSection(SeedDbOptions.Position));
 
@@ -73,10 +74,11 @@ using (scope)
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
-
-    app.Lifetime.ApplicationStarted.Register(async () =>
-        await SeedDb.SeedWithDemoData(app.Services));
 }
+
+var seedDb = app.Services.GetRequiredService<SeedDb>();
+app.Lifetime.ApplicationStarted.Register(async () =>
+    await seedDb.SeedWithDemoData());
 
 app.UseCors();
 app.MapIdentityApi<ApplicationUser>();

@@ -1,6 +1,7 @@
 ﻿using backend.DTOs;
 using backend.Entities;
 using Bogus;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace backend.Utils;
@@ -14,22 +15,28 @@ public class SeedDbOptions()
     public required string DemoUserPassword { get; set; }
 }
 
-public class SeedDb
+public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext dbContext)
 {
     record LoginResponses(string AccessToken);
 
     record RegisterDto(string Email, string Password);
 
-    private static string BuildEmail(ApplicationUser user) => $"{user.FirstName}@{user.LastName}.com";
+    private readonly IOptions<SeedDbOptions> seedOptions = seedOptions;
 
-    private static readonly string Password = "123456";
+    private readonly ApplicationDbContext dbContext = dbContext;
 
-    private static readonly HttpClient HttpClient = new()
+    private readonly string password = "123456";
+
+    private readonly HttpClient HttpClient = new()
     {
+        //Not hardcoding the port is kind of annoying because we'd need to use app.Start() 
+        //and some other things, this will do for now.
         BaseAddress = new Uri("http://localhost:3001")
     };
 
-    private static async Task<HttpResponseMessage> LogInAndInvoke(RegisterDto loginData, string url, object? content, HttpMethod method)
+    private static string BuildEmail(ApplicationUser user) => $"{user.FirstName}@{user.LastName}.com";
+
+    private async Task<HttpResponseMessage> LogInAndInvoke(RegisterDto loginData, string url, object? content, HttpMethod method)
     {
         var loginResponse = await HttpClient.PostAsJsonAsync("/login", loginData);
         var parsedLogin = await loginResponse.Content.ReadFromJsonAsync<LoginResponses>();
@@ -46,10 +53,12 @@ public class SeedDb
         };
         postRequest.Headers.Authorization = new("Bearer", parsedLogin.AccessToken);
 
-        return await HttpClient.SendAsync(postRequest);
+        var response = await HttpClient.SendAsync(postRequest);
+
+        return response;
     }
 
-    private static async Task<ApplicationUserDto> RegisterUser(ApplicationUser newUserData, RegisterDto registerDto)
+    private async Task<ApplicationUserDto> RegisterUser(ApplicationUser newUserData, RegisterDto registerDto)
     {
         await HttpClient.PostAsJsonAsync("/register", registerDto);
 
@@ -66,7 +75,7 @@ public class SeedDb
         return applicationUserDto;
     }
 
-    public static async Task<IEnumerable<ApplicationUserDto>> GenerateAndRegisterMockUsers(string demoUserEmail, string demoUserPassword)
+    private async Task<IEnumerable<ApplicationUserDto>> GenerateAndRegisterMockUsers(string demoUserEmail, string demoUserPassword)
     {
 
         var userFaker = new Faker<ApplicationUser>()
@@ -94,7 +103,7 @@ public class SeedDb
             else
             {
                 newUserData = userFaker.Generate();
-                registerDto = new(newUserData.Email!, Password);
+                registerDto = new(newUserData.Email!, password);
             }
             addUsersTasks.Add(RegisterUser(newUserData, registerDto));
         }
@@ -103,58 +112,59 @@ public class SeedDb
         return addUsersTasks.Select(task => task.Result);
     }
 
-    private static async Task GenerateMockChatMessages(IEnumerable<ApplicationUserDto> users, ApplicationDbContext dbContext)
+    private async Task GenerateMockChat(string userId, ApplicationUser mainUser, ApplicationDbContext dbContext)
     {
-
         var rnd = new Random();
         var faker = new Faker();
 
-        var mainUser = users.First();
-        var mainAppUser = new ApplicationUser()
+        var user = await dbContext.Users.FirstAsync(user => user.Id == userId);
+
+        var members = new List<ApplicationUser>() { user, mainUser };
+
+        var newChat = new Chats()
         {
-            Id = mainUser.Id
+            Members = members,
         };
 
-        var otherUsers = users.Skip(1);
-        foreach (var user in otherUsers)
+        await dbContext.Chats.AddAsync(newChat);
+        await dbContext.SaveChangesAsync();
+        for (int i = 0; i < 15; i++)
         {
-            var appUser = new ApplicationUser()
-            {
-                Id = user.Id
-            };
-            var members = new List<ApplicationUser>() { appUser, mainAppUser };
 
-            var newChat = new Chats()
-            {
-                Members = members,
-                History = null!
-            };
-
-            await dbContext.Chats.AddAsync(newChat);
-            await dbContext.SaveChangesAsync();
             dbContext.History.Add(new()
             {
-                Author = rnd.NextSingle() > 0.5 ? appUser : mainAppUser,
+                Author = rnd.NextSingle() > 0.5 ? user : mainUser,
                 Chats = newChat,
                 SentOn = DateTime.UtcNow.AddHours(rnd.Next(1, 15)),
                 Message = faker.Lorem.Sentences(rnd.Next(1, 3))
             });
         }
+        await dbContext.SaveChangesAsync();
     }
 
-    public static async Task SeedWithDemoData(IServiceProvider provider)
+    private async Task GenerateMockChatsForUsers(IEnumerable<ApplicationUserDto> users, ApplicationDbContext dbContext)
     {
-        var scope = provider.CreateScope();
-        using (scope)
+
+        var mainUser = users.First();
+        var mainAppUser = await dbContext.Users.FirstAsync(user => user.Id == mainUser.Id);
+
+        var otherUsers = users.Skip(1);
+        var addChatRoomsTaskList = new List<Task>(otherUsers.Count());
+        foreach (var user in otherUsers)
         {
-            var options = provider.GetRequiredService<IOptions<SeedDbOptions>>();
-            var demoUserEmail = options.Value.DemoUserEmail;
-            var demoUserPassword = options.Value.DemoUserPassword;
-
-            var users = await GenerateAndRegisterMockUsers(demoUserEmail, demoUserPassword);
-
-            var dbContext = provider.GetRequiredService<ApplicationDbContext>();
-            await GenerateMockChatMessages(users, dbContext);
+            addChatRoomsTaskList.Add(GenerateMockChat(user.Id, mainAppUser, dbContext));
         }
+
+        await Task.WhenAll(addChatRoomsTaskList);
+    }
+
+    public async Task SeedWithDemoData()
+    {
+        var demoUserEmail = seedOptions.Value.DemoUserEmail;
+        var demoUserPassword = seedOptions.Value.DemoUserPassword;
+
+        var users = await GenerateAndRegisterMockUsers(demoUserEmail, demoUserPassword);
+
+        await GenerateMockChatsForUsers(users, dbContext);
     }
 }
