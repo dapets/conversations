@@ -18,7 +18,6 @@ export async function revalidateChatHistory(historyId: number) {
 }
 
 export async function login(
-  _: unknown,
   loginRequest: FormData,
 ): Promise<ApiResponse<undefined>> {
   "use server";
@@ -53,7 +52,7 @@ export async function login(
   }
 
   if (response.ok) {
-    redirect("/chats");
+    return { ok: true };
   } else {
     return {
       ok: false,
