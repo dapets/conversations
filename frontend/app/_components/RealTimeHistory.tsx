@@ -1,4 +1,5 @@
 "use client";
+
 import {
   useCallback,
   useContext,
@@ -7,21 +8,25 @@ import {
   useState,
 } from "react";
 import { Message } from "./Message";
-import { HistoryEntity, UserEntity } from "utils/dbEntities";
+import { ChatRoomEntity, HistoryEntity, UserEntity } from "utils/dbEntities";
 import { SignalRConnectionContext } from "@providers/SignalRProvider";
 
 export function RealtimeHistory({
-  loggedInUserId,
+  activeChatRoom,
   scrollToId,
 }: {
-  loggedInUserId: string;
+  activeChatRoom: ChatRoomEntity;
   scrollToId?: string;
 }) {
   const connection = useContext(SignalRConnectionContext);
   const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
 
+  //assuming only one logged in user in [1]
+  const loggedInUserId = activeChatRoom.members[1].id;
+
   const receiveMessageHandler = useCallback(
     (author: UserEntity, message: string) => {
+      if (!activeChatRoom.members.some((m) => m.id === author.id)) return;
       setRealtimeHistory((history) => [
         ...history,
         {
@@ -32,7 +37,7 @@ export function RealtimeHistory({
         },
       ]);
     },
-    [setRealtimeHistory]
+    [setRealtimeHistory, activeChatRoom]
   );
 
   useEffect(() => {

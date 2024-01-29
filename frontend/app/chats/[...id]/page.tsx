@@ -27,10 +27,7 @@ export default async function ChatHistory({
               <Message key={h.id} history={h} loggedInUserId={loggedInUserId} />
             ))
           )}
-          <RealtimeHistory
-            loggedInUserId={loggedInUserId}
-            scrollToId={scrollToId}
-          />
+          <RealtimeHistory activeChatRoom={chatRoom} scrollToId={scrollToId} />
         </li>
       </ul>
       {/* we're using this element to scroll to the latest chat message */}
