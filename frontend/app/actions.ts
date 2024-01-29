@@ -75,12 +75,10 @@ export async function login(
 export async function register(
   formData: FormData,
 ): Promise<ApiResponse<undefined>> {
-  const completeRegistrationDto = {
-    firstName: formData.get("first-name")?.toString(),
-    lastName: formData.get("last-name")?.toString(),
-  };
+  const firstName = formData.get("first-name")?.toString();
+  const lastName = formData.get("last-name")?.toString();
 
-  if (!completeRegistrationDto.firstName || !completeRegistrationDto.lastName) {
+  if (!firstName || !lastName) {
     return {
       ok: false,
       result: { status: 400, detail: "Must enter a first and last name" },
@@ -120,6 +118,10 @@ export async function register(
     return loginResponse;
   }
 
+  const completeRegistrationDto = {
+    firstName,
+    lastName,
+  };
   const completeRegistrationResponse = completeRegistration(
     completeRegistrationDto,
   );
