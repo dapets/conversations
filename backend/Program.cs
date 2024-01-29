@@ -1,5 +1,11 @@
+using System.Runtime.Versioning;
+using System.Security.Claims;
 using backend;
 using backend.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +42,44 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.MapIdentityApi<ApplicationUser>();
+//there is no way to require custom registration properties when using MapIdentityApi
+//it'll always be a `RegisterRequest`
+//reference: https://source.dot.net/#Microsoft.AspNetCore.Identity/IdentityApiEndpointRouteBuilderExtensions.cs
+app.MapGroup("/identity").MapIdentityApi<ApplicationUser>();
+
+app.MapPost("/register", async Task<Results<Ok, BadRequest<string>>> (ApplicationRegisterRequest registerRequest,
+[FromServices] UserManager<ApplicationUser> userManager,
+[FromServices] UserStore<ApplicationUser> userStore) =>
+{
+    var email = registerRequest.Email;
+    if (string.IsNullOrEmpty(email) || !email.Contains('@'))
+    {
+        var errors = IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)).Errors;
+        return TypedResults.BadRequest("Invalid Email");
+        // return TypedResults.ValidationProblem(errorDict);
+    }
+
+    if (registerRequest.FirstName is null || registerRequest.LastName is null)
+    {
+        return TypedResults.BadRequest($"{nameof(registerRequest.FirstName)} and/or ${nameof(registerRequest.LastName)} is null");
+    }
+
+    var user = new ApplicationUser()
+    {
+        FirstName = registerRequest.FirstName,
+        LastName = registerRequest.LastName,
+    };
+    await userStore.SetUserNameAsync(user, email);
+    await userStore.SetEmailAsync(user, email);
+    var result = await userManager.CreateAsync(user, registerRequest.Password);
+
+    if (!result.Succeeded)
+    {
+        return TypedResults.BadRequest("Inavlid password");
+    }
+
+    return TypedResults.Ok();
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -52,9 +95,10 @@ else
 
 app.MapHub<ChatHub>("/chatHub");
 
-app.MapGet("/whoami", (ApplicationDbContext db) =>
-    db.Users.FirstAsync(u => u.Id == loggedInUserId)
-)
+app.MapGet("/whoami", (ClaimsPrincipal user, [FromServices] UserManager<ApplicationUser> userManager) =>
+{
+    return userManager.GetUserAsync(user);
+})
 .RequireAuthorization();
 
 app.MapGet("/chats", (ApplicationDbContext db) => db
