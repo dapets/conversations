@@ -63,6 +63,13 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+var scope = app.Services.CreateScope();
+using (scope)
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
 app.UseCors();
 app.MapIdentityApi<ApplicationUser>();
 
