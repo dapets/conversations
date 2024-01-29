@@ -6,9 +6,6 @@ export default function ChatHistory({
 }: {
   params: { name: string[] };
 }) {
-  if (!("name" in params))
-    return <section className="flex m-auto">No chat selected</section>;
-
   const name = decodeURIComponent(params.name[0]);
 
   const authorIdx = sampleChatHistory.findIndex((n) => n.author === name);
