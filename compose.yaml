@@ -12,13 +12,5 @@ services:
     image: frontend
     build:
       context: frontend/
-  caddy:
-    image: caddy
-    build:
-      context: ./caddy/
     ports:
-      - 80:80
-    develop:
-      watch:
-        - path: ./caddy/
-        - action: rebuild
+      - 80:3001
