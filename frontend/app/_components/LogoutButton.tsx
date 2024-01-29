@@ -3,12 +3,12 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcn/button";
 import { logout } from "app/actions";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { useState } from "react";
 
 export function LogoutButton({ className }: { className?: string }) {
   const [isLogoutPending, setIsLogoutPending] = useState(false);
-  const classNames = cn("font-semibold", className);
+  const classNames = cn("font-semibold flex items-center", className);
 
   if (!isLogoutPending) {
     return (
@@ -20,6 +20,7 @@ export function LogoutButton({ className }: { className?: string }) {
         className={classNames}
         variant="ghost"
       >
+        <LogOut className="h-4 w-4 mr-2" />
         Log out
       </Button>
     );

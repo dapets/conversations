@@ -26,7 +26,7 @@ export default async function ClientLayout({
   return (
     <div className="flex h-[100dvh] w-[100dvw]">
       <nav className="hidden bg-background lg:flex flex-col basis-1/3 max-w-sm shrink-0 ml-2 p-2 *:pr-6">
-        <div className="grid items-center rounded-lg gap-x-4 pt-2 pl-2 pb-2 mb-2 grid-areas-logged-in-statusbar grid-cols-logged-in-statusbar">
+        <div className="grid justify-around shadow border border-blue-100 shadow-blue-100 items-center rounded-lg pt-2 pl-2 pb-2 mb-2 mr-6 grid-areas-logged-in-statusbar grid-cols-logged-in-statusbar">
           <Avatar className="grid-in-avatar">
             <AvatarFallback>{getUserInitials(loggedInUser)}</AvatarFallback>
           </Avatar>
@@ -36,7 +36,7 @@ export default async function ClientLayout({
           <p className="grid-in-logged-in-status text-sm text-muted-foreground">
             Logged in
           </p>
-          <LogoutButton className="grid-in-log-out justify-self-end w-1/2" />
+          <LogoutButton className="grid-in-log-out justify-self-end " />
         </div>
         <TypographyH2 className="mb-4">Messages</TypographyH2>
         <ScrollArea type="always" data-state="visible">
