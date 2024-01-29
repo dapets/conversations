@@ -1,16 +1,20 @@
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import AdvancedFormat from "dayjs/plugin/relativeTime";
-import { getLoggedInUser } from "utils/dataFetchers";
 import { HistoryEntity } from "utils/types/dbEntities";
 
 dayjs.extend(AdvancedFormat);
 
-export async function Message({ history }: { history: HistoryEntity }) {
+export function Message({
+  history,
+  loggedInUserId,
+}: {
+  history: HistoryEntity;
+  loggedInUserId: number;
+}) {
   const { author, sentOn, message } = history;
 
-  const loggedInUser = await getLoggedInUser();
-  const isAuthor = loggedInUser.id === author.id;
+  const isAuthor = loggedInUserId === author.id;
 
   return (
     <section>

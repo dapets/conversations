@@ -1,6 +1,6 @@
-import { PastHistory } from "@components/PastHistory";
-import { RealtimeHistory } from "@components/RealTimeHistory";
-import { getChatHistoryWithId } from "utils/dataFetchers";
+import { Message } from "@components/Message";
+import { RealtimeHistory } from "@components/RealtimeHistory";
+import { getChatHistoryWithId, getLoggedInUser } from "utils/dataFetchers";
 
 export default async function ChatHistory({
   params,
@@ -10,12 +10,23 @@ export default async function ChatHistory({
   const id = +decodeURIComponent(params.name[0]);
 
   const chatHistory = await getChatHistoryWithId(id);
+  const loggedInUserId = (await getLoggedInUser()).id;
 
   return (
     <section className="overflow-y-auto p-4 pl-0 pr-14">
-      <PastHistory history={chatHistory} />
+      <ul className="flex flex-col space-y-4">
+        <li>
+          {chatHistory.length === 0 ? (
+            <p className="m-auto">You haven&apost talked yet!</p>
+          ) : (
+            chatHistory.map((h) => (
+              <Message key={h.id} history={h} loggedInUserId={loggedInUserId} />
+            ))
+          )}
+          <RealtimeHistory loggedInUserId={loggedInUserId} />
+        </li>
+      </ul>
       {/* we're using this element to scroll to the latest chat message */}
-      <RealtimeHistory />
       <span className="w-0 h-0" id="latest" />
     </section>
   );

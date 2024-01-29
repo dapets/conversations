@@ -1,64 +1,69 @@
 "use client";
 
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
-import React from "react";
+import {
+  AbortError,
+  HubConnection,
+  HubConnectionBuilder,
+} from "@microsoft/signalr";
+import { useEffect, useState } from "react";
+import { Message } from "./Message";
+import { HistoryEntity } from "utils/types/dbEntities";
 
-function App() {
-  const [connection, setConnection] = useState(null);
+export function RealtimeHistory({
+  loggedInUserId,
+}: {
+  loggedInUserId: number;
+}) {
+  const [realtimeHistory, setRealtimeHistory] = useState<HistoryEntity[]>([]);
+  // const [lastMessage, setlastMessage] = useState<string>("");
 
   useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl("Your_SignalR_Endpoint")
-      .withAutomaticReconnect()
-      .build();
-
-    setConnection(newConnection);
-  }, []);
-
-  useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then((result) => {
-          console.log("Connected!");
-
-          connection.on("ReceiveMessage", (message) => {
-            console.log("Received message: ", message);
-          });
-        })
-        .catch((e) => console.log("Connection failed: ", e));
-    }
-  }, [connection]);
-
-  // Your component return
-  return <div className="App">{/* Your component layout */}</div>;
-}
-
-export default App;
-
-export function RealtimeHistory() {
-  const [realtimeHistory, setRealtimeHistory] = React.useState<string[]>([]);
-  const [connection, setConnection] = React.useState<HubConnection | null>(
-    null
-  );
-
-  React.useEffect(() => {
-    let connection = new HubConnectionBuilder()
+    let localConn = new HubConnectionBuilder()
       .withUrl("http://localhost:3001" + "/chatHub")
       .withAutomaticReconnect()
       .build();
 
-    setConnection(connection);
-  }, []);
+    localConn
+      .start()
+      .catch((reason) => {
+        //this happens in dev mode because effects are executed twice
+        if (reason instanceof AbortError) {
+          console.info(
+            "Connection was aborted while still trying to connect to the server."
+          );
+        } else {
+          console.error(reason);
+        }
+      })
+      .then(() =>
+        localConn.on("ReceiveMessage", (information) => {
+          console.log(information);
+          setRealtimeHistory((history) => [
+            ...history,
+            {
+              author: {
+                firstName: "Sophie",
+                lastName: "Mertz",
+                id: 177,
+              },
+              id: Math.random(),
+              message: information,
+              sentOn: new Date(),
+            },
+          ]);
+        })
+      );
+    return () => {
+      localConn.stop();
+    };
+  }, [setRealtimeHistory]);
 
-  React.useEffect(() => {
-    if (!connection) {
-      return;
-    }
-    connection.start().then(() => {
-      connection.on("ReceiveMessage", (message) => console.log(message));
-    });
-  }, [connection]);
-
-  return null;
+  return (
+    <>
+      {realtimeHistory.map((h) => h.message)}
+      {/* {realtimeHistory.map((h) => (
+        <Message history={h} key={h.id} loggedInUserId={loggedInUserId} />
+      ))} */}
+    </>
+  );
 }
