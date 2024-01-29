@@ -135,7 +135,7 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
             {
                 Author = rnd.NextSingle() > 0.5 ? user : mainUser,
                 Chats = newChat,
-                SentOn = DateTime.UtcNow.AddHours(rnd.Next(1, 15)),
+                SentOn = DateTime.UtcNow.AddHours(-rnd.Next(0, 15)),
                 Message = faker.Lorem.Sentences(rnd.Next(1, 3))
             });
         }
