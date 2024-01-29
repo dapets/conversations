@@ -44,9 +44,9 @@ async function fetchWithHandleAuth(
     );
   }
 
-  var response = await fetch(request, init);
+  const response = await fetch(request, init);
 
-  var serverCookies = response.headers.getSetCookie();
+  const serverCookies = response.headers.getSetCookie();
   for (const serverCookie of serverCookies) {
     const parsedCookie = parseCookie(serverCookie);
     if (!parsedCookie[aspnetAuthCookieName]) continue;
