@@ -9,7 +9,7 @@ builder.Services.AddDbContext<DevContext>();
 builder.Services.Configure<JsonOptions>(options =>
 {
     // options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    // options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 if (builder.Environment.IsDevelopment())
@@ -20,9 +20,10 @@ if (builder.Environment.IsDevelopment())
 var app = builder.Build();
 
 app.MapGet("/chats", (DevContext db) => db
-    .Users
-    .Include(u => u.Chats)
-    .ThenInclude(c => c.Members)
-    .First());
+    .Chats
+    .Include(c => c.Members)
+    .Where(c => c.Members.Any(m => m.Id == 145))
+    .Select(c => c.Members)
+);
 
 app.Run();
