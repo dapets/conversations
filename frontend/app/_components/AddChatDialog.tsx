@@ -18,7 +18,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { addChatDialogQueryParam, scrollToId } from "utils/constants";
-import { ChatRoomListEntity, ProblemDetail } from "utils/dbEntities";
+import { ChatRoomListEntity, ProblemDetail } from "utils/projectTypes";
 
 function AddChatDialogSubmitButton() {
   const status = useFormStatus();

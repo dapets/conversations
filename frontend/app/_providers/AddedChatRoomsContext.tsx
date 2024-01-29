@@ -7,7 +7,7 @@ import {
   useContext,
   useState,
 } from "react";
-import { ChatRoomListEntity } from "utils/dbEntities";
+import { ChatRoomListEntity } from "utils/projectTypes";
 
 export type AddedChatRooms = {
   addedRooms: ChatRoomListEntity[];

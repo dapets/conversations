@@ -4,7 +4,7 @@ import { useSignalR } from "@providers/SignalRProvider";
 import { revalidateChatHistory } from "app/actions";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { ChatRoomListEntity, UserEntity } from "utils/dbEntities";
+import { ChatRoomListEntity, UserEntity } from "utils/projectTypes";
 import { getActiveChatRoomId } from "utils/utils";
 import { ChatRoomDescription } from "./ChatRoomDescription";
 import {

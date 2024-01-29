@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { HistoryEntity } from "utils/dbEntities";
+import { HistoryEntity } from "utils/projectTypes";
 import { getUserDisplayName, getUserInitials } from "utils/utils";
 import { Avatar, AvatarFallback } from "@shadcn/avatar";
 import { AutoUpdatingRelativeTime } from "./AutoUpdatingRelativeTime";

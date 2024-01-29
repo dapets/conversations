@@ -2,7 +2,7 @@ import {
   ChatRoomEntity,
   ChatRoomListEntity,
   UserEntity,
-} from "utils/dbEntities";
+} from "utils/projectTypes";
 import { cookies } from "next/headers";
 import { serialize as serializeCookie } from "cookie";
 import { redirect } from "next/navigation";

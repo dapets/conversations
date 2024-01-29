@@ -8,7 +8,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { hasLoginChangedQueryParam } from "utils/constants";
-import { UserEntity } from "utils/dbEntities";
+import { UserEntity } from "utils/projectTypes";
 
 type HubMethodNames = {
   ReceiveMessage: (

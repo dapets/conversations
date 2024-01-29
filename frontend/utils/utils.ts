@@ -1,4 +1,4 @@
-import { UserEntity } from "./dbEntities";
+import { UserEntity } from "./projectTypes";
 
 export function getActiveChatRoomId(pathname: string) {
   const segments = pathname.split("/");

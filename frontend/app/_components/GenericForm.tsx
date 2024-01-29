@@ -14,7 +14,7 @@ import { Input } from "@shadcn/input";
 import { useFormState, useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { ApiResponse, ProblemDetail } from "utils/dbEntities";
+import { ApiResponse, ProblemDetail } from "utils/projectTypes";
 import { useState } from "react";
 
 type SubmitButtonProps = {

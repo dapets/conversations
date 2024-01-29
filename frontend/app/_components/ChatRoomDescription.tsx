@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback } from "@shadcn/avatar";
 import Link from "next/link";
-import { ChatRoomListEntity } from "utils/dbEntities";
+import { ChatRoomListEntity } from "utils/projectTypes";
 import {
   getOtherChatUser,
   getUserDisplayName,

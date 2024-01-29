@@ -12,7 +12,7 @@ import {
   LoginResponse,
   ProblemDetail,
   RegisterResponse,
-} from "utils/dbEntities";
+} from "utils/projectTypes";
 import { parse as parseCookie } from "cookie";
 
 export async function revalidateChatHistory(historyId: number) {

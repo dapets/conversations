@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { HistoryEntity, UserEntity } from "utils/dbEntities";
+import { HistoryEntity, UserEntity } from "utils/projectTypes";
 import { useSignalR } from "@providers/SignalRProvider";
 import { messageScrollContainerId } from "utils/constants";
 
