@@ -57,7 +57,7 @@ export function EmailPasswordFormFields({
           name="email"
           type="email"
           autoComplete="Email"
-          placeholder="name@example.com"
+          placeholder="user@example.com"
         />
       </div>
       <div className="grid gap-2">
