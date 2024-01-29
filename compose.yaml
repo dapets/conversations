@@ -16,5 +16,7 @@ services:
       args:
         - BACKEND_URL=${BACKEND_URL}
         - NEXT_PUBLIC_SIGNALR_PORT=${NEXT_PUBLIC_SIGNALR_PORT}
+        - DEMO_USER_EMAIL=${DEMO_USER_EMAIL}
+        - DEMO_USER_PASSWORD=${DEMO_USER_PASSWORD}
     ports:
       - 80:3000
