@@ -57,6 +57,8 @@ export async function fetchWithAuth(
   const response = await fetch(request, init);
   if (response.status === 401 && !request.url.includes("/login")) {
     redirect("/login");
+  } else if (response.status === 403) {
+    redirect("/register");
   }
 
   return response;
