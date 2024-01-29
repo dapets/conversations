@@ -56,7 +56,7 @@ export default function ChatRoomDescriptionList({
   }, [conn, handleIncomingMessage]);
 
   return (
-    <ul className="space-y-1">
+    <ul className="space-y-1 p-2">
       {chatRooms.map((chatRoom) => (
         <li key={chatRoom.id}>
           {renderChatRoomDescription(
