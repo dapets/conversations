@@ -8,6 +8,8 @@ export default async function ChatHistory({
 }: {
   params: { id: string[] };
 }) {
+  if (!params?.id) throw new Error("params or id undefined");
+
   const chatPartnerId = decodeURIComponent(params.id[0]);
 
   const chatHistory = await getChatHistoryWithId(chatPartnerId);
