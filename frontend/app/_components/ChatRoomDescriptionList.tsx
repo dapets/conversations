@@ -72,7 +72,9 @@ export default function ChatRoomDescriptionList({
       chatRooms.splice(roomMessageWasSentInIdx, 1);
       setChatRooms([roomMessageWasSentIn, ...chatRooms]);
 
-      //already updating our current chat in RealTimeHistory
+      //Already updating our current chat in RealTimeHistory.
+      //Setting one of these https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+      //in app/chats/[...id]/page.tsx didn't work. So we're explicitly revalidating here.
       if (activeChatRoomId !== chatRoomId) {
         revalidateChatHistory(chatRoomId);
       }
