@@ -12,16 +12,7 @@ export default async function ClientLayout({
   children: React.ReactNode;
   params: { id: string[] };
 }) {
-  let heading = "";
-  if (params?.id[0]) {
-    const chatRoomId = +decodeURIComponent(params.id[0]);
-    const [chatRoom, loggedInUser] = await Promise.all([
-      getChatHistoryById(chatRoomId),
-      getLoggedInUser(),
-    ]);
-    const otherUser = getOtherChatUser(chatRoom.members, loggedInUser.id);
-    heading = getUserDisplayName(otherUser);
-  }
+  const heading = decodeURIComponent(params.id[1] ?? "Unknown user");
   return (
     <>
       <TypographyH2>{heading}</TypographyH2>
