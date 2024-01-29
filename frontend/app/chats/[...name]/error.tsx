@@ -1,5 +1,5 @@
 "use client";
 
 export default function Error() {
-  return "Error fetching chat history";
+  return <p>Error fetching chat history</p>;
 }
