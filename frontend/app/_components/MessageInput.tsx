@@ -45,6 +45,7 @@ export function MessageInput({ className }: { className: string }) {
         type="text"
         maxLength={maxMessageLength}
         placeholder="Type a message..."
+        autoFocus
         autoComplete="off"
       />
       <Button type="submit" className="">
