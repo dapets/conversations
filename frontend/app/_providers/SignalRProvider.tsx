@@ -94,6 +94,7 @@ export default function SignalRProvider({
 
   async function restartSignalR() {
     if (typeof window !== "object") return;
+    if (!document.cookie) return;
     switch (connection.state) {
       case HubConnectionState.Connected:
         await connection.stop();
