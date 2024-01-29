@@ -52,6 +52,7 @@ export function AddChatDialog() {
           <CardContent className="mt-2 grid gap-2 p-0">
             <Label htmlFor="email">Email</Label>
             <Input
+              autoComplete="false"
               autoFocus={false}
               required
               id="email"
