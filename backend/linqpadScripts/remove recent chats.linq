@@ -15,9 +15,9 @@
   <Namespace>LINQPad.Controls</Namespace>
 </Query>
 
-Chats.Dump();
 new Button("Remove last", (_) => {
-	var latestChat = Chats.OrderBy(c => c.Id).Last().Dump();
-	Chats.Remove(latestChat);
+	var latestChat = AspNetUsers.Skip(AspNetUsers.Count() - 1).First().Dump();
+	AspNetUsers.Remove(latestChat);
 	SubmitChanges();
 }).Dump();
+AspNetUsers.Skip(AspNetUsers.Count() - 3).Dump();
