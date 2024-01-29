@@ -84,7 +84,7 @@ export async function login(loginRequest: FormData) {
     }
   );
 
-  return response.ok;
+  if (response.ok) redirect("/chats");
 }
 
 export async function getChatList() {

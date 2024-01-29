@@ -13,7 +13,7 @@ import { Input } from "@shadcn/input";
 export default function LoginForm({
   login,
 }: {
-  login: (loginRequest: FormData) => Promise<boolean>;
+  login: (loginRequest: FormData) => Promise<void>;
 }) {
   return (
     <form action={login}>
