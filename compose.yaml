@@ -1,9 +1,4 @@
 include:
-  - ./frontend/compose.yaml
   - ./backend/compose.yaml
-
-services:
-  caddy:
-    image: "caddy"
-    ports:
-      - 2019:2019
+  - ./frontend/compose.yaml
+  - ./caddy/compose.yaml

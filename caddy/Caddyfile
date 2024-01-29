@@ -1,0 +1,6 @@
+localhost, 172.20.10.5 {
+  tls ./domain.crt ./domain.key
+
+  reverse_proxy * frontend:3000
+  reverse_proxy /chatHub* backend:3001
+}
