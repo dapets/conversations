@@ -4,8 +4,6 @@ services:
     restart: unless-stopped
     build:
       context: backend/
-    ports:
-      - 3001:3001
   frontend:
     # For pre-rendering nextjs pages
     depends_on:
