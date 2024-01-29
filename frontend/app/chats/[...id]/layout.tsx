@@ -3,6 +3,9 @@ import { MessageInput } from "@components/MessageInput";
 import { TypographyH2 } from "@shadcn/TypographyH1";
 import { ScrollArea } from "@shadcn/ScrollArea";
 import { messageScrollContainerId } from "utils/constants";
+import { Button } from "@shadcn/button";
+import Link from "next/link";
+import { ChevronsLeft } from "lucide-react";
 
 export default async function ClientLayout({
   children,
@@ -14,7 +17,18 @@ export default async function ClientLayout({
   const heading = decodeURIComponent(params.id[1] ?? "Unknown user");
   return (
     <>
-      <TypographyH2>{heading}</TypographyH2>
+      <Button
+        asChild
+        className="absolute left-2 top-2 block lg:hidden"
+        variant="outline"
+      >
+        <Link href="/chats">
+          <ChevronsLeft />
+        </Link>
+      </Button>
+      <div className="flex items-center">
+        <TypographyH2 className="mx-auto">{heading}</TypographyH2>
+      </div>
       <ScrollArea
         viewportId={messageScrollContainerId}
         reverse
