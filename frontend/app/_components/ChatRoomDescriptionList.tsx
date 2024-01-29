@@ -4,23 +4,16 @@ import { SignalRConnectionContext } from "@providers/SignalRProvider";
 import { revalidateChatHistory } from "app/actions";
 import { usePathname } from "next/navigation";
 import { useCallback, useContext, useEffect, useState } from "react";
-import {
-  ChatRoomEntity,
-  ChatRoomListEntity,
-  UserEntity,
-} from "utils/dbEntities";
+import { ChatRoomListEntity, UserEntity } from "utils/dbEntities";
 import { getActiveChatRoomId } from "utils/utils";
+import { ChatRoomDescription } from "./ChatRoomDescription";
 
 export default function ChatRoomDescriptionList({
-  chatRooms: initalChatRooms,
-  renderChatRoomDescription,
+  initalChatRooms,
+  loggedInUserId,
 }: {
-  chatRooms: ChatRoomListEntity[];
-  renderChatRoomDescription: (
-    chatRoom: ChatRoomEntity,
-    isActive: boolean,
-    isUnread?: boolean
-  ) => React.ReactNode;
+  initalChatRooms: ChatRoomListEntity[];
+  loggedInUserId: string;
 }) {
   const conn = useContext(SignalRConnectionContext);
   const pathname = usePathname();
@@ -40,7 +33,7 @@ export default function ChatRoomDescriptionList({
         throw Error(
           `No room with chatRoomId ${chatRoomId} of message ${message} exists`
         );
-      if (room.id !== activeChatRoomId) {
+      if (room.id !== activeChatRoomId && author.id !== loggedInUserId) {
         room.isUnread = true;
       }
       room.lastMessage = {
@@ -63,7 +56,7 @@ export default function ChatRoomDescriptionList({
         revalidateChatHistory(chatRoomId);
       }
     },
-    [chatRooms, setChatRooms, activeChatRoomId]
+    [chatRooms, setChatRooms, activeChatRoomId, loggedInUserId]
   );
 
   useEffect(() => {
@@ -76,11 +69,12 @@ export default function ChatRoomDescriptionList({
     <ul className="space-y-1">
       {chatRooms.map((chatRoom) => (
         <li key={chatRoom.id}>
-          {renderChatRoomDescription(
-            chatRoom,
-            chatRoom.id === activeChatRoomId,
-            chatRoom.isUnread
-          )}
+          <ChatRoomDescription
+            chatRoom={chatRoom}
+            isActive={activeChatRoomId === chatRoom.id}
+            loggedInUserId={loggedInUserId}
+            isUnread={chatRoom.isUnread}
+          />
         </li>
       ))}
     </ul>
