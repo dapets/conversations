@@ -40,17 +40,24 @@ type ChatClientHubConnection = Omit<HubConnection, "on" | "send" | "invoke"> & {
   ): void;
 } & ClientMethodNames;
 
+const connection = new HubConnectionBuilder()
+  .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
+  .withAutomaticReconnect()
+  .configureLogging(
+    process.env.NEXT_PUBLIC_ENV === "production"
+      ? LogLevel.Warning
+      : LogLevel.Information,
+  )
+  .build();
+
 export const SignalRConnectionContext =
-  createContext<ChatClientHubConnection | null>(null);
+  createContext<ChatClientHubConnection>(connection);
 
 export default function SignalRProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [connection, setConnection] = useState<ChatClientHubConnection | null>(
-    null,
-  );
   const params = useSearchParams();
   /**
    * This is how the signalR connection is restarted on login/logout.
@@ -69,8 +76,8 @@ export default function SignalRProvider({
     //if there's no cookie we just logged out and anything other than stopping makes no sense.
     if (!document.cookie) {
       const alreadyDisconnected =
-        connection?.state === HubConnectionState.Disconnected ||
-        connection?.state === HubConnectionState.Disconnecting;
+        connection.state === HubConnectionState.Disconnected ||
+        connection.state === HubConnectionState.Disconnecting;
       if (!alreadyDisconnected) {
         await connection?.stop();
       }
@@ -78,7 +85,7 @@ export default function SignalRProvider({
       return;
     }
 
-    switch (connection?.state) {
+    switch (connection.state) {
       case HubConnectionState.Connected:
         await connection.stop();
         await connection.start();
@@ -88,36 +95,6 @@ export default function SignalRProvider({
         break;
     }
   }
-
-  useEffect(() => {
-    let localConn = new HubConnectionBuilder()
-      .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
-      .withAutomaticReconnect()
-      .configureLogging(
-        process.env.NEXT_PUBLIC_ENV === "production"
-          ? LogLevel.Warning
-          : LogLevel.Information,
-      )
-      .build();
-
-    /**In dev mode effects are fired twice.
-     * If we stop the connection while it's currently disconnecting, signalR throws an error.
-     */
-    let startPromise: Promise<unknown> | null = null;
-    //if there's no cookie we can't connect, so we only set the connection (without starting it)
-    if (document.cookie) {
-      startPromise = localConn.start();
-      startPromise.then(() => setConnection(localConn));
-    } else {
-      setConnection(localConn);
-    }
-
-    return () => {
-      startPromise?.then(() => {
-        localConn.stop();
-      });
-    };
-  }, [setConnection]);
 
   return (
     <SignalRConnectionContext.Provider value={connection}>
