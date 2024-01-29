@@ -63,13 +63,16 @@ export default function SignalRProvider({
   }
 
   async function handleCookieChange() {
+    //don't run this function on the server
+    if (typeof window !== "object") return;
+
     //if there's no cookie we just logged out and anything other than stopping makes no sense.
     if (!document.cookie) {
       const alreadyDisconnected =
-        connection?.state !== HubConnectionState.Disconnected &&
-        connection?.state !== HubConnectionState.Disconnecting;
+        connection?.state === HubConnectionState.Disconnected ||
+        connection?.state === HubConnectionState.Disconnecting;
       if (!alreadyDisconnected) {
-        connection?.stop();
+        await connection?.stop();
       }
 
       return;
@@ -87,8 +90,6 @@ export default function SignalRProvider({
   }
 
   useEffect(() => {
-    if (!document.cookie) return;
-
     let localConn = new HubConnectionBuilder()
       .withUrl(process.env.NEXT_PUBLIC_SIGNALR_CONNECTION_URL + "/chatHub")
       .withAutomaticReconnect()
@@ -98,23 +99,23 @@ export default function SignalRProvider({
           : LogLevel.Information,
       )
       .build();
-    localConn
-      .start()
-      .catch((reason: Error) => {
-        //this happens in dev mode because effects are executed twice
-        if (reason instanceof Error) {
-          console.info(
-            "Connection was aborted while trying to connect to the server." +
-              "This usually happens in development mode.",
-          );
-        } else {
-          console.error(reason);
-        }
-      })
-      .then(() => setConnection(localConn));
+
+    /**In dev mode effects are fired twice.
+     * If we stop the connection while it's currently disconnecting, signalR throws an error.
+     */
+    let startPromise: Promise<unknown> | null = null;
+    //if there's no cookie we can't connect, so we only set the connection (without starting it)
+    if (document.cookie) {
+      startPromise = localConn.start();
+      startPromise.then(() => setConnection(localConn));
+    } else {
+      setConnection(localConn);
+    }
 
     return () => {
-      localConn.stop();
+      startPromise?.then(() => {
+        localConn.stop();
+      });
     };
   }, [setConnection]);
 
