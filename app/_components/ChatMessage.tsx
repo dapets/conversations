@@ -1,5 +1,6 @@
 "use client";
 
+import { TypographyP } from "@/components/TypographyP";
 import dayjs from "dayjs";
 import AdvancedFormat from "dayjs/plugin/relativeTime";
 
@@ -12,13 +13,15 @@ export function ChatMessage(props: {
 }) {
   return (
     <section>
-      <div className="mb-1 flex items-baseline">
+      <div className="flex items-baseline">
         <h2 className="text-base font-bold">{props.author}</h2>
         <time className="ml-4 text-sm text-zinc-600" suppressHydrationWarning>
           {dayjs().to(props.sentOn)}
         </time>
       </div>
-      <p>{props.message}</p>
+      <div className="flex leading-7 max-w-[75%] rounded-lg px-3 py-2 text-sm bg-primary text-primary-foreground">
+        {props.message}
+      </div>
     </section>
   );
 }

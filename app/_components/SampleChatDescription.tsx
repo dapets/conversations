@@ -8,7 +8,7 @@ export default function SampleDataChatList() {
   const pathname = usePathname();
 
   return (
-    <ul>
+    <ul className="space-y-1">
       {sampleUsers.map((u, i) => (
         <li key={i}>
           <ChatDescription

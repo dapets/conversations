@@ -17,9 +17,9 @@ export default function ChatHistory({
 
   return (
     <section className="overflow-y-auto">
-      <ul>
+      <ul className="flex flex-col space-y-4">
         {sampleChatHistory[authorIdx].messages.map((m, i) => (
-          <li key={i} className="mb-2">
+          <li key={i}>
             <ChatMessage
               author={sampleChatHistory[authorIdx].author}
               message={m}
