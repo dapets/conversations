@@ -10,9 +10,9 @@ public class SeedDbOptions()
 {
     public const string Position = "SeedDbOptions";
 
-    public required string DemoUserEmail { get; set; }
+    public required string Demo_User_Email { get; set; }
 
-    public required string DemoUserPassword { get; set; }
+    public required string Demo_User_Password { get; set; }
 }
 
 public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext dbContext)
@@ -160,8 +160,8 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
 
     public async Task SeedWithDemoData()
     {
-        var demoUserEmail = seedOptions.Value.DemoUserEmail;
-        var demoUserPassword = seedOptions.Value.DemoUserPassword;
+        var demoUserEmail = seedOptions.Value.Demo_User_Email;
+        var demoUserPassword = seedOptions.Value.Demo_User_Password;
 
         var users = await GenerateAndRegisterMockUsers(demoUserEmail, demoUserPassword);
 
