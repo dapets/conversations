@@ -10,7 +10,7 @@ public class History
 
     public required Chats Chats { get; set; }
 
-    public required DateTimeOffset SentOn { get; set; }
+    public required DateTime SentOn { get; set; }
 
     public required string Message { get; set; } = string.Empty;
 }
