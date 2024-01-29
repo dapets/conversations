@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,12 +13,10 @@ import { Input } from "@shadcn/input";
 export default function LoginForm() {
   return (
     <Card className="rounded-xl bg-card text-card-foreground shadow-sm">
-      <CardHeader className="flex flex-col space-y-1.5 p-6">
-        <CardTitle className="text-2xl font-semibold leading-none tracking-tight">
-          Create an account
-        </CardTitle>
+      <CardHeader className="space-y-1">
+        <CardTitle className="leading-8">Log in</CardTitle>
         <CardDescription className="">
-          Enter your email below to create your account
+          Enter your information below to log into your account
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6 pt-0 grid gap-4">
@@ -33,7 +29,7 @@ export default function LoginForm() {
           <Input id="password" type="password" />
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="">
         <Button className="w-full">Login</Button>
       </CardFooter>
     </Card>
