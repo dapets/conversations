@@ -4,6 +4,7 @@ import { getRelativeLocalTimeStrFromUtcDate } from "utils/configuredDayjs";
 import { scrollToId } from "utils/constants";
 import { ChatRoomListEntity } from "utils/dbEntities";
 import "./ChatRoomdescription.css";
+import { getOtherChatUser, getUserDisplayName } from "utils/utils";
 
 export function ChatRoomDescription({
   chatRoom,
@@ -14,11 +15,8 @@ export function ChatRoomDescription({
   loggedInUserId: string;
   isActive: boolean;
 }) {
-  //currently assuming we only have chat rooms with two (logged in + additional) member
-  const otherChatUser = chatRoom.members.filter(
-    (member) => member.id !== loggedInUserId ?? Number.NaN
-  )[0];
-  const otherChatUserFullName = `${otherChatUser.firstName} ${otherChatUser.lastName}`;
+  const otherChatUser = getOtherChatUser(chatRoom.members, loggedInUserId);
+  const otherChatUserFullName = getUserDisplayName(otherChatUser);
 
   const encodedHref =
     "/chats/" +
