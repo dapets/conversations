@@ -29,7 +29,7 @@ export function Message({
         className={cn(
           "leading-7 w-fit max-w-[70%] rounded-lg",
           "bg-accent px-3 py-1 ",
-          "break-all text-accent-foreground",
+          "[overflow-wrap:anywhere] text-accent-foreground",
           {
             "bg-primary text-primary-foreground ml-auto": isAuthor,
           }
