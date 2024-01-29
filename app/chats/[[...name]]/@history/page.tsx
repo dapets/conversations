@@ -1,17 +1,28 @@
 import { ChatMessage } from "@components/ChatMessage";
 import { sampleChatHistory } from "sampleData";
 
-export default function ChatHistory({ params }: { params: { slug: string } }) {
-  console.log(params);
+export default function ChatHistory({
+  params,
+}: {
+  params: { name: string[] };
+}) {
+  if (!("name" in params))
+    return <section className="flex m-auto">No chat selected</section>;
+
+  const name = decodeURIComponent(params.name[0]);
+
+  const authorIdx = sampleChatHistory.findIndex((n) => n.author === name);
+  if (authorIdx < 0) return "Invalid Author: error fetching messages";
+
   return (
     <section className="overflow-y-auto">
       <ul>
-        {sampleChatHistory[0].messages.map((m, i) => (
+        {sampleChatHistory[authorIdx].messages.map((m, i) => (
           <li key={i} className="mb-2">
             <ChatMessage
-              author={sampleChatHistory[0].author}
+              author={sampleChatHistory[authorIdx].author}
               message={m}
-              sentOn={sampleChatHistory[0].sentOn}
+              sentOn={sampleChatHistory[authorIdx].sentOn}
             />
           </li>
         ))}
