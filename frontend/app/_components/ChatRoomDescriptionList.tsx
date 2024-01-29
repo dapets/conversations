@@ -9,6 +9,7 @@ import {
   ChatRoomListEntity,
   UserEntity,
 } from "utils/dbEntities";
+import { getActiveChatRoomId } from "utils/utils";
 
 export default function ChatRoomDescriptionList({
   chatRooms: initalChatRooms,
@@ -25,8 +26,7 @@ export default function ChatRoomDescriptionList({
 
   const [chatRooms, setChatRooms] = useState(initalChatRooms);
 
-  const segments = pathname.split("/");
-  const activeChatRoomId = +segments[2];
+  const activeChatRoomId = getActiveChatRoomId(pathname);
 
   const handleIncomingMessage = useCallback(
     (chatRoomId: number, author: UserEntity, message: string) => {
