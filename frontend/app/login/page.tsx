@@ -1,7 +1,6 @@
 import GenericForm, { EmailPasswordFormFields } from "@components/GenericForm";
 import { login } from "app/actions";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -18,12 +17,7 @@ export default function LoginPage() {
         showSignupHint
         submitAction={async (_, formData) => {
           "use server";
-          const loginResponse = await login(formData);
-          if (!loginResponse.ok) {
-            return loginResponse;
-          } else {
-            redirect("/chats");
-          }
+          return login(formData);
         }}
         formFields={
           <EmailPasswordFormFields passwordAutoCompleteValue="current-password" />

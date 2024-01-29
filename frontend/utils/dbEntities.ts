@@ -37,6 +37,10 @@ export type RegisterResponse = {
   errors: Record<string, string[]>;
 };
 
+export type LoginResponse = Omit<ProblemDetail, "detail"> & {
+  detail: "Failed" | "LockedOut";
+};
+
 export type ProblemDetail = {
   status: number;
   detail: string;

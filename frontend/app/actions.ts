@@ -9,6 +9,7 @@ import {
   ApiResponse,
   ChatRoomCreatedDto,
   ChatRoomListEntity,
+  LoginResponse,
   ProblemDetail,
   RegisterResponse,
 } from "utils/dbEntities";
@@ -20,6 +21,7 @@ export async function revalidateChatHistory(historyId: number) {
 
 export async function login(
   loginRequest: FormData,
+): Promise<ApiResponse<ProblemDetail>> {
   "use server";
   const loginData = {
     email: loginRequest.get("email"),
@@ -52,13 +54,18 @@ export async function login(
   }
 
   if (response.ok) {
-    return { ok: true };
+    redirect("/chats");
   } else {
+    const responseBody = (await response.json()) as LoginResponse;
+    const descriptiveDetail =
+      responseBody.detail === "Failed"
+        ? "Email or password incorrect"
+        : "Too many attempts. Please try again later.";
     return {
       ok: false,
       result: {
         status: response.status,
-        detail: "Email or password incorrect.",
+        detail: descriptiveDetail,
       },
     };
   }
