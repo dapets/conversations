@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -61,13 +62,24 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddSwaggerGen();
 }
 
+builder.Services.Configure<SeedDbOptions>(
+    builder.Configuration.GetSection(SeedDbOptions.Position));
+
 var app = builder.Build();
+
 
 var scope = app.Services.CreateScope();
 using (scope)
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
+
+    var options = scope.ServiceProvider.GetRequiredService<IOptions<SeedDbOptions>>();
+    var demoUserEmail = options.Value.DemoUserEmail;
+    var demoUserPassword = options.Value.DemoUserPassword;
+
+    app.Lifetime.ApplicationStarted.Register(async () =>
+        await SeedDb.SeedWithDemoData(demoUserEmail, demoUserPassword, dbContext));
 }
 
 app.UseCors();
