@@ -18,32 +18,26 @@ export function Message({
   return (
     <section
       className={cn(
-        "flex flex-col space-y-2 p-2 w-fit max-w-[70%] rounded-lg",
+        "flex items-center gap-4 space-y-2 p-2 w-fit max-w-[70%] rounded-lg",
         {
           "ml-auto justify-end": isAuthor,
         }
       )}
     >
-      <div className="flex items-center space-x-3 ">
-        <Avatar className={cn({ "order-0": isAuthor })}>
-          <AvatarFallback>{getUserInitials(author)}</AvatarFallback>
-        </Avatar>
-        <div>
-          <p className={cn("text-sm font-semibold", { "ml-auto": isAuthor })}>
-            {getUserDisplayName(author)}
-          </p>
-          <time className="text-xs text-gray-500 mb-2">
-            {getRelativeLocalTimeStrFromUtcDate(sentOn)}
-          </time>
+      <Avatar className="w-12 h-12">
+        <AvatarFallback>{getUserInitials(author)}</AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col gap-2">
+        <div className="text-sm font-semibold">
+          {getUserDisplayName(author)}
+        </div>
+        <p className="leading-7 py-1 px-2 w-fit rounded-md [overflow-wrap:anywhere] bg-accent">
+          {message}
+        </p>
+        <div className="text-xs text-gray-500">
+          {getRelativeLocalTimeStrFromUtcDate(sentOn)}
         </div>
       </div>
-      <p
-        className={cn(
-          "leading-7 py-1 px-2 w-fit rounded-md [overflow-wrap:anywhere] bg-accent"
-        )}
-      >
-        {message}
-      </p>
     </section>
   );
 }
