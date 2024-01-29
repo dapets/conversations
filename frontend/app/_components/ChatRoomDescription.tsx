@@ -47,9 +47,12 @@ export function ChatRoomDescription({
           {otherChatUserFullName}
         </h2>
         {chatRoom.lastMessage && (
-          <p className="text-xs truncate text-right [grid-area:last-message-date]">
+          <time
+            className="text-xs truncate text-right [grid-area:last-message-date]"
+            suppressHydrationWarning
+          >
             {getRelativeLocalTimeStrFromUtcDate(chatRoom.lastMessage?.sentOn)}
-          </p>
+          </time>
         )}
         <p className="text-sm truncate font-normal text-left [grid-area:last-message]">
           {chatRoom.lastMessage?.message ?? "No messages yet."}
