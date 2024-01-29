@@ -6,9 +6,9 @@ import { scrollToId } from "utils/constants";
 export default async function ChatHistory({
   params,
 }: {
-  params: { name: string[] };
+  params: { id: string[] };
 }) {
-  const chatPartnerId = decodeURIComponent(params.name[0]);
+  const chatPartnerId = decodeURIComponent(params.id[0]);
 
   const chatHistory = await getChatHistoryWithId(chatPartnerId);
   const loggedInUserId = (await getLoggedInUser()).id;
