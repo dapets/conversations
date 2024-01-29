@@ -1,27 +1,23 @@
 import React from "react";
 
-import { sampleUsers } from "../../sampleData";
-import { ChatDescription } from "@components/ChatDescription";
 import { MessageInput } from "@components/MessageInput";
 
 export default function ClientLayout({
   children,
+  history,
+  description,
 }: {
   children: React.ReactNode;
+  history: React.ReactNode;
+  description: React.ReactNode;
 }) {
   return (
     <div className="flex h-screen w-screen">
-      <section className="p-4 bg-zinc-100 overflow-y-auto">
-        <ul>
-          {sampleUsers.map((u, i) => (
-            <li key={i}>
-              <ChatDescription username={u.username} />
-            </li>
-          ))}
-        </ul>
-      </section>
+      <nav className="p-4 bg-zinc-100 overflow-y-auto hidden sm:w-56 sm:block ">
+        {description}
+      </nav>
       <main className="flex flex-col justify-between p-4 w-full">
-        <div className="overflow-y-auto">{children}</div>
+        {children}
         <MessageInput />
       </main>
     </div>

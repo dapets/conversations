@@ -1,7 +1,8 @@
 import { ChatMessage } from "@components/ChatMessage";
 import { sampleChatHistory } from "sampleData";
 
-export default function ChatHistory() {
+export default function ChatHistory({ params }: { params: { slug: string } }) {
+  console.log(params);
   return (
     <ul>
       {sampleChatHistory[0].messages.map((m, i) => (
