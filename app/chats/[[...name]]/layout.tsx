@@ -10,7 +10,7 @@ export default function ClientLayout({
   return (
     <main className="flex flex-col justify-between p-4 w-full">
       {children}
-      <MessageInput />
+      <MessageInput className="mt-4" />
     </main>
   );
 }

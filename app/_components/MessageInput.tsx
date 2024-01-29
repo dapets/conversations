@@ -1,7 +1,13 @@
-export function MessageInput() {
+import { cn } from "@/lib/utils";
+
+export function MessageInput({ className }: { className?: string }) {
   return (
     <input
-      className="border rounded-md px-4 py-2"
+      className={cn(
+        //all these focus-visible: can't be omitted or combined because firefox
+        "rounded-lg p-2 focus-visible:outline focus:outline-2 focus-visible:outline-primary focus-visible:border-transparent border-secondary border-2",
+        className
+      )}
       type="text"
       placeholder="Type a message..."
     />

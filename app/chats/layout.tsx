@@ -8,7 +8,7 @@ export default function ClientLayout({
 }) {
   return (
     <div className="flex h-screen w-screen">
-      <nav className="p-4 overflow-y-auto hidden sm:w-56 sm:block">
+      <nav className="p-4 overflow-y-auto md:w-64 md:block hidden">
         <SampleDataChatList />
       </nav>
       {children}
