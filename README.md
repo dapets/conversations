@@ -26,3 +26,5 @@ Download and install .NET 8 from [here](https://dotnet.microsoft.com/en-us/downl
 Deployment is done via [Docker Compose V2](https://docs.docker.com/compose/migrate/#what-are-the-differences-between-compose-v1-and-compose-v2). The easiest way to install docker is via Docker Desktop. You can find installation instructions [here](https://docs.docker.com/engine/install/).
 
 Once you have docker installed you can spin up the backend, frontend and caddy by running `docker compose up` in the project's root directory.
+
+The project is currently hosted under [https://conversation-demo.de](https://conversation-demo.de) using a Hetzner CCX13.
