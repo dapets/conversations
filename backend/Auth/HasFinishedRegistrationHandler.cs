@@ -1,4 +1,5 @@
-﻿using backend.Utils;
+﻿using backend.Entities;
+using backend.Utils;
 using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Auth;
@@ -15,10 +16,19 @@ public class HasFinishedRegistrationHandler(ILogger<HasFinishedRegistrationHandl
       return;
     }
 
-    var user = await identityUtils.GetUserAsync(context.User);
+    ApplicationUser user;
+    try
+    {
+      user = await identityUtils.GetUserAsync(context.User);
+    }
+    //This might happen when the user the token was issued to was deleted.
+    catch (ArgumentException)
+    {
+      return;
+    }
 
     var hasUserFinishedRegistration = !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName);
-    logger.LogInformation("{hasUserFinishedRegistration} {hasUserFinishedRegistration}", nameof(hasUserFinishedRegistration), hasUserFinishedRegistration);
+    logger.LogInformation("{hasUserFinishedRegistration} {hasUserFinishedRegistrationValue}", nameof(hasUserFinishedRegistration), hasUserFinishedRegistration);
     if (hasUserFinishedRegistration)
     {
       context.Succeed(requirement);

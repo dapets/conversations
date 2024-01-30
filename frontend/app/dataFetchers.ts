@@ -6,8 +6,8 @@ import {
 import { cookies } from "next/headers";
 import { serialize as serializeCookie } from "cookie";
 import { aspnetAuthCookieName, cookieHeaderName } from "utils/constants";
-import "server-only";
 import { redirectWithLoginChanged } from "utils/utils";
+import "server-only";
 
 /** Cookie flow
  *
@@ -53,7 +53,10 @@ export async function fetchWithAuth(
   if (response.status === 401 && !requestInfo.url.includes("/login")) {
     redirectWithLoginChanged("/login");
   } else if (response.status === 403) {
-    redirectWithLoginChanged("/register");
+    //This indicates that the registration has not fully completed (FirstName or LastName null in the db).
+    //This should not be possible because the `register` server action should've verified it.
+    //We might want figure out a better way of handling this, but for now we just redirect to login.
+    redirectWithLoginChanged("/login");
   }
 
   return response;
