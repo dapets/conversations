@@ -29,7 +29,7 @@ public class PeriodicActions(ILogger<PeriodicActions> logger, IServiceProvider s
   public async Task ClearNewDatabaseEntriesEveryHour()
   {
     var applicationStart = DateTime.UtcNow;
-    var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+    var timer = new PeriodicTimer(TimeSpan.FromHours(1));
 
     using var scope = services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
