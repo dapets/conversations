@@ -155,18 +155,22 @@ export async function completeRegistration(completeRegistrationDto: {
   };
 }
 
+export async function deleteAuthCookie() {
+  //The sameSite strict doesn't seem to work here (a bug?).
+  //The attribute is not being set and browsers still throw a warning.
+  //I'm just gonna leave it like it is i guess :shrug:
+  cookies().delete({
+    sameSite: "strict",
+    name: aspnetAuthCookieName,
+  });
+}
+
 export async function logout() {
   const result = await fetchWithAuth(process.env.BACKEND_URL + "/logout", {
     method: "POST",
   });
   if (result.ok) {
-    //The sameSite strict doesn't seem to work here (a bug?).
-    //The attribute is not being set and browsers still throw a warning.
-    //I'm just gonna leave it like it is i guess :shrug:
-    cookies().delete({
-      sameSite: "strict",
-      name: aspnetAuthCookieName,
-    });
+    deleteAuthCookie();
     redirectWithLoginChanged("/login");
   }
 
