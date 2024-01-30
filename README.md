@@ -27,4 +27,4 @@ Deployment is done via [Docker Compose V2](https://docs.docker.com/compose/migra
 
 Once you have docker installed you can spin up the backend, frontend and caddy by running `docker compose up` in the project's root directory.
 
-The project is currently hosted under [https://conversation-demo.de](https://conversation-demo.de) using a Hetzner CCX13.
+The project is currently hosted on [https://conversation-demo.de](https://conversation-demo.de) using a Hetzner CCX13.
