@@ -46,7 +46,7 @@ export default async function ClientLayout({
           </p>
           <LogoutButton className="justify-self-end grid-in-log-out" />
         </div>
-        <div className="mb-4 mr-6 mt-5 flex justify-between">
+        <div className="mb-4 mr-6 mt-4 flex justify-between">
           <TypographyH2>Messages</TypographyH2>
           <AddChatIconButton />
         </div>
