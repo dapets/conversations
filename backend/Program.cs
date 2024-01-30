@@ -83,15 +83,16 @@ using (scope)
     shouldSeedDb = dbContext.Database.EnsureCreated();
 }
 
-if (shouldSeedDb)
-{
-    var seedDb = app.Services.GetRequiredService<SeedDb>();
-    app.Lifetime.ApplicationStarted.Register(async () =>
-        await seedDb.SeedWithDemoData());
-}
-
+var seedDb = app.Services.GetRequiredService<SeedDb>();
 var periodicActions = app.Services.GetRequiredService<PeriodicActions>();
-_ = periodicActions.ClearNewDatabaseEntriesEveryHour();
+app.Lifetime.ApplicationStarted.Register(async () =>
+{
+    if (shouldSeedDb)
+    {
+        await seedDb.SeedWithDemoData();
+    }
+    _ = periodicActions.ClearNewDatabaseEntriesEveryHour();
+});
 
 app.UseCors();
 

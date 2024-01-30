@@ -15,7 +15,7 @@ public class SeedDbOptions()
     public required string Demo_User_Password { get; set; }
 }
 
-public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext dbContext)
+public class SeedDb(IOptions<SeedDbOptions> seedOptions, IServiceProvider services)
 {
     record LoginResponses(string AccessToken);
 
@@ -23,7 +23,7 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
 
     private readonly IOptions<SeedDbOptions> seedOptions = seedOptions;
 
-    private readonly ApplicationDbContext dbContext = dbContext;
+    private readonly IServiceProvider services = services;
 
     private readonly string password = "123456";
 
@@ -166,6 +166,9 @@ public class SeedDb(IOptions<SeedDbOptions> seedOptions, ApplicationDbContext db
         var demoUserPassword = seedOptions.Value.Demo_User_Password;
 
         var users = await GenerateAndRegisterMockUsers(demoUserEmail, demoUserPassword);
+
+        using var scope = services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         await GenerateMockChatsForUsers(users, dbContext);
     }

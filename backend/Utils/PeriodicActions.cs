@@ -13,20 +13,29 @@ public class PeriodicActionOptions
   public bool IsTestInstance => IS_TEST_INSTANCE == "True";
 }
 
-public class PeriodicActions(ILogger<PeriodicActions> logger, ApplicationDbContext dbContext, IOptionsMonitor<PeriodicActionOptions> optionsMonitor)
+/// <summary>
+/// This isn't a BackgroundService because we want to run this after SeedDb. <br />
+/// Just making it a regular class and running it after await'ing SeedDb.SeedWithDemoData()
+/// seemed like the simplest way of doing it.
+/// </summary>
+public class PeriodicActions(ILogger<PeriodicActions> logger, IServiceProvider services, IOptionsMonitor<PeriodicActionOptions> optionsMonitor)
 {
   private readonly ILogger<PeriodicActions> logger = logger;
 
-  private readonly ApplicationDbContext dbContext = dbContext;
+  private readonly IServiceProvider services = services;
 
   private readonly IOptionsMonitor<PeriodicActionOptions> optionsMonitor = optionsMonitor;
 
   public async Task ClearNewDatabaseEntriesEveryHour()
   {
     var applicationStart = DateTime.UtcNow;
-    var seededUsers = await dbContext.Users.Select(u => u.Id).ToListAsync();
+    var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
 
-    var timer = new PeriodicTimer(TimeSpan.FromHours(1));
+    using var scope = services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    var seededUsers = await dbContext.Users.Select(u => u.Id).ToListAsync();
+    var seededChats = await dbContext.Chats.Select(u => u.Id).ToListAsync();
 
     await Task.Run(async () =>
     {
@@ -36,12 +45,16 @@ public class PeriodicActions(ILogger<PeriodicActions> logger, ApplicationDbConte
         logger.LogInformation("Running {function}...", nameof(ClearNewDatabaseEntriesEveryHour));
 
         await Task.WhenAll(
-        dbContext.Users
-          .Where(users => !seededUsers.Contains(users.Id))
-          .ExecuteDeleteAsync(),
-        dbContext.History
-          .Where(history => applicationStart < history.SentOn)
-          .ExecuteDeleteAsync());
+          dbContext.History
+            .Where(history => applicationStart < history.SentOn)
+            .ExecuteDeleteAsync(),
+          dbContext.Chats
+            .Where(chats => !seededChats.Contains(chats.Id))
+            .ExecuteDeleteAsync(),
+          dbContext.Users
+            .Where(users => !seededUsers.Contains(users.Id))
+            .ExecuteDeleteAsync()
+        );
       }
     });
   }
