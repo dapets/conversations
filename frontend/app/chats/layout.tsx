@@ -50,7 +50,7 @@ export default async function ClientLayout({
           <TypographyH2>Messages</TypographyH2>
           <AddChatIconButton />
         </div>
-        <ScrollArea className="pr-6" type="always" data-state="visible">
+        <ScrollArea className="mr-2 pr-4" type="always" data-state="visible">
           {chatList}
         </ScrollArea>
       </nav>
