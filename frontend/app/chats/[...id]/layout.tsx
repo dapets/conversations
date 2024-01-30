@@ -17,13 +17,19 @@ export default async function ClientLayout({
   const heading = decodeURIComponent(params.id[1] ?? "Unknown user");
   return (
     <>
-      <div className="flex items-center">
-        <Button asChild className="block lg:hidden" variant="outline">
+      <div className="grid grid-rows-1 items-center">
+        <Button
+          asChild
+          className="col-start-1 row-start-1 block w-fit lg:hidden"
+          variant="outline"
+        >
           <Link href="/chats">
             <ChevronsLeft />
           </Link>
         </Button>
-        <TypographyH2 className="ml-6 lg:mx-0">{heading}</TypographyH2>
+        <TypographyH2 className="col-start-1 row-start-1 justify-self-center lg:mx-0 lg:justify-self-start">
+          {heading}
+        </TypographyH2>
       </div>
       <ScrollArea
         viewportId={messageScrollContainerId}
