@@ -23,7 +23,7 @@ export default async function ClientLayout({
             <ChevronsLeft />
           </Link>
         </Button>
-        <TypographyH2 className="mx-auto lg:mx-0">{heading}</TypographyH2>
+        <TypographyH2 className="ml-6 lg:mx-0">{heading}</TypographyH2>
       </div>
       <ScrollArea
         viewportId={messageScrollContainerId}
